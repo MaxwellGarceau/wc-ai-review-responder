@@ -113,11 +113,11 @@ add_action( 'plugins_loaded', 'wc_ai_review_responder_init', 10 );
  * @since 0.1.0
  */
 function wc_ai_review_responder_init() {
-	load_plugin_textdomain( 'wc_ai_review_responder', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
+	load_plugin_textdomain( 'wc_ai_review_responder', false, plugin_basename( __DIR__ ) . '/languages' );
 
 	// Load environment variables from .env if available.
 	if ( class_exists( '\\Dotenv\\Dotenv' ) ) {
-		$dotenv = \Dotenv\Dotenv::createImmutable( dirname( __FILE__ ) );
+		$dotenv = \Dotenv\Dotenv::createImmutable( __DIR__ );
 		$dotenv->safeLoad();
 	}
 
@@ -127,5 +127,4 @@ function wc_ai_review_responder_init() {
 	}
 
 	wc_ai_review_responder::instance();
-
 }

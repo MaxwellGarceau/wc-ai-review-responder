@@ -7,5 +7,3 @@ namespace WcAiReviewResponder\Exceptions;
  */
 class Invalid_Arguments_Exception extends \InvalidArgumentException {
 }
-
-

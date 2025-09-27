@@ -7,5 +7,3 @@ namespace WcAiReviewResponder\Exceptions;
  */
 class Invalid_Review_Exception extends \RuntimeException {
 }
-
-
