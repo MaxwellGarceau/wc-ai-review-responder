@@ -1,31 +1,43 @@
 <?php
+/**
+ * Exception thrown when the AI provider fails to return a valid response.
+ *
+ * @package WcAiReviewResponder
+ * @since   1.0.0
+ */
 
 namespace WcAiReviewResponder\Exceptions;
 
 /**
- * Thrown when the AI provider fails to return a valid response.
+ * Exception class thrown when the AI provider fails to return a valid response.
  */
 class AI_Response_Failure extends \RuntimeException {
 	/**
+	 * Debug context information.
+	 *
 	 * @var array<string,mixed>
 	 */
-	private $debugContext = array();
+	private $debug_context = array();
 
 	/**
-	 * @param string              $message Error message
-	 * @param int                 $code Error code
-	 * @param \Throwable|null     $previous Previous exception
-	 * @param array<string,mixed> $debugContext Additional debug context
+	 * Constructor.
+	 *
+	 * @param string              $message       Error message.
+	 * @param int                 $code          Error code.
+	 * @param \Throwable|null     $previous      Previous exception.
+	 * @param array<string,mixed> $debug_context Additional debug context.
 	 */
-	public function __construct( $message = '', $code = 0, $previous = null, $debugContext = array() ) {
+	public function __construct( $message = '', $code = 0, $previous = null, $debug_context = array() ) {
 		parent::__construct( $message, $code, $previous );
-		$this->debugContext = $debugContext;
+		$this->debug_context = $debug_context;
 	}
 
 	/**
-	 * @return array<string,mixed>
+	 * Get debug context information.
+	 *
+	 * @return array<string,mixed> Debug context data.
 	 */
 	public function get_debug_context() {
-		return $this->debugContext;
+		return $this->debug_context;
 	}
 }

@@ -1,30 +1,40 @@
 <?php
+/**
+ * AI client for interacting with the Gemini API.
+ *
+ * @package WcAiReviewResponder
+ * @since   1.0.0
+ */
 
 namespace WcAiReviewResponder;
 
 use WcAiReviewResponder\Exceptions\AI_Response_Failure;
 
 /**
- * Handles interactions with the Gemini API.
+ * AI client class for interacting with the Gemini API.
  */
 class AI_Client {
 	/**
+	 * Gemini API key.
+	 *
 	 * @var string
 	 */
-	private $apiKey;
+	private $api_key;
 
 	/**
-	 * @param string $apiKey Gemini API key
+	 * Constructor.
+	 *
+	 * @param string $api_key Gemini API key.
 	 */
-	public function __construct( $apiKey ) {
-		$this->apiKey = $apiKey;
+	public function __construct( $api_key ) {
+		$this->api_key = $api_key;
 	}
 
 	/**
 	 * Build a prompt using review and product context.
 	 *
-	 * @param array<string,mixed> $context
-	 * @return string
+	 * @param array<string,mixed> $context Review context data.
+	 * @return string Generated prompt.
 	 */
 	public function build_prompt( $context ) {
 		$rating  = isset( $context['rating'] ) ? (int) $context['rating'] : 0;
@@ -45,12 +55,12 @@ class AI_Client {
 	 *
 	 * Note: This is a scaffold. Actual SDK integration will be implemented later.
 	 *
-	 * @param array<string,mixed> $context
-	 * @return string
-	 * @throws AI_Response_Failure
+	 * @param array<string,mixed> $context Review context data.
+	 * @return string Generated AI reply.
+	 * @throws AI_Response_Failure When API key is missing or AI returns empty response.
 	 */
 	public function generate_reply( $context ) {
-		if ( empty( $this->apiKey ) ) {
+		if ( empty( $this->api_key ) ) {
 			throw new AI_Response_Failure( 'Missing Gemini API key.' );
 		}
 
@@ -61,7 +71,7 @@ class AI_Client {
 		$reply = 'Thank you so much for your review! We appreciate your feedback.';
 
 		if ( ! is_string( $reply ) || '' === trim( $reply ) ) {
-			throw new AI_Response_Failure( 'AI returned an empty response.', 0, null, array( 'prompt' => $prompt ) );
+			throw new AI_Response_Failure( 'AI returned an empty response.', 0, null, array( 'prompt' => wp_kses_post( $prompt ) ) );
 		}
 
 		return wp_kses_post( $reply );

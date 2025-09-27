@@ -50,15 +50,15 @@ function wc_ai_review_responder_activate() {
 	}
 }
 
-if ( ! class_exists( 'wc_ai_review_responder' ) ) :
+if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 	/**
-	 * The wc_ai_review_responder class.
+	 * The Wc_Ai_Review_Responder class.
 	 */
-	class wc_ai_review_responder {
+	class Wc_Ai_Review_Responder {
 		/**
 		 * This class instance.
 		 *
-		 * @var \wc_ai_review_responder single instance of this class.
+		 * @var \Wc_Ai_Review_Responder single instance of this class.
 		 */
 		private static $instance;
 
@@ -92,7 +92,7 @@ if ( ! class_exists( 'wc_ai_review_responder' ) ) :
 		 *
 		 * Ensures only one instance can be loaded.
 		 *
-		 * @return \wc_ai_review_responder
+		 * @return \Wc_Ai_Review_Responder
 		 */
 		public static function instance() {
 
@@ -126,5 +126,5 @@ function wc_ai_review_responder_init() {
 		return;
 	}
 
-	wc_ai_review_responder::instance();
+	Wc_Ai_Review_Responder::instance();
 }

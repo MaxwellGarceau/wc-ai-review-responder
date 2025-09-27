@@ -1,4 +1,10 @@
 <?php
+/**
+ * AJAX handler for generating AI responses to product reviews.
+ *
+ * @package WcAiReviewResponder
+ * @since   1.0.0
+ */
 
 namespace WcAiReviewResponder;
 
@@ -7,7 +13,7 @@ use WcAiReviewResponder\Exceptions\Invalid_Review_Exception;
 use WcAiReviewResponder\Exceptions\AI_Response_Failure;
 
 /**
- * Handles AJAX requests for generating AI responses.
+ * AJAX handler class for generating AI responses to product reviews.
  */
 class Ajax_Handler {
 	/**
@@ -19,6 +25,8 @@ class Ajax_Handler {
 
 	/**
 	 * Process the AJAX request.
+	 *
+	 * @throws Invalid_Arguments_Exception When comment ID is missing or invalid.
 	 */
 	public function handle_generate() {
 		if ( ! current_user_can( 'moderate_comments' ) ) {
@@ -30,18 +38,18 @@ class Ajax_Handler {
 			$this->send_error( 'invalid_nonce', 'Security check failed.' );
 		}
 
-		$commentId = isset( $_POST['comment_id'] ) ? (int) $_POST['comment_id'] : 0;
-		if ( $commentId <= 0 ) {
+		$comment_id = isset( $_POST['comment_id'] ) ? (int) $_POST['comment_id'] : 0;
+		if ( $comment_id <= 0 ) {
 			throw new Invalid_Arguments_Exception( 'Missing or invalid comment_id.' );
 		}
 
 		try {
-			$reviewHandler = new Review_Handler();
-			$context       = $reviewHandler->get_review_context( $commentId );
+			$review_handler = new Review_Handler();
+			$context        = $review_handler->get_review_context( $comment_id );
 
-			$apiKey   = (string) getenv( 'GEMINI_API_KEY' );
-			$aiClient = new AI_Client( $apiKey );
-			$reply    = $aiClient->generate_reply( $context );
+			$api_key   = (string) getenv( 'GEMINI_API_KEY' );
+			$ai_client = new AI_Client( $api_key );
+			$reply     = $ai_client->generate_reply( $context );
 
 			wp_send_json_success( array( 'reply' => $reply ) );
 		} catch ( Invalid_Review_Exception $e ) {
@@ -61,8 +69,8 @@ class Ajax_Handler {
 	/**
 	 * Send a standardized JSON error and exit.
 	 *
-	 * @param string $code
-	 * @param string $message
+	 * @param string $code    Error code.
+	 * @param string $message Error message.
 	 */
 	private function send_error( $code, $message ) {
 		wp_send_json_error(

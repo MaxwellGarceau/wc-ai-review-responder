@@ -1,29 +1,35 @@
 <?php
+/**
+ * Review handler for extracting and validating WooCommerce review data.
+ *
+ * @package WcAiReviewResponder
+ * @since   1.0.0
+ */
 
 namespace WcAiReviewResponder;
 
 use WcAiReviewResponder\Exceptions\Invalid_Review_Exception;
 
 /**
- * Extracts and validates review data from WordPress/WooCommerce.
+ * Review handler class for extracting and validating WooCommerce review data.
  */
 class Review_Handler {
 	/**
 	 * Fetch review context for a given comment ID.
 	 *
-	 * @param int $commentId Comment (review) ID.
+	 * @param int $comment_id Comment (review) ID.
 	 * @return array<string,mixed>
-	 * @throws Invalid_Review_Exception
+	 * @throws Invalid_Review_Exception When comment is not a valid review.
 	 */
-	public function get_review_context( $commentId ) {
-		$comment = get_comment( $commentId );
+	public function get_review_context( $comment_id ) {
+		$comment = get_comment( $comment_id );
 		if ( ! $comment || 'review' !== get_comment_type( $comment ) ) {
 			throw new Invalid_Review_Exception( 'Comment is not a WooCommerce product review.' );
 		}
 
-		$productId = (int) $comment->comment_post_ID;
-		$rating    = get_comment_meta( $commentId, 'rating', true );
-		$content   = (string) $comment->comment_content;
+		$product_id = (int) $comment->comment_post_ID;
+		$rating     = get_comment_meta( $comment_id, 'rating', true );
+		$content    = (string) $comment->comment_content;
 
 		if ( '' === trim( $content ) ) {
 			throw new Invalid_Review_Exception( 'Review is missing a comment.' );
@@ -33,12 +39,12 @@ class Review_Handler {
 			throw new Invalid_Review_Exception( 'Review is missing a rating.' );
 		}
 
-		$productName = get_the_title( $productId );
+		$product_name = get_the_title( $product_id );
 
 		return array(
-			'comment_id'   => (int) $commentId,
-			'product_id'   => (int) $productId,
-			'product_name' => is_string( $productName ) ? $productName : '',
+			'comment_id'   => (int) $comment_id,
+			'product_id'   => (int) $product_id,
+			'product_name' => is_string( $product_name ) ? $product_name : '',
 			'rating'       => (int) $rating,
 			'comment'      => $content,
 			'author'       => (string) $comment->comment_author,
