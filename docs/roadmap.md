@@ -141,56 +141,6 @@ WP_CLI::add_command('ai-review test-sample', ['WC_AI_Review_CLI_Tester', 'test_s
 
 ## Plugin Architecture
 
-### File Structure
-```
-/wc-ai-review-responder/
-├── 🎯 MAIN PLUGIN FILES
-│   ├── 📄 wc-ai-review-responder.php     ════► Main plugin file (already exists)
-│   ├── 📄 composer.json                  ════► Add Gemini SDK dependency
-│   └── 📄 .env.example                   ════► Add this file
-│
-├── 📁 includes/                         ════► PHP CLASSES (ADD THESE)
-│   ├── 📄 class-ai-client.php           ════► Gemini API handler
-│   ├── 📄 class-review-handler.php      ════► WC data extraction
-│   ├── 📄 class-ajax-handler.php        ════► AJAX processing
-│   └── 📁 exceptions/                   ════► Custom exceptions
-│       ├── 📄 class-invalid-review-exception.php
-│       ├── 📄 class-ai-response-failure.php
-│       └── 📄 class-invalid-arguments-exception.php
-│
-├── 📁 src/                              ════► ADMIN ASSETS (MODIFY EXISTING)
-│   ├── 📄 index.js                      ════► Change to admin JS (button, modals, AJAX)
-│   └── 📄 index.scss                    ════► Change to admin CSS (loading states, modals)
-│
-├── 📁 build/                            ════► COMPILED ASSETS (AUTO-GENERATED)
-│   ├── 📄 index.js                      ════► Compiled admin JS
-│   └── 📄 index.css                     ════► Compiled admin CSS
-│
-└── 📁 docs/                             ════► DOCUMENTATION
-    └── 📄 roadmap.md                    ════► Your roadmap
-```
-
-### Class Responsibilities
-
-#### ReviewHandler
-- Extracts review data from WordPress database
-- Validates required fields (rating + comment)
-- Returns product context for prompts
-- Throws `InvalidReviewException` for incomplete data
-
-#### AIClient 
-- Manages Gemini API connection
-- Builds context-aware prompts
-- Handles API errors + rate limiting
-- Validates + sanitizes AI responses
-- Throws `AI_Response_Failure` for API issues
-
-#### AjaxHandler
-- Processes "Generate AI Response" requests
-- Validates nonces + user capabilities
-- Coordinates ReviewHandler + AIClient
-- Returns JSON responses for frontend
-
 ### Data Flow
 ```
 Frontend (admin.js)
