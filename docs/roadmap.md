@@ -32,7 +32,7 @@
 
 ### Day 1: Core Infrastructure (9 hours)
 
-#### 1. Plugin Foundation & Exception System (2 hours)
+#### 1. Plugin Base & Exceptions (2 hours)
 - Basic plugin structure with Composer
 - Custom exception classes:
   - `InvalidReviewException` (missing data)
