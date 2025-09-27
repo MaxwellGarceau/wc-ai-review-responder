@@ -12,6 +12,8 @@ use WcAiReviewResponder\Exceptions\Invalid_Review_Exception;
 
 /**
  * Review model class for extracting and validating WooCommerce review data.
+ *
+ * This is the single source of truth for accessing the DB to query review data.
  */
 class Review_Model {
 	/**
