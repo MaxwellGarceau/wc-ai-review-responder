@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Wc Ai Review Responder
+ * Plugin Name: WC AI Review Responder
  * Version: 0.1.0
  * Author: The WordPress Contributors
  * Author URI: https://woo.com
