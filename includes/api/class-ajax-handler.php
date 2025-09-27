@@ -19,7 +19,7 @@ class Ajax_Handler {
 	/**
 	 * Review handler dependency.
 	 *
-	 * @var \WcAiReviewResponder\DB\Review_Handler
+	 * @var \WcAiReviewResponder\Models\Review_Model
 	 */
 	private $review_handler;
 
@@ -49,12 +49,12 @@ class Ajax_Handler {
 	 *
 	 * Initializes dependencies used during the AJAX request lifecycle.
 	 *
-	 * @param \WcAiReviewResponder\DB\Review_Handler                         $review_handler  Review handler.
+	 * @param \WcAiReviewResponder\Models\Review_Model                       $review_handler  Review handler.
 	 * @param \WcAiReviewResponder\LLM\Build_Prompt_Interface                $prompt_builder  Prompt builder.
 	 * @param \WcAiReviewResponder\API\AI_Client                             $ai_client       AI client.
 	 * @param \WcAiReviewResponder\Validation\Validate_AI_Response_Interface $response_validator Response validator.
 	 */
-	public function __construct( \WcAiReviewResponder\DB\Review_Handler $review_handler, \WcAiReviewResponder\LLM\Build_Prompt_Interface $prompt_builder, \WcAiReviewResponder\API\AI_Client $ai_client, \WcAiReviewResponder\Validation\Validate_AI_Response_Interface $response_validator ) {
+	public function __construct( \WcAiReviewResponder\Models\Review_Model $review_handler, \WcAiReviewResponder\LLM\Build_Prompt_Interface $prompt_builder, \WcAiReviewResponder\API\AI_Client $ai_client, \WcAiReviewResponder\Validation\Validate_AI_Response_Interface $response_validator ) {
 		$this->review_handler     = $review_handler;
 		$this->prompt_builder     = $prompt_builder;
 		$this->ai_client          = $ai_client;

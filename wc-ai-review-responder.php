@@ -23,7 +23,7 @@ require_once plugin_dir_path( __FILE__ ) . '/vendor/autoload_packages.php';
 
 use WcAiReviewResponder\Admin\Setup;
 use WcAiReviewResponder\API\Ajax_Handler;
-use WcAiReviewResponder\DB\Review_Handler;
+use WcAiReviewResponder\Models\Review_Model;
 use WcAiReviewResponder\LLM\Prompt_Builder;
 use WcAiReviewResponder\API\AI_Client;
 use WcAiReviewResponder\Validation\Validate_AI_Response;

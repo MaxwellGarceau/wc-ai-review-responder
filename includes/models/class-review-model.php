@@ -1,19 +1,19 @@
 <?php
 /**
- * Review handler for extracting and validating WooCommerce review data.
+ * Review model for extracting and validating WooCommerce review data.
  *
  * @package WcAiReviewResponder
  * @since   1.0.0
  */
 
-namespace WcAiReviewResponder\DB;
+namespace WcAiReviewResponder\Models;
 
 use WcAiReviewResponder\Exceptions\Invalid_Review_Exception;
 
 /**
- * Review handler class for extracting and validating WooCommerce review data.
+ * Review model class for extracting and validating WooCommerce review data.
  */
-class Review_Handler {
+class Review_Model {
 	/**
 	 * Fetch review context for a given comment ID.
 	 *
