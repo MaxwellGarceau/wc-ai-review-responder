@@ -78,16 +78,9 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 				$builder->useAnnotations( false );
 				$builder->addDefinitions(
 					array(
-						Review_Handler::class        => \DI\autowire( Review_Handler::class ),
-						Prompt_Builder::class       => \DI\autowire( Prompt_Builder::class ),
-						Reply_Generate::class       => \DI\autowire( Reply_Generate::class ),
-						WcAiReviewResponder\Build_Prompt_Interface::class   => \DI\get( Prompt_Builder::class ),
+						WcAiReviewResponder\Build_Prompt_Interface::class => \DI\get( Prompt_Builder::class ),
 						WcAiReviewResponder\Generate_Reply_Interface::class => \DI\get( Reply_Generate::class ),
-						AI_Client::class            => \DI\factory( function ( $c ) {
-							$api_key = (string) getenv( 'GEMINI_API_KEY' );
-							return new AI_Client( $api_key, $c->get( Prompt_Builder::class ) );
-						} ),
-						Ajax_Handler::class          => \DI\autowire( Ajax_Handler::class ),
+						AI_Client::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY' ), \DI\get( WcAiReviewResponder\Build_Prompt_Interface::class ) ),
 					)
 				);
 				$container = $builder->build();
