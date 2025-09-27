@@ -22,6 +22,7 @@ if ( ! defined( 'MAIN_PLUGIN_FILE' ) ) {
 require_once plugin_dir_path( __FILE__ ) . '/vendor/autoload_packages.php';
 
 use WcAiReviewResponder\Admin\Setup;
+use WcAiReviewResponder\Ajax_Handler;
 
 // phpcs:disable WordPress.Files.FileName
 
@@ -67,6 +68,8 @@ if ( ! class_exists( 'wc_ai_review_responder' ) ) :
 		public function __construct() {
 			if ( is_admin() ) {
 				new Setup();
+				$ajax = new Ajax_Handler();
+				$ajax->register();
 			}
 		}
 
@@ -111,6 +114,12 @@ add_action( 'plugins_loaded', 'wc_ai_review_responder_init', 10 );
  */
 function wc_ai_review_responder_init() {
 	load_plugin_textdomain( 'wc_ai_review_responder', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
+
+	// Load environment variables from .env if available.
+	if ( class_exists( '\\Dotenv\\Dotenv' ) ) {
+		$dotenv = \Dotenv\Dotenv::createImmutable( dirname( __FILE__ ) );
+		$dotenv->safeLoad();
+	}
 
 	if ( ! class_exists( 'WooCommerce' ) ) {
 		add_action( 'admin_notices', 'wc_ai_review_responder_missing_wc_notice' );
