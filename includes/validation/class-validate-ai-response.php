@@ -1,24 +1,24 @@
 <?php
 /**
- * Reply generator implementation to finalize AI responses.
+ * AI response validator implementation to validate and sanitize AI responses.
  *
  * @package WcAiReviewResponder
  * @since   1.0.0
  */
 
-namespace WcAiReviewResponder;
+namespace WcAiReviewResponder\Validation;
 
 /**
  * Generates the final sanitized reply string from a raw AI response.
  */
-class Reply_Generate implements Generate_Reply_Interface {
+class Validate_AI_Response implements Validate_AI_Response_Interface {
 	/**
-	 * Finalize and validate the AI reply string.
+	 * Validate and sanitize the AI response string.
 	 *
 	 * @param string $ai_response Raw AI response string.
 	 * @return string Sanitized, validated reply.
 	 */
-	public function generate_reply( string $ai_response ): string {
+	public function validate( string $ai_response ): string {
 		$reply = is_string( $ai_response ) ? trim( $ai_response ) : '';
 		if ( '' === $reply ) {
 			return '';

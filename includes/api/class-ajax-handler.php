@@ -38,27 +38,27 @@ class Ajax_Handler {
 	private $ai_client;
 
 	/**
-	 * Reply generator dependency.
+	 * Response validator dependency.
 	 *
-	 * @var Generate_Reply_Interface
+	 * @var \WcAiReviewResponder\Validation\Validate_AI_Response_Interface
 	 */
-	private $reply_generator;
+	private $response_validator;
 
 	/**
 	 * Constructor.
 	 *
 	 * Initializes dependencies used during the AJAX request lifecycle.
 	 *
-	 * @param \WcAiReviewResponder\DB\Review_Handler          $review_handler  Review handler.
-	 * @param \WcAiReviewResponder\LLM\Build_Prompt_Interface $prompt_builder  Prompt builder.
-	 * @param \WcAiReviewResponder\API\AI_Client              $ai_client       AI client.
-	 * @param Generate_Reply_Interface                        $reply_generator Reply generator.
+	 * @param \WcAiReviewResponder\DB\Review_Handler                         $review_handler  Review handler.
+	 * @param \WcAiReviewResponder\LLM\Build_Prompt_Interface                $prompt_builder  Prompt builder.
+	 * @param \WcAiReviewResponder\API\AI_Client                             $ai_client       AI client.
+	 * @param \WcAiReviewResponder\Validation\Validate_AI_Response_Interface $response_validator Response validator.
 	 */
-	public function __construct( \WcAiReviewResponder\DB\Review_Handler $review_handler, \WcAiReviewResponder\LLM\Build_Prompt_Interface $prompt_builder, \WcAiReviewResponder\API\AI_Client $ai_client, Generate_Reply_Interface $reply_generator ) {
-		$this->review_handler  = $review_handler;
-		$this->prompt_builder  = $prompt_builder;
-		$this->ai_client       = $ai_client;
-		$this->reply_generator = $reply_generator;
+	public function __construct( \WcAiReviewResponder\DB\Review_Handler $review_handler, \WcAiReviewResponder\LLM\Build_Prompt_Interface $prompt_builder, \WcAiReviewResponder\API\AI_Client $ai_client, \WcAiReviewResponder\Validation\Validate_AI_Response_Interface $response_validator ) {
+		$this->review_handler     = $review_handler;
+		$this->prompt_builder     = $prompt_builder;
+		$this->ai_client          = $ai_client;
+		$this->response_validator = $response_validator;
 	}
 	/**
 	 * Boot hooks.
@@ -91,7 +91,7 @@ class Ajax_Handler {
 			$context     = $this->review_handler->get_review_context( $comment_id );
 			$prompt      = $this->prompt_builder->build_prompt( $context );
 			$ai_response = $this->ai_client->request_reply( $prompt );
-			$reply       = $this->reply_generator->generate_reply( $ai_response );
+			$reply       = $this->response_validator->validate( $ai_response );
 
 			wp_send_json_success( array( 'reply' => $reply ) );
 		} catch ( Invalid_Review_Exception $e ) {

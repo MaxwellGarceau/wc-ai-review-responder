@@ -26,7 +26,7 @@ use WcAiReviewResponder\API\Ajax_Handler;
 use WcAiReviewResponder\DB\Review_Handler;
 use WcAiReviewResponder\LLM\Prompt_Builder;
 use WcAiReviewResponder\API\AI_Client;
-use WcAiReviewResponder\Reply_Generate;
+use WcAiReviewResponder\Validation\Validate_AI_Response;
 use DI\ContainerBuilder;
 
 // phpcs:disable WordPress.Files.FileName
@@ -79,7 +79,7 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 				$builder->addDefinitions(
 					array(
 						WcAiReviewResponder\LLM\Build_Prompt_Interface::class => \DI\get( Prompt_Builder::class ),
-						WcAiReviewResponder\Generate_Reply_Interface::class => \DI\get( Reply_Generate::class ),
+						WcAiReviewResponder\Validation\Validate_AI_Response_Interface::class => \DI\get( Validate_AI_Response::class ),
 						\WcAiReviewResponder\API\AI_Client::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY' ), \DI\get( WcAiReviewResponder\LLM\Build_Prompt_Interface::class ) ),
 					)
 				);
