@@ -52,7 +52,7 @@
 - Response validation + sanitization
 - Rate limiting + cost control
 
-#### **4. WP-CLI Testing Command** (1 hour)
+#### 4. WP-CLI Testing Command (1 hour)
 - Create custom WP-CLI command: `wp ai-review test <review_id>`
 - Command will use ReviewHandler and AIClient classes
 - Output formatted results with success/error messages
@@ -101,13 +101,13 @@ WP_CLI::add_command('ai-review test-sample', ['WC_AI_Review_CLI_Tester', 'test_s
 
 ### Day 2: UI/UX & Polish (8 hours)
 
-#### 4. Admin UI Integration (4 hours)
+#### 5. Admin UI Integration (4 hours)
 - "Generate AI Response" button in review actions
 - AJAX handlers with nonce verification
 - Loading states + response insertion
 - Regenerate functionality
 
-#### 5. Error Handling & Testing (4 hours)
+#### 6. Error Handling & Testing (4 hours)
 - User-friendly error modal system
 - Edge case testing (incomplete reviews, API failures)
 - Demo preparation + documentation
