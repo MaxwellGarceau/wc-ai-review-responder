@@ -30,7 +30,7 @@
 
 ## 2-Day Implementation Plan
 
-### Day 1: Core Infrastructure (8 hours)
+### Day 1: Core Infrastructure (9 hours)
 
 #### 1. Plugin Foundation & Exception System (2 hours)
 - Basic plugin structure with Composer
@@ -51,6 +51,53 @@
 - Prompt building system
 - Response validation + sanitization
 - Rate limiting + cost control
+
+#### **4. WP-CLI Testing Command** (1 hour)
+- Create custom WP-CLI command: `wp ai-review test <review_id>`
+- Command will use ReviewHandler and AIClient classes
+- Output formatted results with success/error messages
+- Test all edge cases via command line:
+  - Valid reviews with rating + comment
+  - Reviews missing ratings
+  - Reviews missing comments  
+  - API failure scenarios
+  - Non-existent reviews
+
+##### **CLI Command Features**
+```bash
+# Basic test
+wp ai-review test 123
+
+# Test with debug output
+wp ai-review test 123 --debug
+
+# Create and test sample data
+wp ai-review test-sample
+```
+
+##### **Implementation Details**
+```php
+// File: includes/class-cli-tester.php
+class WC_AI_Review_CLI_Tester {
+    public function test_single($args, $assoc_args) {
+        // Test one review with full output
+    }
+    
+    public function test_sample($args, $assoc_args) {
+        // Create and test sample review data
+    }
+}
+
+// Register commands
+WP_CLI::add_command('ai-review test', ['WC_AI_Review_CLI_Tester', 'test_single']);
+WP_CLI::add_command('ai-review test-sample', ['WC_AI_Review_CLI_Tester', 'test_sample']);
+```
+
+##### **Benefits**
+- **Rapid Testing**: Test backend without UI dependencies
+- **Automated Testing**: Scriptable for continuous testing
+- **Debug Friendly**: Full error details and stack traces
+- **Development Speed**: Faster feedback loop during backend development
 
 ### Day 2: UI/UX & Polish (8 hours)
 
