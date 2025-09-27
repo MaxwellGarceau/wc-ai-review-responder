@@ -6,7 +6,7 @@
  * @since   1.0.0
  */
 
-namespace WcAiReviewResponder;
+namespace WcAiReviewResponder\DB;
 
 use WcAiReviewResponder\Exceptions\Invalid_Review_Exception;
 
