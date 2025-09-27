@@ -88,7 +88,7 @@ class Ajax_Handler {
 		}
 
 		try {
-			$context     = $this->review_handler->get_review_context( $comment_id );
+			$context     = $this->review_handler->get_by_id( $comment_id );
 			$prompt      = $this->prompt_builder->build_prompt( $context );
 			$ai_response = $this->ai_client->request_reply( $prompt );
 			$reply       = $this->response_validator->validate( $ai_response );

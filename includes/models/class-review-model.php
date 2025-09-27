@@ -21,7 +21,7 @@ class Review_Model {
 	 * @return array{comment_id:int,product_id:int,product_name:string,rating:int,comment:string,author:string}
 	 * @throws Invalid_Review_Exception When comment is not a valid review.
 	 */
-	public function get_review_context( int $comment_id ): array {
+	public function get_by_id( int $comment_id ): array {
 		$comment = get_comment( $comment_id );
 		if ( ! $comment || 'review' !== get_comment_type( $comment ) ) {
 			throw new Invalid_Review_Exception( 'Comment is not a WooCommerce product review.' );
