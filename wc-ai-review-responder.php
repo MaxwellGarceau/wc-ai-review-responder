@@ -30,6 +30,7 @@ use WcAiReviewResponder\Validation\Validate_AI_Response;
 use DI\ContainerBuilder;
 
 // phpcs:disable WordPress.Files.FileName
+// phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed
 
 /**
  * WooCommerce fallback notice.
