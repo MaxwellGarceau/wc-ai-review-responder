@@ -40,21 +40,9 @@
   - `InvalidArgumentsException` (security/permissions)
 - .env file setup for API keys
 
-#### 2. Review Data Handler (3 hours)
-- Extract review data from `wp_comments` + `wp_commentmeta`
-- Validate required fields (rating + comment)
-- Product context extraction
-- Edge case handling
-
-#### 3. Gemini API Client (3 hours)
-- SDK integration with error mapping
-- Prompt building system
-- Response validation + sanitization
-- Rate limiting + cost control
-
-#### 4. WP-CLI Testing Command (1 hour)
+#### 2. WP-CLI Testing Command (1 hour)
 - Create custom WP-CLI command: `wp ai-review test <review_id>`
-- Command will use ReviewHandler and AIClient classes
+- Command will use ReviewHandler, PromptBuilder, AIClient, and ResponseValidator classes
 - Output formatted results with success/error messages
 - Test all edge cases via command line:
   - Valid reviews with rating + comment
@@ -62,6 +50,18 @@
   - Reviews missing comments  
   - API failure scenarios
   - Non-existent reviews
+
+#### 3. Review Data Handler (3 hours)
+- Extract review data from `wp_comments` + `wp_commentmeta`
+- Validate required fields (rating + comment)
+- Product context extraction
+- Edge case handling
+
+#### 4. Gemini API Client (3 hours)
+- SDK integration with error mapping
+- Prompt building system
+- Response validation + sanitization
+- Rate limiting + cost control
 
 ##### **CLI Command Features**
 ```bash
