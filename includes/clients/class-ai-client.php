@@ -21,25 +21,16 @@ class AI_Client {
 	 */
 	private $api_key;
 
-	/**
-	 * Prompt builder dependency.
-	 *
-	 * @var \WcAiReviewResponder\LLM\Build_Prompt_Interface
-	 */
-	private $prompt_builder;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param string                                          $api_key        Gemini API key.
-	 * @param \WcAiReviewResponder\LLM\Build_Prompt_Interface $prompt_builder Prompt builder implementation.
+	 * @param string $api_key Gemini API key.
 	 */
-	public function __construct( string $api_key, \WcAiReviewResponder\LLM\Build_Prompt_Interface $prompt_builder ) {
-		$this->api_key        = $api_key;
-		$this->prompt_builder = $prompt_builder;
+	public function __construct( string $api_key ) {
+		$this->api_key = $api_key;
 	}
 
-	// build_prompt moved to Prompt_Builder via dependency injection.
 
 	/**
 	 * Request a reply from the AI provider using a prepared prompt.

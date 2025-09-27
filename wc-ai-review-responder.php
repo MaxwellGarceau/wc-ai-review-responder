@@ -81,7 +81,7 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 					array(
 						WcAiReviewResponder\LLM\Build_Prompt_Interface::class => \DI\get( Prompt_Builder::class ),
 						WcAiReviewResponder\Validation\Validate_AI_Response_Interface::class => \DI\get( Validate_AI_Response::class ),
-						\WcAiReviewResponder\Clients\AI_Client::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY' ), \DI\get( WcAiReviewResponder\LLM\Build_Prompt_Interface::class ) ),
+						\WcAiReviewResponder\Clients\AI_Client::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY' ) ),
 					)
 				);
 				$container = $builder->build();
