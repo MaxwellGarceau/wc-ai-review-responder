@@ -18,10 +18,10 @@ class Review_Handler {
 	 * Fetch review context for a given comment ID.
 	 *
 	 * @param int $comment_id Comment (review) ID.
-	 * @return array<string,mixed>
+	 * @return array{comment_id:int,product_id:int,product_name:string,rating:int,comment:string,author:string}
 	 * @throws Invalid_Review_Exception When comment is not a valid review.
 	 */
-	public function get_review_context( $comment_id ) {
+	public function get_review_context( int $comment_id ): array {
 		$comment = get_comment( $comment_id );
 		if ( ! $comment || 'review' !== get_comment_type( $comment ) ) {
 			throw new Invalid_Review_Exception( 'Comment is not a WooCommerce product review.' );

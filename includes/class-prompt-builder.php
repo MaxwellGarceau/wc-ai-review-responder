@@ -8,11 +8,17 @@
 
 namespace WcAiReviewResponder;
 
+/**
+ * Builds prompts from a well-defined review context.
+ */
 class Prompt_Builder implements Build_Prompt_Interface {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function build_prompt( $context ) {
+    /**
+     * Build a prompt string from the provided context.
+     *
+     * @param array{rating:int,comment:string,product_name:string} $context Review context shape.
+     * @return string Prompt to send to the AI provider.
+     */
+    public function build_prompt( array $context ): string {
 		$rating  = isset( $context['rating'] ) ? (int) $context['rating'] : 0;
 		$comment = isset( $context['comment'] ) ? (string) $context['comment'] : '';
 		$product = isset( $context['product_name'] ) ? (string) $context['product_name'] : '';

@@ -34,7 +34,7 @@ class AI_Client {
 	 * @param string                 $api_key        Gemini API key.
 	 * @param Build_Prompt_Interface $prompt_builder Prompt builder implementation.
 	 */
-	public function __construct( $api_key, Build_Prompt_Interface $prompt_builder ) {
+	public function __construct( string $api_key, Build_Prompt_Interface $prompt_builder ) {
 		$this->api_key        = $api_key;
 		$this->prompt_builder = $prompt_builder;
 	}
@@ -42,15 +42,15 @@ class AI_Client {
 	// build_prompt moved to Prompt_Builder via dependency injection.
 
 	/**
-     * Request a reply from the AI provider using a prepared prompt.
+	 * Request a reply from the AI provider using a prepared prompt.
 	 *
 	 * Note: This is a scaffold. Actual SDK integration will be implemented later.
 	 *
-     * @param string $prompt Prepared prompt string.
-     * @return string Raw AI response.
-     * @throws AI_Response_Failure When API key is missing or AI returns empty response.
+	 * @param string $prompt Prepared prompt string.
+	 * @return string Raw AI response.
+	 * @throws AI_Response_Failure When API key is missing or AI returns empty response.
 	 */
-    public function request_reply( $prompt ) {
+	public function request_reply( string $prompt ): string {
 		if ( empty( $this->api_key ) ) {
 			throw new AI_Response_Failure( 'Missing Gemini API key.' );
 		}
@@ -63,6 +63,6 @@ class AI_Client {
 			throw new AI_Response_Failure( 'AI returned an empty response.', 0, null, array( 'prompt' => wp_kses_post( $prompt ) ) );
 		}
 
-        return $reply;
+		return $reply;
 	}
 }

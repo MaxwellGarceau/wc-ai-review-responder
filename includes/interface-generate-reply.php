@@ -15,5 +15,5 @@ interface Generate_Reply_Interface {
 	 * @param string $ai_response Raw AI response string.
 	 * @return string Sanitized, validated reply.
 	 */
-	public function generate_reply( $ai_response );
+	public function generate_reply( string $ai_response ): string;
 }

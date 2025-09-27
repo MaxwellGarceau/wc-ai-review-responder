@@ -17,6 +17,42 @@ use WcAiReviewResponder\Exceptions\AI_Response_Failure;
  */
 class Ajax_Handler {
 	/**
+	 * @var Review_Handler
+	 */
+	private $review_handler;
+
+	/**
+	 * @var Build_Prompt_Interface
+	 */
+	private $prompt_builder;
+
+	/**
+	 * @var AI_Client
+	 */
+	private $ai_client;
+
+	/**
+	 * @var Generate_Reply_Interface
+	 */
+	private $reply_generator;
+
+    /**
+     * Constructor.
+     *
+     * Initializes dependencies used during the AJAX request lifecycle.
+     *
+     * @param Review_Handler           $review_handler  Review handler.
+     * @param Build_Prompt_Interface   $prompt_builder  Prompt builder.
+     * @param AI_Client                $ai_client       AI client.
+     * @param Generate_Reply_Interface $reply_generator Reply generator.
+     */
+	public function __construct( Review_Handler $review_handler, Build_Prompt_Interface $prompt_builder, AI_Client $ai_client, Generate_Reply_Interface $reply_generator ) {
+		$this->review_handler  = $review_handler;
+		$this->prompt_builder  = $prompt_builder;
+		$this->ai_client       = $ai_client;
+		$this->reply_generator = $reply_generator;
+	}
+	/**
 	 * Boot hooks.
 	 */
 	public function register() {
@@ -44,18 +80,10 @@ class Ajax_Handler {
 		}
 
 		try {
-			$review_handler = new Review_Handler();
-			$context        = $review_handler->get_review_context( $comment_id );
-
-            $api_key        = (string) getenv( 'GEMINI_API_KEY' );
-            $prompt_builder = new Prompt_Builder();
-            $prompt         = $prompt_builder->build_prompt( $context );
-
-            $ai_client      = new AI_Client( $api_key, $prompt_builder );
-            $ai_response    = $ai_client->request_reply( $prompt );
-
-            $reply_generator = new Reply_Generate();
-            $reply           = $reply_generator->generate_reply( $ai_response );
+			$context     = $this->review_handler->get_review_context( $comment_id );
+			$prompt      = $this->prompt_builder->build_prompt( $context );
+			$ai_response = $this->ai_client->request_reply( $prompt );
+			$reply       = $this->reply_generator->generate_reply( $ai_response );
 
 			wp_send_json_success( array( 'reply' => $reply ) );
 		} catch ( Invalid_Review_Exception $e ) {

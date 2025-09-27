@@ -15,5 +15,5 @@ interface Build_Prompt_Interface {
 	 * @param array{rating:int,comment:string,product_name:string} $context Review context shape.
 	 * @return string Prompt to send to the AI provider.
 	 */
-	public function build_prompt( $context );
+	public function build_prompt( array $context ): string;
 }

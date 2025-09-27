@@ -23,6 +23,11 @@ require_once plugin_dir_path( __FILE__ ) . '/vendor/autoload_packages.php';
 
 use WcAiReviewResponder\Admin\Setup;
 use WcAiReviewResponder\Ajax_Handler;
+use WcAiReviewResponder\Review_Handler;
+use WcAiReviewResponder\Prompt_Builder;
+use WcAiReviewResponder\AI_Client;
+use WcAiReviewResponder\Reply_Generate;
+use DI\ContainerBuilder;
 
 // phpcs:disable WordPress.Files.FileName
 
@@ -68,7 +73,26 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 		public function __construct() {
 			if ( is_admin() ) {
 				new Setup();
-				$ajax = new Ajax_Handler();
+
+				$builder = new ContainerBuilder();
+				$builder->useAnnotations( false );
+				$builder->addDefinitions(
+					array(
+						Review_Handler::class        => \DI\autowire( Review_Handler::class ),
+						Prompt_Builder::class       => \DI\autowire( Prompt_Builder::class ),
+						Reply_Generate::class       => \DI\autowire( Reply_Generate::class ),
+						WcAiReviewResponder\Build_Prompt_Interface::class   => \DI\get( Prompt_Builder::class ),
+						WcAiReviewResponder\Generate_Reply_Interface::class => \DI\get( Reply_Generate::class ),
+						AI_Client::class            => \DI\factory( function ( $c ) {
+							$api_key = (string) getenv( 'GEMINI_API_KEY' );
+							return new AI_Client( $api_key, $c->get( Prompt_Builder::class ) );
+						} ),
+						Ajax_Handler::class          => \DI\autowire( Ajax_Handler::class ),
+					)
+				);
+				$container = $builder->build();
+
+				$ajax = $container->get( Ajax_Handler::class );
 				$ajax->register();
 			}
 		}
