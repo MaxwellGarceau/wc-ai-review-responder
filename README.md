@@ -19,3 +19,44 @@ wp-env start
 ```
 
 Visit the added page at http://localhost:8888/wp-admin/admin.php?page=wc-admin&path=%2Fexample.
+
+## Linting (PHP CodeSniffer)
+
+This project uses PHPCS with the WordPress and WooCommerce standards.
+
+### Install dependencies
+
+```
+composer install
+```
+
+### Run linters
+
+-   PHP:
+
+```
+npm run lint:php
+```
+
+-   Auto-fix PHP issues where possible:
+
+```
+npm run fix:php
+```
+
+PHPCS configuration lives in `phpcs.xml.dist` and includes:
+
+-   `WooCommerce-Core`
+-   `WordPress`
+
+Excluded directories: `vendor/`, `node_modules/`, `build/`, `tests/`.
+
+## Environment Variables
+
+Create a `.env` file in the project root based on `.env.example`:
+
+```
+GEMINI_API_KEY=your_api_key_here
+```
+
+The plugin loads environment variables using `vlucas/phpdotenv`. Ensure `.env` is not committed (already ignored in `.gitignore`).
