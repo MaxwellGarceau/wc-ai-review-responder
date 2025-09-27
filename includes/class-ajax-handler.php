@@ -47,9 +47,15 @@ class Ajax_Handler {
 			$review_handler = new Review_Handler();
 			$context        = $review_handler->get_review_context( $comment_id );
 
-			$api_key   = (string) getenv( 'GEMINI_API_KEY' );
-			$ai_client = new AI_Client( $api_key );
-			$reply     = $ai_client->generate_reply( $context );
+            $api_key        = (string) getenv( 'GEMINI_API_KEY' );
+            $prompt_builder = new Prompt_Builder();
+            $prompt         = $prompt_builder->build_prompt( $context );
+
+            $ai_client      = new AI_Client( $api_key, $prompt_builder );
+            $ai_response    = $ai_client->request_reply( $prompt );
+
+            $reply_generator = new Reply_Generate();
+            $reply           = $reply_generator->generate_reply( $ai_response );
 
 			wp_send_json_success( array( 'reply' => $reply ) );
 		} catch ( Invalid_Review_Exception $e ) {

@@ -11,7 +11,7 @@ namespace WcAiReviewResponder;
 use WcAiReviewResponder\Exceptions\AI_Response_Failure;
 
 /**
- * AI client class for interacting with the Gemini API.
+ * AI client class that sends prompts to the Gemini API and returns raw responses.
  */
 class AI_Client {
 	/**
@@ -22,49 +22,38 @@ class AI_Client {
 	private $api_key;
 
 	/**
+	 * Prompt builder dependency.
+	 *
+	 * @var Build_Prompt_Interface
+	 */
+	private $prompt_builder;
+
+	/**
 	 * Constructor.
 	 *
-	 * @param string $api_key Gemini API key.
+	 * @param string                 $api_key        Gemini API key.
+	 * @param Build_Prompt_Interface $prompt_builder Prompt builder implementation.
 	 */
-	public function __construct( $api_key ) {
-		$this->api_key = $api_key;
+	public function __construct( $api_key, Build_Prompt_Interface $prompt_builder ) {
+		$this->api_key        = $api_key;
+		$this->prompt_builder = $prompt_builder;
 	}
 
-	/**
-	 * Build a prompt using review and product context.
-	 *
-	 * @param array<string,mixed> $context Review context data.
-	 * @return string Generated prompt.
-	 */
-	public function build_prompt( $context ) {
-		$rating  = isset( $context['rating'] ) ? (int) $context['rating'] : 0;
-		$comment = isset( $context['comment'] ) ? (string) $context['comment'] : '';
-		$product = isset( $context['product_name'] ) ? (string) $context['product_name'] : '';
-
-		$prompt  = 'Write a short, friendly, brand-safe reply to this product review.';
-		$prompt .= "\nProduct: {$product}";
-		$prompt .= "\nRating: {$rating}/5";
-		$prompt .= "\nReview: {$comment}";
-		$prompt .= "\nReply:";
-
-		return $prompt;
-	}
+	// build_prompt moved to Prompt_Builder via dependency injection.
 
 	/**
-	 * Generate a reply using the AI provider.
+     * Request a reply from the AI provider using a prepared prompt.
 	 *
 	 * Note: This is a scaffold. Actual SDK integration will be implemented later.
 	 *
-	 * @param array<string,mixed> $context Review context data.
-	 * @return string Generated AI reply.
-	 * @throws AI_Response_Failure When API key is missing or AI returns empty response.
+     * @param string $prompt Prepared prompt string.
+     * @return string Raw AI response.
+     * @throws AI_Response_Failure When API key is missing or AI returns empty response.
 	 */
-	public function generate_reply( $context ) {
+    public function request_reply( $prompt ) {
 		if ( empty( $this->api_key ) ) {
 			throw new AI_Response_Failure( 'Missing Gemini API key.' );
 		}
-
-		$prompt = $this->build_prompt( $context );
 
 		// Placeholder: integration with Gemini SDK goes here.
 		// For MVP scaffolding, return a deterministic stub for visibility.
@@ -74,6 +63,6 @@ class AI_Client {
 			throw new AI_Response_Failure( 'AI returned an empty response.', 0, null, array( 'prompt' => wp_kses_post( $prompt ) ) );
 		}
 
-		return wp_kses_post( $reply );
+        return $reply;
 	}
 }
