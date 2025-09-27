@@ -12,7 +12,13 @@
 		"packages-update": "wp-scripts packages-update",
 		"plugin-zip": "wp-scripts plugin-zip",
 		"start": "wp-scripts start --blocks-manifest",
-		"postinstall": "composer install"
+		"postinstall": "composer install",
+		"dev": "wp-env start",
+		"dev:stop": "wp-env stop",
+		"dev:reset": "wp-env clean all && wp-env start",
+		"logs": "wp-env logs",
+		"cli": "wp-env run cli wp",
+		"test": "wp-env run cli wp test"
 	},
 	"dependencies": {
 		"@woocommerce/components": "latest",
