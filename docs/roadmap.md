@@ -144,24 +144,30 @@ WP_CLI::add_command('ai-review test-sample', ['WC_AI_Review_CLI_Tester', 'test_s
 ### File Structure
 ```
 /wc-ai-review-responder/
-├── wc-ai-review-responder.php          # Main plugin file
-├── composer.json                        # Dependencies (Gemini SDK)
-├── .env.example                         # API key template
-├── includes/
-│   ├── class-ai-client.php             # Gemini API handler
-│   ├── class-review-handler.php        # WC data extraction + validation
-│   ├── class-ajax-handler.php          # AJAX processing
-│   └── exceptions/
-│       ├── class-invalid-review-exception.php
-│       ├── class-ai-response-failure.php
-│       └── class-invalid-arguments-exception.php
-├── assets/
-│   ├── js/
-│   │   └── admin.js                    # UI interactions + error modals
-│   └── css/
-│       └── admin.css                   # Loading states + modal styles
-└── languages/                          # Translation files
-    └── wc-ai-review-responder.pot
+├── 🎯 MAIN PLUGIN FILES
+│   ├── 📄 wc-ai-review-responder.php     ════► Main plugin file (already exists)
+│   ├── 📄 composer.json                  ════► Add Gemini SDK dependency
+│   └── 📄 .env.example                   ════► Add this file
+│
+├── 📁 includes/                         ════► PHP CLASSES (ADD THESE)
+│   ├── 📄 class-ai-client.php           ════► Gemini API handler
+│   ├── 📄 class-review-handler.php      ════► WC data extraction
+│   ├── 📄 class-ajax-handler.php        ════► AJAX processing
+│   └── 📁 exceptions/                   ════► Custom exceptions
+│       ├── 📄 class-invalid-review-exception.php
+│       ├── 📄 class-ai-response-failure.php
+│       └── 📄 class-invalid-arguments-exception.php
+│
+├── 📁 src/                              ════► ADMIN ASSETS (MODIFY EXISTING)
+│   ├── 📄 index.js                      ════► Change to admin JS (button, modals, AJAX)
+│   └── 📄 index.scss                    ════► Change to admin CSS (loading states, modals)
+│
+├── 📁 build/                            ════► COMPILED ASSETS (AUTO-GENERATED)
+│   ├── 📄 index.js                      ════► Compiled admin JS
+│   └── 📄 index.css                     ════► Compiled admin CSS
+│
+└── 📁 docs/                             ════► DOCUMENTATION
+    └── 📄 roadmap.md                    ════► Your roadmap
 ```
 
 ### Class Responsibilities
@@ -244,4 +250,4 @@ add_action('wp_ajax_generate_ai_response', $callback);
 
 ---
 
-*This document will be updated as development progresses. Last updated: 2024-12-19*
+*This document will be updated as development progresses. Last updated: 2025-09-27*
