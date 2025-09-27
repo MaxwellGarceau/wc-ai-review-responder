@@ -1,0 +1,8 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+- This project is a WooCommerce extension. We use wp-coding-standards with woocommerce-sniffs. Always respect these coding standards.
+- After making changes run `composer phpcs` to to verify that the coding standards are upheld.
