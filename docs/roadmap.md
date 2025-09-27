@@ -141,50 +141,6 @@ WP_CLI::add_command('ai-review test-sample', ['WC_AI_Review_CLI_Tester', 'test_s
 
 ## Plugin Architecture
 
-### File Structure
-```
-/wc-ai-review-responder/
-├── wc-ai-review-responder.php          # Main plugin file
-├── composer.json                        # Dependencies (Gemini SDK)
-├── .env.example                         # API key template
-├── includes/
-│   ├── class-ai-client.php             # Gemini API handler
-│   ├── class-review-handler.php        # WC data extraction + validation
-│   ├── class-ajax-handler.php          # AJAX processing
-│   └── exceptions/
-│       ├── class-invalid-review-exception.php
-│       ├── class-ai-response-failure.php
-│       └── class-invalid-arguments-exception.php
-├── assets/
-│   ├── js/
-│   │   └── admin.js                    # UI interactions + error modals
-│   └── css/
-│       └── admin.css                   # Loading states + modal styles
-└── languages/                          # Translation files
-    └── wc-ai-review-responder.pot
-```
-
-### Class Responsibilities
-
-#### ReviewHandler
-- Extracts review data from WordPress database
-- Validates required fields (rating + comment)
-- Returns product context for prompts
-- Throws `InvalidReviewException` for incomplete data
-
-#### AIClient 
-- Manages Gemini API connection
-- Builds context-aware prompts
-- Handles API errors + rate limiting
-- Validates + sanitizes AI responses
-- Throws `AI_Response_Failure` for API issues
-
-#### AjaxHandler
-- Processes "Generate AI Response" requests
-- Validates nonces + user capabilities
-- Coordinates ReviewHandler + AIClient
-- Returns JSON responses for frontend
-
 ### Data Flow
 ```
 Frontend (admin.js)
@@ -244,4 +200,4 @@ add_action('wp_ajax_generate_ai_response', $callback);
 
 ---
 
-*This document will be updated as development progresses. Last updated: 2024-12-19*
+*This document will be updated as development progresses. Last updated: 2025-09-27*

@@ -22,8 +22,15 @@ if ( ! defined( 'MAIN_PLUGIN_FILE' ) ) {
 require_once plugin_dir_path( __FILE__ ) . '/vendor/autoload_packages.php';
 
 use WcAiReviewResponder\Admin\Setup;
+use WcAiReviewResponder\Endpoints\Ajax_Handler;
+use WcAiReviewResponder\Models\Review_Model;
+use WcAiReviewResponder\LLM\Prompt_Builder;
+use WcAiReviewResponder\Clients\AI_Client;
+use WcAiReviewResponder\Validation\Validate_AI_Response;
+use DI\ContainerBuilder;
 
 // phpcs:disable WordPress.Files.FileName
+// phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed
 
 /**
  * WooCommerce fallback notice.
@@ -49,15 +56,15 @@ function wc_ai_review_responder_activate() {
 	}
 }
 
-if ( ! class_exists( 'wc_ai_review_responder' ) ) :
+if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 	/**
-	 * The wc_ai_review_responder class.
+	 * The Wc_Ai_Review_Responder class.
 	 */
-	class wc_ai_review_responder {
+	class Wc_Ai_Review_Responder {
 		/**
 		 * This class instance.
 		 *
-		 * @var \wc_ai_review_responder single instance of this class.
+		 * @var \Wc_Ai_Review_Responder single instance of this class.
 		 */
 		private static $instance;
 
@@ -67,6 +74,20 @@ if ( ! class_exists( 'wc_ai_review_responder' ) ) :
 		public function __construct() {
 			if ( is_admin() ) {
 				new Setup();
+
+				$builder = new ContainerBuilder();
+				$builder->useAnnotations( false );
+				$builder->addDefinitions(
+					array(
+						WcAiReviewResponder\LLM\Build_Prompt_Interface::class => \DI\get( Prompt_Builder::class ),
+						WcAiReviewResponder\Validation\Validate_AI_Response_Interface::class => \DI\get( Validate_AI_Response::class ),
+						\WcAiReviewResponder\Clients\AI_Client::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY' ) ),
+					)
+				);
+				$container = $builder->build();
+
+				$ajax = $container->get( Ajax_Handler::class );
+				$ajax->register();
 			}
 		}
 
@@ -89,7 +110,7 @@ if ( ! class_exists( 'wc_ai_review_responder' ) ) :
 		 *
 		 * Ensures only one instance can be loaded.
 		 *
-		 * @return \wc_ai_review_responder
+		 * @return \Wc_Ai_Review_Responder
 		 */
 		public static function instance() {
 
@@ -110,13 +131,18 @@ add_action( 'plugins_loaded', 'wc_ai_review_responder_init', 10 );
  * @since 0.1.0
  */
 function wc_ai_review_responder_init() {
-	load_plugin_textdomain( 'wc_ai_review_responder', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
+	load_plugin_textdomain( 'wc_ai_review_responder', false, plugin_basename( __DIR__ ) . '/languages' );
+
+	// Load environment variables from .env if available.
+	if ( class_exists( '\\Dotenv\\Dotenv' ) ) {
+		$dotenv = \Dotenv\Dotenv::createImmutable( __DIR__ );
+		$dotenv->safeLoad();
+	}
 
 	if ( ! class_exists( 'WooCommerce' ) ) {
 		add_action( 'admin_notices', 'wc_ai_review_responder_missing_wc_notice' );
 		return;
 	}
 
-	wc_ai_review_responder::instance();
-
+	Wc_Ai_Review_Responder::instance();
 }

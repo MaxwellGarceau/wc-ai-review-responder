@@ -1,9 +1,15 @@
 <?php
+/**
+ * Admin setup functionality for WC AI Review Responder.
+ *
+ * @package WcAiReviewResponder
+ * @since   1.0.0
+ */
 
 namespace WcAiReviewResponder\Admin;
 
 /**
- * WcAiReviewResponder Setup Class
+ * Admin setup class for WC AI Review Responder.
  */
 class Setup {
 	/**
