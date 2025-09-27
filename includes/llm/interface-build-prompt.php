@@ -6,7 +6,7 @@
  * @since   1.0.0
  */
 
-namespace WcAiReviewResponder;
+namespace WcAiReviewResponder\LLM;
 
 interface Build_Prompt_Interface {
 	/**

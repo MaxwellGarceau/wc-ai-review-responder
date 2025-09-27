@@ -17,36 +17,44 @@ use WcAiReviewResponder\Exceptions\AI_Response_Failure;
  */
 class Ajax_Handler {
 	/**
+	 * Review handler dependency.
+	 *
 	 * @var Review_Handler
 	 */
 	private $review_handler;
 
 	/**
-	 * @var Build_Prompt_Interface
+	 * Prompt builder dependency.
+	 *
+	 * @var \WcAiReviewResponder\LLM\Build_Prompt_Interface
 	 */
 	private $prompt_builder;
 
 	/**
+	 * AI client dependency.
+	 *
 	 * @var AI_Client
 	 */
 	private $ai_client;
 
 	/**
+	 * Reply generator dependency.
+	 *
 	 * @var Generate_Reply_Interface
 	 */
 	private $reply_generator;
 
-    /**
-     * Constructor.
-     *
-     * Initializes dependencies used during the AJAX request lifecycle.
-     *
-     * @param Review_Handler           $review_handler  Review handler.
-     * @param Build_Prompt_Interface   $prompt_builder  Prompt builder.
-     * @param AI_Client                $ai_client       AI client.
-     * @param Generate_Reply_Interface $reply_generator Reply generator.
-     */
-	public function __construct( Review_Handler $review_handler, Build_Prompt_Interface $prompt_builder, AI_Client $ai_client, Generate_Reply_Interface $reply_generator ) {
+	/**
+	 * Constructor.
+	 *
+	 * Initializes dependencies used during the AJAX request lifecycle.
+	 *
+	 * @param Review_Handler                                  $review_handler  Review handler.
+	 * @param \WcAiReviewResponder\LLM\Build_Prompt_Interface $prompt_builder  Prompt builder.
+	 * @param AI_Client                                       $ai_client       AI client.
+	 * @param Generate_Reply_Interface                        $reply_generator Reply generator.
+	 */
+	public function __construct( Review_Handler $review_handler, \WcAiReviewResponder\LLM\Build_Prompt_Interface $prompt_builder, AI_Client $ai_client, Generate_Reply_Interface $reply_generator ) {
 		$this->review_handler  = $review_handler;
 		$this->prompt_builder  = $prompt_builder;
 		$this->ai_client       = $ai_client;
