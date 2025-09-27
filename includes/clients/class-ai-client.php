@@ -6,7 +6,7 @@
  * @since   1.0.0
  */
 
-namespace WcAiReviewResponder\API;
+namespace WcAiReviewResponder\Clients;
 
 use WcAiReviewResponder\Exceptions\AI_Response_Failure;
 

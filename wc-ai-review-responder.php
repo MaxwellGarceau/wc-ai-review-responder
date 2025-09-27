@@ -22,10 +22,10 @@ if ( ! defined( 'MAIN_PLUGIN_FILE' ) ) {
 require_once plugin_dir_path( __FILE__ ) . '/vendor/autoload_packages.php';
 
 use WcAiReviewResponder\Admin\Setup;
-use WcAiReviewResponder\API\Ajax_Handler;
+use WcAiReviewResponder\Endpoints\Ajax_Handler;
 use WcAiReviewResponder\Models\Review_Model;
 use WcAiReviewResponder\LLM\Prompt_Builder;
-use WcAiReviewResponder\API\AI_Client;
+use WcAiReviewResponder\Clients\AI_Client;
 use WcAiReviewResponder\Validation\Validate_AI_Response;
 use DI\ContainerBuilder;
 
@@ -81,7 +81,7 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 					array(
 						WcAiReviewResponder\LLM\Build_Prompt_Interface::class => \DI\get( Prompt_Builder::class ),
 						WcAiReviewResponder\Validation\Validate_AI_Response_Interface::class => \DI\get( Validate_AI_Response::class ),
-						\WcAiReviewResponder\API\AI_Client::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY' ), \DI\get( WcAiReviewResponder\LLM\Build_Prompt_Interface::class ) ),
+						\WcAiReviewResponder\Clients\AI_Client::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY' ), \DI\get( WcAiReviewResponder\LLM\Build_Prompt_Interface::class ) ),
 					)
 				);
 				$container = $builder->build();

@@ -6,7 +6,7 @@
  * @since   1.0.0
  */
 
-namespace WcAiReviewResponder\API;
+namespace WcAiReviewResponder\Endpoints;
 
 use WcAiReviewResponder\Exceptions\Invalid_Arguments_Exception;
 use WcAiReviewResponder\Exceptions\Invalid_Review_Exception;
@@ -33,7 +33,7 @@ class Ajax_Handler {
 	/**
 	 * AI client dependency.
 	 *
-	 * @var \WcAiReviewResponder\API\AI_Client
+	 * @var \WcAiReviewResponder\Clients\AI_Client
 	 */
 	private $ai_client;
 
@@ -51,10 +51,10 @@ class Ajax_Handler {
 	 *
 	 * @param \WcAiReviewResponder\Models\Review_Model                       $review_handler  Review handler.
 	 * @param \WcAiReviewResponder\LLM\Build_Prompt_Interface                $prompt_builder  Prompt builder.
-	 * @param \WcAiReviewResponder\API\AI_Client                             $ai_client       AI client.
+	 * @param \WcAiReviewResponder\Clients\AI_Client                         $ai_client       AI client.
 	 * @param \WcAiReviewResponder\Validation\Validate_AI_Response_Interface $response_validator Response validator.
 	 */
-	public function __construct( \WcAiReviewResponder\Models\Review_Model $review_handler, \WcAiReviewResponder\LLM\Build_Prompt_Interface $prompt_builder, \WcAiReviewResponder\API\AI_Client $ai_client, \WcAiReviewResponder\Validation\Validate_AI_Response_Interface $response_validator ) {
+	public function __construct( \WcAiReviewResponder\Models\Review_Model $review_handler, \WcAiReviewResponder\LLM\Build_Prompt_Interface $prompt_builder, \WcAiReviewResponder\Clients\AI_Client $ai_client, \WcAiReviewResponder\Validation\Validate_AI_Response_Interface $response_validator ) {
 		$this->review_handler     = $review_handler;
 		$this->prompt_builder     = $prompt_builder;
 		$this->ai_client          = $ai_client;
