@@ -5,10 +5,6 @@
  * @package WcAiReviewResponder
  */
 
-// Manually load required files
-require_once dirname( dirname( __FILE__ ) ) . '/includes/RateLimiting/RateLimiter.php';
-require_once dirname( dirname( __FILE__ ) ) . '/includes/exceptions/RateLimitExceededException.php';
-
 /**
  * Test the RateLimiter class.
  */
