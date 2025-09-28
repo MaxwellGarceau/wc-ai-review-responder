@@ -6,7 +6,7 @@
  * @since   1.0.0
  */
 
-namespace WcAiReviewResponder;
+namespace WcAiReviewResponder\Core;
 
 use DI\ContainerBuilder;
 use WcAiReviewResponder\LLM\Prompt_Builder;

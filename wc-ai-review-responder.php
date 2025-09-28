@@ -28,7 +28,7 @@ use WcAiReviewResponder\LLM\Prompt_Builder;
 use WcAiReviewResponder\Clients\AI_Client;
 use WcAiReviewResponder\Validation\Validate_AI_Response;
 use WcAiReviewResponder\CLI\AiReviewCli;
-use WcAiReviewResponder\Container_Factory;
+use WcAiReviewResponder\Core\Container_Factory;
 
 // phpcs:disable WordPress.Files.FileName
 // phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed
