@@ -71,20 +71,10 @@ class AiInputSanitizer {
 		$text = preg_replace( '/[^\P{C}\n\t]+/u', '', $text );
 
 		// Optional lightweight PII redaction.
-		// Example: "Contact me at john@example.com or visit https://example.com" becomes
-		// "Contact me at [redacted-email] or visit [redacted-url]".
-		$text = preg_replace( '/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i', '[redacted-email]', $text );
-		$text = preg_replace( '/https?:\/\/\S+/i', '[redacted-url]', $text );
+		$text = $this->redact_pii( $text );
 
 		// Enforce a conservative character cap to control token usage.
-		$max_chars = $this->get_max_chars();
-		if ( function_exists( 'mb_strlen' ) && function_exists( 'mb_substr' ) ) {
-			if ( mb_strlen( $text, 'UTF-8' ) > $max_chars ) {
-				$text = mb_substr( $text, 0, $max_chars, 'UTF-8' ) . '…';
-			}
-		} elseif ( strlen( $text ) > $max_chars ) {
-			$text = substr( $text, 0, $max_chars ) . '…';
-		}
+		$text = $this->truncate_text( $text );
 
 		return $text;
 	}
@@ -143,5 +133,45 @@ class AiInputSanitizer {
 		 * @param int $max_chars Maximum character limit. Default 8000.
 		 */
 		return apply_filters( 'wc_ai_review_responder_max_chars', self::DEFAULT_MAX_CHARS );
+	}
+
+	/**
+	 * Redact personally identifiable information from text.
+	 *
+	 * Removes email addresses and URLs to protect user privacy when sending
+	 * data to AI providers.
+	 *
+	 * @param string $text Input text.
+	 * @return string Text with PII redacted.
+	 */
+	private function redact_pii( string $text ): string {
+		// Example: "Contact me at john@example.com or visit https://example.com" becomes
+		// "Contact me at [redacted-email] or visit [redacted-url]".
+		$text = preg_replace( '/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i', '[redacted-email]', $text );
+		$text = preg_replace( '/https?:\/\/\S+/i', '[redacted-url]', $text );
+
+		return $text;
+	}
+
+	/**
+	 * Truncate text to the maximum character limit.
+	 *
+	 * Uses multibyte functions when available for proper UTF-8 handling.
+	 * Adds ellipsis when text is truncated.
+	 *
+	 * @param string $text Input text.
+	 * @return string Truncated text with ellipsis if needed.
+	 */
+	private function truncate_text( string $text ): string {
+		$max_chars = $this->get_max_chars();
+		if ( function_exists( 'mb_strlen' ) && function_exists( 'mb_substr' ) ) {
+			if ( mb_strlen( $text, 'UTF-8' ) > $max_chars ) {
+				$text = mb_substr( $text, 0, $max_chars, 'UTF-8' ) . '…';
+			}
+		} elseif ( strlen( $text ) > $max_chars ) {
+			$text = substr( $text, 0, $max_chars ) . '…';
+		}
+
+		return $text;
 	}
 }
