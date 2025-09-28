@@ -18,6 +18,12 @@ namespace WcAiReviewResponder\Validation;
  */
 class ValidateAiInput {
 	/**
+	 * Maximum character limit for AI input text to control token usage.
+	 *
+	 * @var int
+	 */
+	private const MAX_CHARS = 8000;
+	/**
 	 * Validate and normalize the review input.
 	 *
 	 * Expects an associative array with the following keys:
@@ -63,29 +69,25 @@ class ValidateAiInput {
 	 * @return string Cleaned text.
 	 */
 	private function normalize_text_for_ai( string $text ): string {
-		// Use WordPress functions for initial sanitization.
-		$text = strip_shortcodes( $text );
-		$text = wp_strip_all_tags( $text, false );
-		$text = wp_specialchars_decode( $text, ENT_QUOTES );
-
-		// Use WordPress function to normalize whitespace.
-		$text = normalize_whitespace( $text );
+		$text = $this->sanitize_basic_text( $text, false );
 
 		// Remove control characters except newlines and tabs.
+		// Example: "Hello\x00World\x01\x02Test" becomes "HelloWorldTest".
 		$text = preg_replace( '/[^\P{C}\n\t]+/u', '', $text );
 
 		// Optional lightweight PII redaction.
+		// Example: "Contact me at john@example.com or visit https://example.com" becomes
+		// "Contact me at [redacted-email] or visit [redacted-url]".
 		$text = preg_replace( '/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i', '[redacted-email]', $text );
 		$text = preg_replace( '/https?:\/\/\S+/i', '[redacted-url]', $text );
 
 		// Enforce a conservative character cap to control token usage.
-		$max_chars = 8000;
 		if ( function_exists( 'mb_strlen' ) && function_exists( 'mb_substr' ) ) {
-			if ( mb_strlen( $text, 'UTF-8' ) > $max_chars ) {
-				$text = mb_substr( $text, 0, $max_chars, 'UTF-8' ) . '…';
+			if ( mb_strlen( $text, 'UTF-8' ) > self::MAX_CHARS ) {
+				$text = mb_substr( $text, 0, self::MAX_CHARS, 'UTF-8' ) . '…';
 			}
-		} elseif ( strlen( $text ) > $max_chars ) {
-			$text = substr( $text, 0, $max_chars ) . '…';
+		} elseif ( strlen( $text ) > self::MAX_CHARS ) {
+			$text = substr( $text, 0, self::MAX_CHARS ) . '…';
 		}
 
 		return $text;
@@ -99,14 +101,30 @@ class ValidateAiInput {
 	 * @return string Clean inline text.
 	 */
 	private function normalize_inline_text( string $text ): string {
-		// Use WordPress functions for sanitization.
+		$text = $this->sanitize_basic_text( $text, true );
+		return trim( $text );
+	}
+
+	/**
+	 * Basic text sanitization: remove shortcodes, HTML tags, decode entities, and normalize whitespace.
+	 *
+	 * @param string $text        Input text.
+	 * @param bool   $remove_line_breaks Whether to remove line breaks (true for inline text).
+	 * @return string Sanitized text.
+	 */
+	private function sanitize_basic_text( string $text, bool $remove_line_breaks = false ): string {
+		// Remove shortcodes.
 		$text = strip_shortcodes( $text );
-		$text = wp_strip_all_tags( $text, true );
+
+		// Remove HTML tags.
+		$text = wp_strip_all_tags( $text, $remove_line_breaks );
+
+		// Decode HTML entities.
 		$text = wp_specialchars_decode( $text, ENT_QUOTES );
 
-		// Use WordPress function to normalize whitespace.
+		// Normalize whitespace.
 		$text = normalize_whitespace( $text );
 
-		return trim( $text );
+		return $text;
 	}
 }
