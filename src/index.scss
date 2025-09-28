@@ -1,3 +1,157 @@
 h1 {
 	background-color: #ffd700;
 }
+
+/* Custom Reply Box Styling - WordPress Admin Theme Compatible */
+.wc-ai-custom-reply-box {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	margin: 10px 0;
+	padding: 0;
+	position: relative;
+	z-index: 10;
+}
+
+.wc-ai-reply-content {
+	padding: 0;
+}
+
+.wc-ai-reply-header {
+	background: #f6f7f7;
+	border-bottom: 1px solid #c3c4c7;
+	border-radius: 4px 4px 0 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px 16px;
+	margin: 0;
+}
+
+.wc-ai-reply-header h4 {
+	color: #1d2327;
+	font-size: 14px;
+	font-weight: 600;
+	margin: 0;
+	padding: 0;
+}
+
+.wc-ai-reply-close {
+	background: none;
+	border: none;
+	color: #646970;
+	cursor: pointer;
+	font-size: 20px;
+	font-weight: bold;
+	height: 24px;
+	line-height: 1;
+	padding: 0;
+	width: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 3px;
+	transition: all 0.15s ease-in-out;
+}
+
+.wc-ai-reply-close:hover {
+	background: #d63638;
+	color: #fff;
+}
+
+.wc-ai-reply-form {
+	padding: 16px;
+}
+
+.wc-ai-reply-textarea {
+	background: #fff;
+	border: 1px solid #8c8f94;
+	border-radius: 3px;
+	box-shadow: 0 0 0 transparent;
+	color: #2c3338;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	font-size: 14px;
+	line-height: 1.4;
+	margin: 0 0 12px 0;
+	padding: 8px 12px;
+	resize: vertical;
+	width: 100%;
+	box-sizing: border-box;
+	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.wc-ai-reply-textarea:focus {
+	border-color: #2271b1;
+	box-shadow: 0 0 0 1px #2271b1;
+	outline: 2px solid transparent;
+}
+
+.wc-ai-reply-textarea::placeholder {
+	color: #646970;
+}
+
+.wc-ai-reply-actions {
+	display: flex;
+	gap: 8px;
+	justify-content: flex-end;
+}
+
+.wc-ai-reply-actions .button {
+	background: #f6f7f7;
+	border: 1px solid #c3c4c7;
+	border-radius: 3px;
+	color: #2c3338;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 13px;
+	font-weight: 400;
+	height: 36px;
+	line-height: 2.15384615;
+	margin: 0;
+	padding: 0 12px;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: all 0.15s ease-in-out;
+}
+
+.wc-ai-reply-actions .button:hover {
+	background: #f0f0f1;
+	border-color: #8c8f94;
+	color: #1d2327;
+}
+
+.wc-ai-reply-actions .button-primary {
+	background: #2271b1;
+	border-color: #2271b1;
+	color: #fff;
+}
+
+.wc-ai-reply-actions .button-primary:hover {
+	background: #135e96;
+	border-color: #135e96;
+	color: #fff;
+}
+
+.wc-ai-reply-actions .button:focus {
+	border-color: #2271b1;
+	box-shadow: 0 0 0 1px #2271b1;
+	outline: 2px solid transparent;
+}
+
+/* Animation for smooth show/hide */
+.wc-ai-custom-reply-box {
+	transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 782px) {
+	.wc-ai-reply-actions {
+		flex-direction: column;
+	}
+	
+	.wc-ai-reply-actions .button {
+		width: 100%;
+		justify-content: center;
+	}
+}
