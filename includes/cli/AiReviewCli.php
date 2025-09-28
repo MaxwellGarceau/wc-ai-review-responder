@@ -29,7 +29,7 @@ class AiReviewCli {
 	/**
 	 * Prompt builder dependency.
 	 *
-	 * @var \WcAiReviewResponder\LLM\BuildPromptInterface
+	 * @var \WcAiReviewResponder\LLM\PromptBuilder
 	 */
 	private $prompt_builder;
 
@@ -43,7 +43,7 @@ class AiReviewCli {
 	/**
 	 * Response validator dependency.
 	 *
-	 * @var \WcAiReviewResponder\Validation\ValidateAiResponseInterface
+	 * @var \WcAiReviewResponder\Validation\ValidateAiResponse
 	 */
 	private $response_validator;
 
@@ -51,11 +51,11 @@ class AiReviewCli {
 	 * Constructor.
 	 *
 	 * @param ReviewModel                   $review_handler     Review handler.
-	 * @param BuildPromptInterface         $prompt_builder     Prompt builder.
+	 * @param PromptBuilder                 $prompt_builder     Prompt builder.
 	 * @param AiClient                      $ai_client          AI client.
-	 * @param ValidateAiResponseInterface $response_validator Response validator.
+	 * @param ValidateAiResponse            $response_validator Response validator.
 	 */
-	public function __construct( ReviewModel $review_handler, BuildPromptInterface $prompt_builder, AiClient $ai_client, ValidateAiResponseInterface $response_validator ) {
+	public function __construct( ReviewModel $review_handler, PromptBuilder $prompt_builder, AiClient $ai_client, ValidateAiResponse $response_validator ) {
 		$this->review_handler     = $review_handler;
 		$this->prompt_builder     = $prompt_builder;
 		$this->ai_client          = $ai_client;
