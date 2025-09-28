@@ -2,6 +2,9 @@
 /**
  * Admin review actions functionality for WC AI Review Responder.
  *
+ * Adds the "Generate AI Response" link to the comment row actions on
+ * /wp-admin/edit.php?post_type=product&page=product-reviews
+ *
  * @package WcAiReviewResponder
  * @since   1.0.0
  */
