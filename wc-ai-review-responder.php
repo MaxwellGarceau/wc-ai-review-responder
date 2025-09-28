@@ -27,7 +27,8 @@ use WcAiReviewResponder\Models\Review_Model;
 use WcAiReviewResponder\LLM\Prompt_Builder;
 use WcAiReviewResponder\Clients\AI_Client;
 use WcAiReviewResponder\Validation\Validate_AI_Response;
-use DI\ContainerBuilder;
+use WcAiReviewResponder\CLI\AiReviewCli;
+use WcAiReviewResponder\Core\Container_Factory;
 
 // phpcs:disable WordPress.Files.FileName
 // phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed
@@ -72,23 +73,46 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 		 * Constructor.
 		 */
 		public function __construct() {
+			$container = $this->build_container();
+
 			if ( is_admin() ) {
-				new Setup();
-
-				$builder = new ContainerBuilder();
-				$builder->useAnnotations( false );
-				$builder->addDefinitions(
-					array(
-						WcAiReviewResponder\LLM\Build_Prompt_Interface::class => \DI\get( Prompt_Builder::class ),
-						WcAiReviewResponder\Validation\Validate_AI_Response_Interface::class => \DI\get( Validate_AI_Response::class ),
-						\WcAiReviewResponder\Clients\AI_Client::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY' ) ),
-					)
-				);
-				$container = $builder->build();
-
-				$ajax = $container->get( Ajax_Handler::class );
-				$ajax->register();
+				$this->register_admin( $container );
 			}
+
+			if ( defined( 'WP_CLI' ) && WP_CLI ) {
+				$this->register_cli( $container );
+			}
+		}
+
+		/**
+		 * Build the dependency injection container.
+		 *
+		 * @return \DI\Container The configured container.
+		 */
+		private function build_container() {
+			$factory = new Container_Factory();
+			return $factory->build();
+		}
+
+		/**
+		 * Register admin-only hooks and setup.
+		 *
+		 * @param \DI\Container $container Dependency injection container.
+		 */
+		private function register_admin( $container ) {
+			new Setup();
+			$ajax = $container->get( Ajax_Handler::class );
+			$ajax->register();
+		}
+
+		/**
+		 * Register WP-CLI commands.
+		 *
+		 * @param \DI\Container $container Dependency injection container.
+		 */
+		private function register_cli( $container ) {
+			$cli = $container->get( AiReviewCli::class );
+			\WP_CLI::add_command( 'ai-review', $cli );
 		}
 
 		/**
