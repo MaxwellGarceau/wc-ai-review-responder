@@ -33,6 +33,7 @@
 		"@woocommerce/dependency-extraction-webpack-plugin": "latest",
 		"@woocommerce/eslint-plugin": "latest",
 		"@wordpress/prettier-config": "latest",
-		"@wordpress/scripts": "latest"
+		"@wordpress/scripts": "latest",
+		"typescript": "^5.9.2"
 	}
 }
