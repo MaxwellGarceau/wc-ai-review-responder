@@ -8,12 +8,12 @@
 
 namespace WcAiReviewResponder\CLI;
 
-use WcAiReviewResponder\Models\Review_Model;
-use WcAiReviewResponder\LLM\Build_Prompt_Interface;
-use WcAiReviewResponder\Clients\AI_Client;
-use WcAiReviewResponder\Validation\Validate_AI_Response_Interface;
-use WcAiReviewResponder\Exceptions\Invalid_Review_Exception;
-use WcAiReviewResponder\Exceptions\AI_Response_Failure;
+use WcAiReviewResponder\Models\ReviewModel;
+use WcAiReviewResponder\LLM\BuildPromptInterface;
+use WcAiReviewResponder\Clients\AiClient;
+use WcAiReviewResponder\Validation\ValidateAiResponseInterface;
+use WcAiReviewResponder\Exceptions\InvalidReviewException;
+use WcAiReviewResponder\Exceptions\AiResponseFailure;
 
 /**
  * WP-CLI command class to exercise the integration flow for generating replies.
@@ -22,40 +22,40 @@ class AiReviewCli {
 	/**
 	 * Review handler dependency.
 	 *
-	 * @var \WcAiReviewResponder\Models\Review_Model
+	 * @var \WcAiReviewResponder\Models\ReviewModel
 	 */
 	private $review_handler;
 
 	/**
 	 * Prompt builder dependency.
 	 *
-	 * @var \WcAiReviewResponder\LLM\Build_Prompt_Interface
+	 * @var \WcAiReviewResponder\LLM\BuildPromptInterface
 	 */
 	private $prompt_builder;
 
 	/**
 	 * AI client dependency.
 	 *
-	 * @var \WcAiReviewResponder\Clients\AI_Client
+	 * @var \WcAiReviewResponder\Clients\AiClient
 	 */
 	private $ai_client;
 
 	/**
 	 * Response validator dependency.
 	 *
-	 * @var \WcAiReviewResponder\Validation\Validate_AI_Response_Interface
+	 * @var \WcAiReviewResponder\Validation\ValidateAiResponseInterface
 	 */
 	private $response_validator;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Review_Model                   $review_handler     Review handler.
-	 * @param Build_Prompt_Interface         $prompt_builder     Prompt builder.
-	 * @param AI_Client                      $ai_client          AI client.
-	 * @param Validate_AI_Response_Interface $response_validator Response validator.
+	 * @param ReviewModel                   $review_handler     Review handler.
+	 * @param BuildPromptInterface         $prompt_builder     Prompt builder.
+	 * @param AiClient                      $ai_client          AI client.
+	 * @param ValidateAiResponseInterface $response_validator Response validator.
 	 */
-	public function __construct( Review_Model $review_handler, Build_Prompt_Interface $prompt_builder, AI_Client $ai_client, Validate_AI_Response_Interface $response_validator ) {
+	public function __construct( ReviewModel $review_handler, BuildPromptInterface $prompt_builder, AiClient $ai_client, ValidateAiResponseInterface $response_validator ) {
 		$this->review_handler     = $review_handler;
 		$this->prompt_builder     = $prompt_builder;
 		$this->ai_client          = $ai_client;
@@ -95,9 +95,9 @@ class AiReviewCli {
 			$reply       = $this->response_validator->validate( $ai_response );
 
 			\WP_CLI::success( $reply );
-		} catch ( Invalid_Review_Exception $e ) {
+		} catch ( InvalidReviewException $e ) {
 			\WP_CLI::error( $e->getMessage() );
-		} catch ( AI_Response_Failure $e ) {
+		} catch ( AiResponseFailure $e ) {
 			\WP_CLI::error( $e->getMessage() );
 		}
 	}

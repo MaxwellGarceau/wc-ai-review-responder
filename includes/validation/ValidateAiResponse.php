@@ -11,7 +11,7 @@ namespace WcAiReviewResponder\Validation;
 /**
  * Generates the final sanitized reply string from a raw AI response.
  */
-class Validate_AI_Response implements Validate_AI_Response_Interface {
+class ValidateAiResponse implements ValidateAiResponseInterface {
 	/**
 	 * Validate and sanitize the AI response string.
 	 *

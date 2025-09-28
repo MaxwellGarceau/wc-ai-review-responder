@@ -11,7 +11,7 @@ namespace WcAiReviewResponder\Exceptions;
 /**
  * Exception class thrown when the AI provider fails to return a valid response.
  */
-class AI_Response_Failure extends \RuntimeException {
+class AiResponseFailure extends \RuntimeException {
 	/**
 	 * Debug context information.
 	 *

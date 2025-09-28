@@ -8,7 +8,7 @@
 
 namespace WcAiReviewResponder\Validation;
 
-interface Validate_AI_Response_Interface {
+interface ValidateAiResponseInterface {
 	/**
 	 * Validate the AI response string.
 	 *

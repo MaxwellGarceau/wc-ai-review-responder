@@ -11,7 +11,7 @@ namespace WcAiReviewResponder\LLM;
 /**
  * Builds prompts from a well-defined review context.
  */
-class Prompt_Builder implements Build_Prompt_Interface {
+class PromptBuilder implements BuildPromptInterface {
 	/**
 	 * Build a prompt string from the provided context.
 	 *

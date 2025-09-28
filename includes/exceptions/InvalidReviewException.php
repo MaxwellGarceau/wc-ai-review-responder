@@ -11,5 +11,5 @@ namespace WcAiReviewResponder\Exceptions;
 /**
  * Exception class thrown when a review is missing required data (rating and/or comment).
  */
-class Invalid_Review_Exception extends \RuntimeException {
+class InvalidReviewException extends \RuntimeException {
 }

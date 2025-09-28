@@ -22,13 +22,13 @@ if ( ! defined( 'MAIN_PLUGIN_FILE' ) ) {
 require_once plugin_dir_path( __FILE__ ) . '/vendor/autoload_packages.php';
 
 use WcAiReviewResponder\Admin\Setup;
-use WcAiReviewResponder\Endpoints\Ajax_Handler;
-use WcAiReviewResponder\Models\Review_Model;
-use WcAiReviewResponder\LLM\Prompt_Builder;
-use WcAiReviewResponder\Clients\AI_Client;
-use WcAiReviewResponder\Validation\Validate_AI_Response;
+use WcAiReviewResponder\Endpoints\AjaxHandler;
+use WcAiReviewResponder\Models\ReviewModel;
+use WcAiReviewResponder\LLM\PromptBuilder;
+use WcAiReviewResponder\Clients\AiClient;
+use WcAiReviewResponder\Validation\ValidateAiResponse;
 use WcAiReviewResponder\CLI\AiReviewCli;
-use WcAiReviewResponder\Core\Container_Factory;
+use WcAiReviewResponder\Core\ContainerFactory;
 
 // phpcs:disable WordPress.Files.FileName
 // phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed
@@ -90,7 +90,7 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 		 * @return \DI\Container The configured container.
 		 */
 		private function build_container() {
-			$factory = new Container_Factory();
+			$factory = new ContainerFactory();
 			return $factory->build();
 		}
 
@@ -101,7 +101,7 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 		 */
 		private function register_admin( $container ) {
 			new Setup();
-			$ajax = $container->get( Ajax_Handler::class );
+			$ajax = $container->get( AjaxHandler::class );
 			$ajax->register();
 		}
 

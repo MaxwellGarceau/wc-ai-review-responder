@@ -9,14 +9,14 @@
 namespace WcAiReviewResponder\Core;
 
 use DI\ContainerBuilder;
-use WcAiReviewResponder\LLM\Prompt_Builder;
-use WcAiReviewResponder\Validation\Validate_AI_Response;
-use WcAiReviewResponder\Clients\AI_Client;
+use WcAiReviewResponder\LLM\PromptBuilder;
+use WcAiReviewResponder\Validation\ValidateAiResponse;
+use WcAiReviewResponder\Clients\AiClient;
 
 /**
  * Factory class for creating and configuring the dependency injection container.
  */
-class Container_Factory {
+class ContainerFactory {
 
 	/**
 	 * Build and configure the dependency injection container.
@@ -28,9 +28,9 @@ class Container_Factory {
 		$builder->useAnnotations( false );
 		$builder->addDefinitions(
 			array(
-				WcAiReviewResponder\LLM\Build_Prompt_Interface::class => \DI\get( Prompt_Builder::class ),
-				WcAiReviewResponder\Validation\Validate_AI_Response_Interface::class => \DI\get( Validate_AI_Response::class ),
-				\WcAiReviewResponder\Clients\AI_Client::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY' ) ),
+				WcAiReviewResponder\LLM\BuildPromptInterface::class => \DI\get( PromptBuilder::class ),
+				WcAiReviewResponder\Validation\ValidateAiResponseInterface::class => \DI\get( ValidateAiResponse::class ),
+				\WcAiReviewResponder\Clients\AiClient::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY' ) ),
 			)
 		);
 		return $builder->build();

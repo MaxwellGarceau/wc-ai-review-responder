@@ -8,39 +8,39 @@
 
 namespace WcAiReviewResponder\Endpoints;
 
-use WcAiReviewResponder\Exceptions\Invalid_Arguments_Exception;
-use WcAiReviewResponder\Exceptions\Invalid_Review_Exception;
-use WcAiReviewResponder\Exceptions\AI_Response_Failure;
+use WcAiReviewResponder\Exceptions\InvalidArgumentsException;
+use WcAiReviewResponder\Exceptions\InvalidReviewException;
+use WcAiReviewResponder\Exceptions\AiResponseFailure;
 
 /**
  * AJAX handler class for generating AI responses to product reviews.
  */
-class Ajax_Handler {
+class AjaxHandler {
 	/**
 	 * Review handler dependency.
 	 *
-	 * @var \WcAiReviewResponder\Models\Review_Model
+	 * @var \WcAiReviewResponder\Models\ReviewModel
 	 */
 	private $review_handler;
 
 	/**
 	 * Prompt builder dependency.
 	 *
-	 * @var \WcAiReviewResponder\LLM\Build_Prompt_Interface
+	 * @var \WcAiReviewResponder\LLM\BuildPromptInterface
 	 */
 	private $prompt_builder;
 
 	/**
 	 * AI client dependency.
 	 *
-	 * @var \WcAiReviewResponder\Clients\AI_Client
+	 * @var \WcAiReviewResponder\Clients\AiClient
 	 */
 	private $ai_client;
 
 	/**
 	 * Response validator dependency.
 	 *
-	 * @var \WcAiReviewResponder\Validation\Validate_AI_Response_Interface
+	 * @var \WcAiReviewResponder\Validation\ValidateAiResponseInterface
 	 */
 	private $response_validator;
 
@@ -49,12 +49,12 @@ class Ajax_Handler {
 	 *
 	 * Initializes dependencies used during the AJAX request lifecycle.
 	 *
-	 * @param \WcAiReviewResponder\Models\Review_Model                       $review_handler  Review handler.
-	 * @param \WcAiReviewResponder\LLM\Build_Prompt_Interface                $prompt_builder  Prompt builder.
-	 * @param \WcAiReviewResponder\Clients\AI_Client                         $ai_client       AI client.
-	 * @param \WcAiReviewResponder\Validation\Validate_AI_Response_Interface $response_validator Response validator.
+	 * @param \WcAiReviewResponder\Models\ReviewModel                     $review_handler  Review handler.
+	 * @param \WcAiReviewResponder\LLM\BuildPromptInterface               $prompt_builder  Prompt builder.
+	 * @param \WcAiReviewResponder\Clients\AiClient                       $ai_client       AI client.
+	 * @param \WcAiReviewResponder\Validation\ValidateAiResponseInterface $response_validator Response validator.
 	 */
-	public function __construct( \WcAiReviewResponder\Models\Review_Model $review_handler, \WcAiReviewResponder\LLM\Build_Prompt_Interface $prompt_builder, \WcAiReviewResponder\Clients\AI_Client $ai_client, \WcAiReviewResponder\Validation\Validate_AI_Response_Interface $response_validator ) {
+	public function __construct( \WcAiReviewResponder\Models\ReviewModel $review_handler, \WcAiReviewResponder\LLM\BuildPromptInterface $prompt_builder, \WcAiReviewResponder\Clients\AiClient $ai_client, \WcAiReviewResponder\Validation\ValidateAiResponseInterface $response_validator ) {
 		$this->review_handler     = $review_handler;
 		$this->prompt_builder     = $prompt_builder;
 		$this->ai_client          = $ai_client;
@@ -70,7 +70,7 @@ class Ajax_Handler {
 	/**
 	 * Process the AJAX request.
 	 *
-	 * @throws Invalid_Arguments_Exception When comment ID is missing or invalid.
+	 * @throws InvalidArgumentsException When comment ID is missing or invalid.
 	 */
 	public function handle_generate() {
 		if ( ! current_user_can( 'moderate_comments' ) ) {
@@ -84,7 +84,7 @@ class Ajax_Handler {
 
 		$comment_id = isset( $_POST['comment_id'] ) ? (int) $_POST['comment_id'] : 0;
 		if ( $comment_id <= 0 ) {
-			throw new Invalid_Arguments_Exception( 'Missing or invalid comment_id.' );
+			throw new InvalidArgumentsException( 'Missing or invalid comment_id.' );
 		}
 
 		try {
@@ -94,9 +94,9 @@ class Ajax_Handler {
 			$reply       = $this->response_validator->validate( $ai_response );
 
 			wp_send_json_success( array( 'reply' => $reply ) );
-		} catch ( Invalid_Review_Exception $e ) {
+		} catch ( InvalidReviewException $e ) {
 			$this->send_error( 'invalid_review', $e->getMessage() );
-		} catch ( AI_Response_Failure $e ) {
+		} catch ( AiResponseFailure $e ) {
 			$message = $e->getMessage();
 			wp_send_json_error(
 				array(
