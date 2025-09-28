@@ -11,20 +11,13 @@ namespace WcAiReviewResponder\Endpoints;
 use WcAiReviewResponder\Exceptions\InvalidArgumentsException;
 use WcAiReviewResponder\Exceptions\InvalidReviewException;
 use WcAiReviewResponder\Exceptions\AiResponseFailure;
+use WcAiReviewResponder\Enums\ErrorType;
+use WcAiReviewResponder\Enums\HttpStatus;
 
 /**
  * AJAX handler class for generating AI responses to product reviews.
  */
 class AjaxHandler {
-	/**
-	 * HTTP status code constants.
-	 *
-	 * TODO: mgarceau 2025-09-27 - Import an HTTP const library.
-	 */
-	private const HTTP_UNAUTHORIZED          = 401;
-	private const HTTP_FORBIDDEN             = 403;
-	private const HTTP_BAD_REQUEST           = 400;
-	private const HTTP_INTERNAL_SERVER_ERROR = 500;
 	/**
 	 * Review handler dependency.
 	 *
@@ -79,16 +72,36 @@ class AjaxHandler {
 	/**
 	 * Process the AJAX request.
 	 *
+	 * @return void
 	 * @throws InvalidArgumentsException When comment ID is missing or invalid.
+	 *
+	 * Response examples:
+	 *
+	 * Success:
+	 * {
+	 *   "success": true,
+	 *   "data": {
+	 *     "reply": "Thank you for your review! We're glad you're enjoying the Amazing Widget. We appreciate your feedback about pricing and are always working to provide the best value for our customers."
+	 *   }
+	 * }
+	 *
+	 * Error:
+	 * {
+	 *   "success": false,
+	 *   "data": {
+	 *     "error_type": "invalid_review",
+	 *     "message": "Review is missing required data."
+	 *   }
+	 * }
 	 */
-	public function handle_generate() {
+	public function handle_generate(): void {
 		if ( ! current_user_can( 'moderate_comments' ) ) {
-			$this->send_error( 'unauthorized', 'Insufficient permissions.', self::HTTP_UNAUTHORIZED );
+			$this->send_error( ErrorType::UNAUTHORIZED, 'Insufficient permissions.', HttpStatus::UNAUTHORIZED );
 		}
 
 		$nonce = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
 		if ( ! wp_verify_nonce( $nonce, 'generate_ai_response' ) ) {
-			$this->send_error( 'invalid_nonce', 'Security check failed.', self::HTTP_FORBIDDEN );
+			$this->send_error( ErrorType::INVALID_NONCE, 'Security check failed.', HttpStatus::FORBIDDEN );
 		}
 
 		$comment_id = isset( $_POST['comment_id'] ) ? (int) $_POST['comment_id'] : 0;
@@ -104,26 +117,26 @@ class AjaxHandler {
 
 			wp_send_json_success( array( 'reply' => $reply ) );
 		} catch ( InvalidReviewException $e ) {
-			$this->send_error( 'invalid_review', $e->getMessage(), self::HTTP_BAD_REQUEST );
+			$this->send_error( ErrorType::INVALID_REVIEW, $e->getMessage(), HttpStatus::BAD_REQUEST );
 		} catch ( AiResponseFailure $e ) {
-			$this->send_error( 'ai_failure', $e->getMessage(), self::HTTP_INTERNAL_SERVER_ERROR );
+			$this->send_error( ErrorType::AI_FAILURE, $e->getMessage(), HttpStatus::INTERNAL_SERVER_ERROR );
 		}
 	}
 
 	/**
 	 * Send a standardized JSON error and exit.
 	 *
-	 * @param string $error_type Error type.
-	 * @param string $message    Error message.
-	 * @param int    $code       HTTP status code.
+	 * @param ErrorType  $error_type Error type.
+	 * @param string     $message    Error message.
+	 * @param HttpStatus $code       HTTP status code.
 	 */
-	private function send_error( string $error_type, string $message, int $code ) {
+	private function send_error( ErrorType $error_type, string $message, HttpStatus $code ): void {
 		wp_send_json_error(
 			array(
-				'error_type' => $error_type,
+				'error_type' => $error_type->value,
 				'message'    => $message,
 			),
-			$code
+			$code->value
 		);
 	}
 }
