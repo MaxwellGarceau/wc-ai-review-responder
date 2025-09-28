@@ -15,7 +15,7 @@ use WcAiReviewResponder\Exceptions\InvalidReviewException;
  *
  * This is the single source of truth for accessing the DB to query review data.
  */
-class ReviewModel {
+class ReviewModel implements ModelInterface {
 	/**
 	 * Fetch review context for a given comment ID.
 	 *

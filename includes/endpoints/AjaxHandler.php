@@ -19,7 +19,7 @@ class AjaxHandler {
 	/**
 	 * Review handler dependency.
 	 *
-	 * @var \WcAiReviewResponder\Models\ReviewModel
+	 * @var \WcAiReviewResponder\Models\ModelInterface
 	 */
 	private $review_handler;
 
@@ -33,7 +33,7 @@ class AjaxHandler {
 	/**
 	 * AI client dependency.
 	 *
-	 * @var \WcAiReviewResponder\Clients\AiClient
+	 * @var \WcAiReviewResponder\Clients\AiClientInterface
 	 */
 	private $ai_client;
 
@@ -49,12 +49,12 @@ class AjaxHandler {
 	 *
 	 * Initializes dependencies used during the AJAX request lifecycle.
 	 *
-	 * @param \WcAiReviewResponder\Models\ReviewModel                     $review_handler  Review handler.
+	 * @param \WcAiReviewResponder\Models\ModelInterface                  $review_handler  Review handler.
 	 * @param \WcAiReviewResponder\LLM\BuildPromptInterface               $prompt_builder  Prompt builder.
-	 * @param \WcAiReviewResponder\Clients\AiClient                       $ai_client       AI client.
+	 * @param \WcAiReviewResponder\Clients\AiClientInterface              $ai_client       AI client.
 	 * @param \WcAiReviewResponder\Validation\ValidateAiResponseInterface $response_validator Response validator.
 	 */
-	public function __construct( \WcAiReviewResponder\Models\ReviewModel $review_handler, \WcAiReviewResponder\LLM\BuildPromptInterface $prompt_builder, \WcAiReviewResponder\Clients\AiClient $ai_client, \WcAiReviewResponder\Validation\ValidateAiResponseInterface $response_validator ) {
+	public function __construct( \WcAiReviewResponder\Models\ModelInterface $review_handler, \WcAiReviewResponder\LLM\BuildPromptInterface $prompt_builder, \WcAiReviewResponder\Clients\AiClientInterface $ai_client, \WcAiReviewResponder\Validation\ValidateAiResponseInterface $response_validator ) {
 		$this->review_handler     = $review_handler;
 		$this->prompt_builder     = $prompt_builder;
 		$this->ai_client          = $ai_client;
@@ -90,7 +90,7 @@ class AjaxHandler {
 		try {
 			$context     = $this->review_handler->get_by_id( $comment_id );
 			$prompt      = $this->prompt_builder->build_prompt( $context );
-			$ai_response = $this->ai_client->request_reply( $prompt );
+			$ai_response = $this->ai_client->get( $prompt );
 			$reply       = $this->response_validator->validate( $ai_response );
 
 			wp_send_json_success( array( 'reply' => $reply ) );

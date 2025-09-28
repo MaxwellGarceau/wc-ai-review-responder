@@ -29,7 +29,9 @@ class ContainerFactory {
 			array(
 				\WcAiReviewResponder\LLM\BuildPromptInterface::class => \DI\get( PromptBuilder::class ),
 				\WcAiReviewResponder\Validation\ValidateAiResponseInterface::class => \DI\get( ValidateAiResponse::class ),
+				\WcAiReviewResponder\Clients\AiClientInterface::class => \DI\get( AiClient::class ),
 				\WcAiReviewResponder\Clients\AiClient::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY', 'test-key' ) ),
+				\WcAiReviewResponder\Models\ModelInterface::class => \DI\get( \WcAiReviewResponder\Models\ReviewModel::class ),
 				\WcAiReviewResponder\CLI\AiReviewCli::class => \DI\create()
 					->constructor(
 						\DI\get( \WcAiReviewResponder\Models\ReviewModel::class ),

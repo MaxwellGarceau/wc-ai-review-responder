@@ -9,9 +9,9 @@
 namespace WcAiReviewResponder\CLI;
 
 use WcAiReviewResponder\Models\ReviewModel;
-use WcAiReviewResponder\LLM\BuildPromptInterface;
+use WcAiReviewResponder\LLM\PromptBuilder;
 use WcAiReviewResponder\Clients\AiClient;
-use WcAiReviewResponder\Validation\ValidateAiResponseInterface;
+use WcAiReviewResponder\Validation\ValidateAiResponse;
 use WcAiReviewResponder\Exceptions\InvalidReviewException;
 use WcAiReviewResponder\Exceptions\AiResponseFailure;
 
@@ -50,10 +50,10 @@ class AiReviewCli {
 	/**
 	 * Constructor.
 	 *
-	 * @param ReviewModel                   $review_handler     Review handler.
-	 * @param PromptBuilder                 $prompt_builder     Prompt builder.
-	 * @param AiClient                      $ai_client          AI client.
-	 * @param ValidateAiResponse            $response_validator Response validator.
+	 * @param ReviewModel        $review_handler     Review handler.
+	 * @param PromptBuilder      $prompt_builder     Prompt builder.
+	 * @param AiClient           $ai_client          AI client.
+	 * @param ValidateAiResponse $response_validator Response validator.
 	 */
 	public function __construct( ReviewModel $review_handler, PromptBuilder $prompt_builder, AiClient $ai_client, ValidateAiResponse $response_validator ) {
 		$this->review_handler     = $review_handler;
@@ -91,7 +91,7 @@ class AiReviewCli {
 		try {
 			$context     = $this->review_handler->get_by_id( $comment_id );
 			$prompt      = $this->prompt_builder->build_prompt( $context );
-			$ai_response = $this->ai_client->request_reply( $prompt );
+			$ai_response = $this->ai_client->get( $prompt );
 			$reply       = $this->response_validator->validate( $ai_response );
 
 			\WP_CLI::success( $reply );

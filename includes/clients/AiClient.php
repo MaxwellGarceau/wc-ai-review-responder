@@ -13,7 +13,7 @@ use WcAiReviewResponder\Exceptions\AiResponseFailure;
 /**
  * AI client class that sends prompts to the Gemini API and returns raw responses.
  */
-class AiClient {
+class AiClient implements AiClientInterface {
 	/**
 	 * Gemini API key.
 	 *
@@ -33,7 +33,7 @@ class AiClient {
 
 
 	/**
-	 * Request a reply from the AI provider using a prepared prompt.
+	 * Get a reply from the AI provider using a prepared prompt.
 	 *
 	 * Note: This is a scaffold. Actual SDK integration will be implemented later.
 	 *
@@ -41,7 +41,7 @@ class AiClient {
 	 * @return string Raw AI response.
 	 * @throws AiResponseFailure When API key is missing or AI returns empty response.
 	 */
-	public function request_reply( string $prompt ): string {
+	public function get( string $prompt ): string {
 		if ( empty( $this->api_key ) ) {
 			throw new AiResponseFailure( 'Missing Gemini API key.' );
 		}
