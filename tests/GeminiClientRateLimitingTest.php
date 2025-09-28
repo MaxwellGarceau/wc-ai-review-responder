@@ -8,7 +8,7 @@
 /**
  * Test the GeminiClient rate limiting integration.
  */
-class TestGeminiClientRateLimiting extends WP_UnitTestCase {
+class GeminiClientRateLimitingTest extends WP_UnitTestCase {
 
 	/**
 	 * Gemini client instance.
@@ -36,10 +36,10 @@ class TestGeminiClientRateLimiting extends WP_UnitTestCase {
 	 */
 	public function setUp(): void {
 		parent::setUp();
-		
-		$this->rate_limiter = new \WcAiReviewResponder\RateLimiting\RateLimiter();
+
+		$this->rate_limiter   = new \WcAiReviewResponder\RateLimiting\RateLimiter();
 		$this->request_handler = new \WcAiReviewResponder\Clients\Request();
-		$this->gemini_client = new \WcAiReviewResponder\Clients\GeminiClient(
+		$this->gemini_client  = new \WcAiReviewResponder\Clients\GeminiClient(
 			'test-api-key',
 			$this->request_handler,
 			$this->rate_limiter
@@ -121,7 +121,7 @@ class TestGeminiClientRateLimiting extends WP_UnitTestCase {
 	public function test_gemini_client_generates_correct_identifiers() {
 		// Test with logged-in user.
 		wp_set_current_user( 1 );
-		
+
 		$mock_rate_limiter = $this->createMock( \WcAiReviewResponder\RateLimiting\RateLimiter::class );
 		$mock_rate_limiter->expects( $this->once() )
 			->method( 'check_rate_limit' )
@@ -144,7 +144,7 @@ class TestGeminiClientRateLimiting extends WP_UnitTestCase {
 	public function test_gemini_client_handles_anonymous_users() {
 		// Ensure no user is logged in.
 		wp_set_current_user( 0 );
-		
+
 		$mock_rate_limiter = $this->createMock( \WcAiReviewResponder\RateLimiting\RateLimiter::class );
 		$mock_rate_limiter->expects( $this->once() )
 			->method( 'check_rate_limit' )
@@ -166,7 +166,7 @@ class TestGeminiClientRateLimiting extends WP_UnitTestCase {
 	 */
 	public function test_end_to_end_rate_limiting() {
 		$hourly_limit = 1;
-		
+
 		// Set a very low rate limit for testing.
 		add_filter( 'wc_ai_review_responder_hourly_rate_limit', function() use ( $hourly_limit ) {
 			return $hourly_limit;
@@ -183,3 +183,5 @@ class TestGeminiClientRateLimiting extends WP_UnitTestCase {
 		remove_filter( 'wc_ai_review_responder_hourly_rate_limit', '__return_false' );
 	}
 }
+
+

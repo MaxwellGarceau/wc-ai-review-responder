@@ -12,7 +12,7 @@ require_once dirname( dirname( __FILE__ ) ) . '/includes/exceptions/RateLimitExc
 /**
  * Test the RateLimiter class.
  */
-class TestRateLimiter extends WP_UnitTestCase {
+class RateLimiterTest extends WP_UnitTestCase {
 
 	/**
 	 * Rate limiter instance.
@@ -61,7 +61,7 @@ class TestRateLimiter extends WP_UnitTestCase {
 	 * Test that rate limiter blocks requests exceeding hourly limit.
 	 */
 	public function test_blocks_requests_exceeding_hourly_limit() {
-		$identifier = 'test_user_hourly';
+		$identifier   = 'test_user_hourly';
 		$hourly_limit = 2; // Set a low limit for testing.
 
 		// Mock the hourly limit filter.
@@ -86,7 +86,7 @@ class TestRateLimiter extends WP_UnitTestCase {
 	 * Test that rate limiter blocks requests exceeding daily limit.
 	 */
 	public function test_blocks_requests_exceeding_daily_limit() {
-		$identifier = 'test_user_daily';
+		$identifier  = 'test_user_daily';
 		$daily_limit = 3; // Set a low limit for testing.
 
 		// Mock the daily limit filter.
@@ -111,7 +111,7 @@ class TestRateLimiter extends WP_UnitTestCase {
 	 * Test that rate limit exception includes reset timestamp.
 	 */
 	public function test_rate_limit_exception_includes_reset_timestamp() {
-		$identifier = 'test_user_reset';
+		$identifier   = 'test_user_reset';
 		$hourly_limit = 1;
 
 		// Mock the hourly limit filter.
@@ -140,8 +140,8 @@ class TestRateLimiter extends WP_UnitTestCase {
 	 * Test that different identifiers have separate rate limits.
 	 */
 	public function test_different_identifiers_have_separate_limits() {
-		$identifier1 = 'user_1';
-		$identifier2 = 'user_2';
+		$identifier1  = 'user_1';
+		$identifier2  = 'user_2';
 		$hourly_limit = 1;
 
 		// Mock the hourly limit filter.
@@ -168,7 +168,7 @@ class TestRateLimiter extends WP_UnitTestCase {
 	 * Test that rate limits reset after time window expires.
 	 */
 	public function test_rate_limits_reset_after_time_window() {
-		$identifier = 'test_user_reset_window';
+		$identifier   = 'test_user_reset_window';
 		$hourly_limit = 1;
 
 		// Mock the hourly limit filter.
@@ -239,3 +239,5 @@ class TestRateLimiter extends WP_UnitTestCase {
 		$this->assertTrue( true, 'Edge cases should be handled gracefully' );
 	}
 }
+
+
