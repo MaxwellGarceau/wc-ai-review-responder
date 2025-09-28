@@ -11,6 +11,7 @@
 /**
  * Internal dependencies
  */
+import loadingModalTemplate from './templates/loading-modal.html';
 
 interface WcAiReviewResponder {
 	ajaxurl: string;
@@ -46,13 +47,7 @@ function triggerWordPressReply( commentId: string ): void {
  * Creates the loading modal HTML content with improved spinner
  */
 function createLoadingModalHTML(): string {
-	return `
-		<div class="modal-content">
-			<div class="spinner"></div>
-			<h3>Generating AI Response</h3>
-			<p>Please wait while we generate a personalized response to this review...</p>
-		</div>
-	`;
+	return loadingModalTemplate;
 }
 
 /**
