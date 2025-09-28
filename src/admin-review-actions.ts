@@ -5,7 +5,6 @@
  * @since   1.0.0
  */
 
-import loadingModalTemplate from './templates/loading-modal.html';
 
 interface WcAiReviewResponder {
 	ajaxurl: string;
@@ -35,6 +34,24 @@ function triggerWordPressReply(commentId: string): void {
 }
 
 /**
+ * Creates the loading modal HTML content with improved spinner
+ */
+function createLoadingModalHTML(): string {
+	return `
+		<div class="modal-content">
+			<svg class="spinner-svg" width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<circle cx="20" cy="20" r="18" stroke="#f3f3f3" stroke-width="4"/>
+				<path d="M 20 2 A 18 18 0 1 1 19.9 2" stroke="#2271b1" stroke-width="4" stroke-linecap="round">
+					<animateTransform attributeName="transform" type="rotate" dur="1s" repeatCount="indefinite" values="0 20 20;360 20 20"/>
+				</path>
+			</svg>
+			<h3>Generating AI Response</h3>
+			<p>Please wait while we generate a personalized response to this review...</p>
+		</div>
+	`;
+}
+
+/**
  * Shows a loading modal over the reply box
  */
 function showLoadingModal(): void {
@@ -48,7 +65,7 @@ function showLoadingModal(): void {
 	// Create the loading modal
 	modal = document.createElement('div');
 	modal.id = 'wc-ai-loading-modal';
-	modal.innerHTML = loadingModalTemplate;
+	modal.innerHTML = createLoadingModalHTML();
 	document.body.appendChild(modal);
 }
 
