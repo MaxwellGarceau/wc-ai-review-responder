@@ -20,7 +20,7 @@ class ReviewModel implements ModelInterface {
 	 * Fetch review context for a given comment ID.
 	 *
 	 * @param int $comment_id Comment (review) ID.
-	 * @return array{comment_id:int,product_id:int,product_name:string,rating:int,comment:string,author:string}
+	 * @return array{comment_id:int,product_id:int,product_name:string,product_description:string,rating:int,comment:string,author:string}
 	 * @throws InvalidReviewException When comment is not a valid review.
 	 */
 	public function get_by_id( int $comment_id ): array {
