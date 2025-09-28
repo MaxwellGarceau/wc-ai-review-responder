@@ -27,15 +27,15 @@ class ContainerFactory {
 		$builder = new ContainerBuilder();
 		$builder->addDefinitions(
 			array(
-				WcAiReviewResponder\LLM\BuildPromptInterface::class => \DI\get( PromptBuilder::class ),
-				WcAiReviewResponder\Validation\ValidateAiResponseInterface::class => \DI\get( ValidateAiResponse::class ),
+				\WcAiReviewResponder\LLM\BuildPromptInterface::class => \DI\get( PromptBuilder::class ),
+				\WcAiReviewResponder\Validation\ValidateAiResponseInterface::class => \DI\get( ValidateAiResponse::class ),
 				\WcAiReviewResponder\Clients\AiClient::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY', 'test-key' ) ),
 				\WcAiReviewResponder\CLI\AiReviewCli::class => \DI\create()
 					->constructor(
 						\DI\get( \WcAiReviewResponder\Models\ReviewModel::class ),
-						\DI\get( WcAiReviewResponder\LLM\BuildPromptInterface::class ),
+						\DI\get( \WcAiReviewResponder\LLM\BuildPromptInterface::class ),
 						\DI\get( \WcAiReviewResponder\Clients\AiClient::class ),
-						\DI\get( WcAiReviewResponder\Validation\ValidateAiResponseInterface::class )
+						\DI\get( \WcAiReviewResponder\Validation\ValidateAiResponseInterface::class )
 					),
 			)
 		);
