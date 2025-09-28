@@ -41,15 +41,32 @@ class ReviewModel implements ModelInterface {
 			throw new InvalidReviewException( 'Review is missing a rating.' );
 		}
 
-		$product_name = get_the_title( $product_id );
+		$product_name        = get_the_title( $product_id );
+		$product_description = $this->get_product_description( $product_id );
 
 		return array(
-			'comment_id'   => (int) $comment_id,
-			'product_id'   => (int) $product_id,
-			'product_name' => is_string( $product_name ) ? $product_name : '',
-			'rating'       => (int) $rating,
-			'comment'      => $content,
-			'author'       => (string) $comment->comment_author,
+			'comment_id'          => (int) $comment_id,
+			'product_id'          => (int) $product_id,
+			'product_name'        => is_string( $product_name ) ? $product_name : '',
+			'product_description' => is_string( $product_description ) ? $product_description : '',
+			'rating'              => (int) $rating,
+			'comment'             => $content,
+			'author'              => (string) $comment->comment_author,
 		);
+	}
+
+	/**
+	 * Get product description with fallback to short description.
+	 *
+	 * @param int $product_id Product ID.
+	 * @return string Product description or empty string if none available.
+	 */
+	private function get_product_description( int $product_id ): string {
+		$excerpt = get_the_excerpt( $product_id );
+		if ( empty( $excerpt ) ) {
+			$product = wc_get_product( $product_id );
+			$excerpt = $product ? $product->get_short_description() : '';
+		}
+		return $excerpt;
 	}
 }
