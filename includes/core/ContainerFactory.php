@@ -9,9 +9,6 @@
 namespace WcAiReviewResponder\Core;
 
 use DI\ContainerBuilder;
-use WcAiReviewResponder\LLM\PromptBuilder;
-use WcAiReviewResponder\Validation\ValidateAiResponse;
-use WcAiReviewResponder\Clients\AiClient;
 
 /**
  * Factory class for creating and configuring the dependency injection container.
@@ -27,17 +24,23 @@ class ContainerFactory {
 		$builder = new ContainerBuilder();
 		$builder->addDefinitions(
 			array(
-				\WcAiReviewResponder\LLM\BuildPromptInterface::class => \DI\get( PromptBuilder::class ),
-				\WcAiReviewResponder\Validation\ValidateAiResponseInterface::class => \DI\get( ValidateAiResponse::class ),
-				\WcAiReviewResponder\Clients\AiClientInterface::class => \DI\get( AiClient::class ),
+				// Load environment variables.
 				\WcAiReviewResponder\Clients\AiClient::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY', 'test-key' ) ),
-				\WcAiReviewResponder\Models\ModelInterface::class => \DI\get( \WcAiReviewResponder\Models\ReviewModel::class ),
+
+				// Resolve interfaces to concrete implementations.
 				\WcAiReviewResponder\CLI\AiReviewCli::class => \DI\create()
 					->constructor(
 						\DI\get( \WcAiReviewResponder\Models\ReviewModel::class ),
-						\DI\get( \WcAiReviewResponder\LLM\BuildPromptInterface::class ),
+						\DI\get( \WcAiReviewResponder\LLM\PromptBuilder::class ),
 						\DI\get( \WcAiReviewResponder\Clients\AiClient::class ),
-						\DI\get( \WcAiReviewResponder\Validation\ValidateAiResponseInterface::class )
+						\DI\get( \WcAiReviewResponder\Validation\ValidateAiResponse::class )
+					),
+				\WcAiReviewResponder\Endpoints\AjaxHandler::class => \DI\create()
+					->constructor(
+						\DI\get( \WcAiReviewResponder\Models\ReviewModel::class ),
+						\DI\get( \WcAiReviewResponder\LLM\PromptBuilder::class ),
+						\DI\get( \WcAiReviewResponder\Clients\AiClient::class ),
+						\DI\get( \WcAiReviewResponder\Validation\ValidateAiResponse::class )
 					),
 			)
 		);
