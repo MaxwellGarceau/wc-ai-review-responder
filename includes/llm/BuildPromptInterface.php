@@ -8,7 +8,7 @@
 
 namespace WcAiReviewResponder\LLM;
 
-interface Build_Prompt_Interface {
+interface BuildPromptInterface {
 	/**
 	 * Build a prompt string from the provided context.
 	 *

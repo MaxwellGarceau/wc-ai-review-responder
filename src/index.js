@@ -15,18 +15,22 @@ import './index.scss';
 const MyExamplePage = () => (
 	<Fragment>
 		<Woo.Section component="article">
-			<Woo.SectionHeader title={ __( 'Search', 'wc-ai-review-responder' ) } />
+			<Woo.SectionHeader title={ __( 'Search', 'woocommerce' ) } />
 			<Woo.Search
 				type="products"
 				placeholder="Search for something"
 				selected={ [] }
-				onChange={ ( items ) => setInlineSelect( items ) }
+				onChange={ ( items ) => {
+					// Handle search selection
+					// eslint-disable-next-line no-console
+					console.log( 'Selected items:', items );
+				} }
 				inlineTags
 			/>
 		</Woo.Section>
 
 		<Woo.Section component="article">
-			<Woo.SectionHeader title={ __( 'Dropdown', 'wc-ai-review-responder' ) } />
+			<Woo.SectionHeader title={ __( 'Dropdown', 'woocommerce' ) } />
 			<Dropdown
 				renderToggle={ ( { isOpen, onToggle } ) => (
 					<Woo.DropdownButton
@@ -40,37 +44,43 @@ const MyExamplePage = () => (
 		</Woo.Section>
 
 		<Woo.Section component="article">
-			<Woo.SectionHeader title={ __( 'Pill shaped container', 'wc-ai-review-responder' ) } />
+			<Woo.SectionHeader
+				title={ __( 'Pill shaped container', 'woocommerce' ) }
+			/>
 			<Woo.Pill className={ 'pill' }>
-				{ __( 'Pill Shape Container', 'wc-ai-review-responder' ) }
+				{ __( 'Pill Shape Container', 'woocommerce' ) }
 			</Woo.Pill>
 		</Woo.Section>
 
 		<Woo.Section component="article">
-			<Woo.SectionHeader title={ __( 'Spinner', 'wc-ai-review-responder' ) } />
+			<Woo.SectionHeader title={ __( 'Spinner', 'woocommerce' ) } />
 			<Woo.H>I am a spinner!</Woo.H>
 			<Woo.Spinner />
 		</Woo.Section>
 
 		<Woo.Section component="article">
-			<Woo.SectionHeader title={ __( 'Datepicker', 'wc-ai-review-responder' ) } />
+			<Woo.SectionHeader title={ __( 'Datepicker', 'woocommerce' ) } />
 			<Woo.DatePicker
-				text={ __( 'I am a datepicker!', 'wc-ai-review-responder' ) }
+				text={ __( 'I am a datepicker!', 'woocommerce' ) }
 				dateFormat={ 'MM/DD/YYYY' }
 			/>
 		</Woo.Section>
 	</Fragment>
 );
 
-addFilter( 'woocommerce_admin_pages_list', 'wc-ai-review-responder', ( pages ) => {
-	pages.push( {
-		container: MyExamplePage,
-		path: '/wc-ai-review-responder',
-		breadcrumbs: [ __( 'Wc Ai Review Responder', 'wc-ai-review-responder' ) ],
-		navArgs: {
-			id: 'wc_ai_review_responder',
-		},
-	} );
+addFilter(
+	'woocommerce_admin_pages_list',
+	'wc-ai-review-responder',
+	( pages ) => {
+		pages.push( {
+			container: MyExamplePage,
+			path: '/wc-ai-review-responder',
+			breadcrumbs: [ __( 'Wc Ai Review Responder', 'woocommerce' ) ],
+			navArgs: {
+				id: 'wc_ai_review_responder',
+			},
+		} );
 
-	return pages;
-} );
+		return pages;
+	}
+);

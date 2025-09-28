@@ -8,12 +8,12 @@
 
 namespace WcAiReviewResponder\Clients;
 
-use WcAiReviewResponder\Exceptions\AI_Response_Failure;
+use WcAiReviewResponder\Exceptions\AiResponseFailure;
 
 /**
  * AI client class that sends prompts to the Gemini API and returns raw responses.
  */
-class AI_Client {
+class AiClient implements AiClientInterface {
 	/**
 	 * Gemini API key.
 	 *
@@ -33,17 +33,17 @@ class AI_Client {
 
 
 	/**
-	 * Request a reply from the AI provider using a prepared prompt.
+	 * Get a reply from the AI provider using a prepared prompt.
 	 *
 	 * Note: This is a scaffold. Actual SDK integration will be implemented later.
 	 *
 	 * @param string $prompt Prepared prompt string.
 	 * @return string Raw AI response.
-	 * @throws AI_Response_Failure When API key is missing or AI returns empty response.
+	 * @throws AiResponseFailure When API key is missing or AI returns empty response.
 	 */
-	public function request_reply( string $prompt ): string {
+	public function get( string $prompt ): string {
 		if ( empty( $this->api_key ) ) {
-			throw new AI_Response_Failure( 'Missing Gemini API key.' );
+			throw new AiResponseFailure( 'Missing Gemini API key.' );
 		}
 
 		// Placeholder: integration with Gemini SDK goes here.
@@ -51,7 +51,7 @@ class AI_Client {
 		$reply = 'Thank you so much for your review! We appreciate your feedback.';
 
 		if ( ! is_string( $reply ) || '' === trim( $reply ) ) {
-			throw new AI_Response_Failure( 'AI returned an empty response.', 0, null, array( 'prompt' => wp_kses_post( $prompt ) ) );
+			throw new AiResponseFailure( 'AI returned an empty response.', 0, null, array( 'prompt' => wp_kses_post( $prompt ) ) );
 		}
 
 		return $reply;

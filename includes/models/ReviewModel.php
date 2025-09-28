@@ -8,25 +8,25 @@
 
 namespace WcAiReviewResponder\Models;
 
-use WcAiReviewResponder\Exceptions\Invalid_Review_Exception;
+use WcAiReviewResponder\Exceptions\InvalidReviewException;
 
 /**
  * Review model class for extracting and validating WooCommerce review data.
  *
  * This is the single source of truth for accessing the DB to query review data.
  */
-class Review_Model {
+class ReviewModel implements ModelInterface {
 	/**
 	 * Fetch review context for a given comment ID.
 	 *
 	 * @param int $comment_id Comment (review) ID.
 	 * @return array{comment_id:int,product_id:int,product_name:string,rating:int,comment:string,author:string}
-	 * @throws Invalid_Review_Exception When comment is not a valid review.
+	 * @throws InvalidReviewException When comment is not a valid review.
 	 */
 	public function get_by_id( int $comment_id ): array {
 		$comment = get_comment( $comment_id );
 		if ( ! $comment || 'review' !== get_comment_type( $comment ) ) {
-			throw new Invalid_Review_Exception( 'Comment is not a WooCommerce product review.' );
+			throw new InvalidReviewException( 'Comment is not a WooCommerce product review.' );
 		}
 
 		$product_id = (int) $comment->comment_post_ID;
@@ -34,11 +34,11 @@ class Review_Model {
 		$content    = (string) $comment->comment_content;
 
 		if ( '' === trim( $content ) ) {
-			throw new Invalid_Review_Exception( 'Review is missing a comment.' );
+			throw new InvalidReviewException( 'Review is missing a comment.' );
 		}
 
 		if ( '' === (string) $rating ) {
-			throw new Invalid_Review_Exception( 'Review is missing a rating.' );
+			throw new InvalidReviewException( 'Review is missing a rating.' );
 		}
 
 		$product_name = get_the_title( $product_id );
