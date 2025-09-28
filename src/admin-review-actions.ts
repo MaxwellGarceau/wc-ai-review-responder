@@ -23,18 +23,14 @@ declare const wcAiReviewResponder: WcAiReviewResponder;
  * Triggers the native WordPress reply box for the comment
  */
 function triggerWordPressReply(commentId: string): void {
-	// Find the reply button for this comment
 	const replyButton = document.querySelector(`button[data-comment-id="${commentId}"][data-action="replyto"]`) as HTMLButtonElement;
 	
 	if (replyButton) {
-		// Click the reply button to trigger WordPress's native reply functionality
 		replyButton.click();
 	} else {
 		console.error(`Reply button not found for comment ID: ${commentId}`);
 	}
 }
-
-
 
 document.addEventListener('DOMContentLoaded', (): void => {
 	const aiResponseLinks: NodeListOf<HTMLAnchorElement> = document.querySelectorAll('.ai-generate-response');
@@ -75,10 +71,8 @@ document.addEventListener('DOMContentLoaded', (): void => {
 				
 				if (data.success && data.data.reply) {
 					// Insert the generated response into the WordPress reply textarea
-					// WordPress creates a textarea with name="replycontent" in the reply box
 					const replyTextarea: HTMLTextAreaElement | null = document.querySelector('textarea[name="replycontent"]');
 					if (replyTextarea && data.data.reply) {
-						// Set the content in the textarea
 						replyTextarea.value = data.data.reply;
 						
 						// If TinyMCE is active, update it as well
@@ -89,9 +83,7 @@ document.addEventListener('DOMContentLoaded', (): void => {
 							}
 						}
 						
-						// Trigger change event to update any listeners
 						replyTextarea.dispatchEvent(new Event('change'));
-						// Focus the textarea
 						replyTextarea.focus();
 					}
 				} else {
@@ -109,5 +101,3 @@ document.addEventListener('DOMContentLoaded', (): void => {
 		});
 	});
 });
-
-
