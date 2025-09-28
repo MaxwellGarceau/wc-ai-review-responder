@@ -18,8 +18,9 @@
 		"dev": "wp-env start",
 		"dev:stop": "wp-env stop",
 		"dev:reset": "wp-env clean all && wp-env start",
-		"logs": "wp-env logs",
-		"cli": "wp-env run cli wp",
+		"logs:docker": "wp-env logs",
+		"logs:wp": "wp-env run cli cat /var/www/html/wp-content/debug.log",
+		"cli": "wp-env run cli wp --",
 		"test": "wp-env run cli wp test"
 	},
 	"dependencies": {
