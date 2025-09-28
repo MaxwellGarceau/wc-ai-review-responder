@@ -20,6 +20,10 @@ use WcAiReviewResponder\Enums\HttpStatus;
  */
 class AjaxHandler {
 	/**
+	 * AJAX action and nonce action for generating AI response.
+	 */
+	private const ACTION_GENERATE_AI_RESPONSE = 'generate_ai_response';
+	/**
 	 * Review handler dependency.
 	 *
 	 * @var \WcAiReviewResponder\Models\ModelInterface
@@ -85,7 +89,7 @@ class AjaxHandler {
 	 * Boot hooks.
 	 */
 	public function register() {
-		add_action( 'wp_ajax_generate_ai_response', array( $this, 'handle_generate' ) );
+		add_action( 'wp_ajax_' . self::ACTION_GENERATE_AI_RESPONSE, array( $this, 'handle_generate' ) );
 	}
 
 	/**
@@ -119,7 +123,7 @@ class AjaxHandler {
 		}
 
 		$nonce = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
-		if ( ! wp_verify_nonce( $nonce, 'generate_ai_response' ) ) {
+		if ( ! wp_verify_nonce( $nonce, self::ACTION_GENERATE_AI_RESPONSE ) ) {
 			$this->send_error( ErrorType::INVALID_NONCE, 'Security check failed.', HttpStatus::FORBIDDEN );
 		}
 
