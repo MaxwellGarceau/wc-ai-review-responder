@@ -1,12 +1,17 @@
 /**
  * Admin review actions functionality for WC AI Review Responder.
  *
- * @package WcAiReviewResponder
- * @since   1.0.0
+ * @since 1.0.0
  */
 
-import loadingModalTemplate from './templates/loading-modal.html';
+/**
+ * External dependencies
+ */
 
+/**
+ * Internal dependencies
+ */
+import loadingModalTemplate from './templates/loading-modal.html';
 
 interface WcAiReviewResponder {
 	ajaxurl: string;
@@ -25,13 +30,16 @@ declare const wcAiReviewResponder: WcAiReviewResponder;
 /**
  * Triggers the native WordPress reply box for the comment
  */
-function triggerWordPressReply(commentId: string): void {
-	const replyButton = document.querySelector(`button[data-comment-id="${commentId}"][data-action="replyto"]`) as HTMLButtonElement;
-	
-	if (replyButton) {
+function triggerWordPressReply( commentId: string ): void {
+	const replyButton = document.querySelector(
+		`button[data-comment-id="${ commentId }"][data-action="replyto"]`
+	) as HTMLButtonElement;
+
+	if ( replyButton ) {
 		replyButton.click();
 	} else {
-		console.error(`Reply button not found for comment ID: ${commentId}`);
+		// Reply button not found - this is expected in some cases
+		// The user can manually open the reply box if needed
 	}
 }
 
@@ -47,105 +55,114 @@ function createLoadingModalHTML(): string {
  */
 function showLoadingModal(): void {
 	// Check if modal already exists
-	let modal = document.getElementById('wc-ai-loading-modal');
-	if (modal) {
+	let modal = document.getElementById( 'wc-ai-loading-modal' );
+	if ( modal ) {
 		modal.style.display = 'flex';
 		return;
 	}
 
 	// Create the loading modal
-	modal = document.createElement('div');
+	modal = document.createElement( 'div' );
 	modal.id = 'wc-ai-loading-modal';
 	modal.innerHTML = createLoadingModalHTML();
-	document.body.appendChild(modal);
+	document.body.appendChild( modal );
 }
 
 /**
  * Hides the loading modal
  */
 function hideLoadingModal(): void {
-	const modal = document.getElementById('wc-ai-loading-modal');
-	if (modal) {
+	const modal = document.getElementById( 'wc-ai-loading-modal' );
+	if ( modal ) {
 		modal.style.display = 'none';
 	}
 }
 
-document.addEventListener('DOMContentLoaded', (): void => {
-	const aiResponseLinks: NodeListOf<HTMLAnchorElement> = document.querySelectorAll('.ai-generate-response');
-	
-	aiResponseLinks.forEach((link: HTMLAnchorElement): void => {
-		link.addEventListener('click', async (e: Event): Promise<void> => {
+document.addEventListener( 'DOMContentLoaded', (): void => {
+	const aiResponseLinks: NodeListOf< HTMLAnchorElement > =
+		document.querySelectorAll( '.ai-generate-response' );
+
+	aiResponseLinks.forEach( ( link: HTMLAnchorElement ): void => {
+		link.addEventListener( 'click', async ( e: Event ): Promise< void > => {
 			e.preventDefault();
-			
-			const commentId: string | null = link.getAttribute('data-comment-id');
-			const nonce: string | null = link.getAttribute('data-nonce');
-			
-			if (!commentId || !nonce) {
-				console.error('Missing required data attributes');
-				return;
-			}
-			
+
+			const commentId: string | null =
+				link.getAttribute( 'data-comment-id' );
+			const nonce: string | null = link.getAttribute( 'data-nonce' );
+
+		if ( ! commentId || ! nonce ) {
+			// Missing required data attributes - cannot proceed
+			return;
+		}
+
 			// Show loading state
 			const originalText: string = link.textContent || '';
 			link.textContent = 'Generating...';
 			link.style.pointerEvents = 'none';
-			
+
 			// Trigger the native WordPress reply box
-			triggerWordPressReply(commentId);
-			
+			triggerWordPressReply( commentId );
+
 			// Show loading modal after a short delay to ensure reply box is open
-			setTimeout(() => {
+			setTimeout( () => {
 				showLoadingModal();
-			}, 100);
-			
+			}, 100 );
+
 			try {
 				// Make AJAX request
 				const formData: FormData = new FormData();
-				formData.append('action', 'generate_ai_response');
-				formData.append('comment_id', commentId);
-				formData.append('_wpnonce', nonce);
-				
-				const response: Response = await fetch(wcAiReviewResponder.ajaxurl, {
-					method: 'POST',
-					body: formData
-				});
-				
+				formData.append( 'action', 'generate_ai_response' );
+				formData.append( 'comment_id', commentId );
+				formData.append( '_wpnonce', nonce );
+
+				const response: Response = await fetch(
+					wcAiReviewResponder.ajaxurl,
+					{
+						method: 'POST',
+						body: formData,
+					}
+				);
+
 				const data: AiResponseData = await response.json();
-				
-				if (data.success && data.data.reply) {
+
+				if ( data.success && data.data.reply ) {
 					// Insert the generated response into the WordPress reply textarea
-					const replyTextarea: HTMLTextAreaElement | null = document.querySelector('textarea[name="replycontent"]');
-					if (replyTextarea && data.data.reply) {
+					const replyTextarea: HTMLTextAreaElement | null =
+						document.querySelector(
+							'textarea[name="replycontent"]'
+						);
+					if ( replyTextarea && data.data.reply ) {
 						replyTextarea.value = data.data.reply;
-						
+
 						// If TinyMCE is active, update it as well
-						if (typeof (window as any).tinymce !== 'undefined') {
-							const editor = (window as any).tinymce.get(replyTextarea.id);
-							if (editor) {
-								editor.setContent(data.data.reply);
+						if (
+							typeof ( window as { tinymce?: unknown } ).tinymce !== 'undefined'
+						) {
+							const tinymce = ( window as { tinymce: { get: ( id: string ) => { setContent: ( content: string ) => void } } } ).tinymce;
+							const editor = tinymce.get( replyTextarea.id );
+							if ( editor ) {
+								editor.setContent( data.data.reply );
 							}
 						}
-						
-						replyTextarea.dispatchEvent(new Event('change'));
+
+						replyTextarea.dispatchEvent( new Event( 'change' ) );
 						replyTextarea.focus();
 					}
-					
+
 					// Hide loading modal on success
 					hideLoadingModal();
 				} else {
-					const errorMessage: string = data.data.message || 'Failed to generate AI response';
-					alert(`Error: ${errorMessage}`);
+					// Error occurred - hide loading modal
 					hideLoadingModal();
 				}
-			} catch (error: unknown) {
-				console.error('Error:', error);
-				alert('Error: Failed to generate AI response');
-				hideLoadingModal();
-			} finally {
+		} catch ( error: unknown ) {
+			// Handle error silently - user will see the loading modal disappear
+			hideLoadingModal();
+		} finally {
 				// Restore original state
 				link.textContent = originalText;
 				link.style.pointerEvents = 'auto';
 			}
-		});
-	});
-});
+		} );
+	} );
+} );

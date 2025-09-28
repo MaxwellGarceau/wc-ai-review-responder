@@ -2,24 +2,21 @@
 	"core": "WordPress/WordPress",
 	"phpVersion": "8.1",
 	"plugins": [
-	  "https://downloads.wordpress.org/plugin/woocommerce.latest-stable.zip",
-	  "https://github.com/woocommerce/woocommerce-gateway-dummy/releases/download/1.10.0/woocommerce-gateway-dummy.zip",
-	  "."
+		"https://downloads.wordpress.org/plugin/woocommerce.latest-stable.zip",
+		"https://github.com/woocommerce/woocommerce-gateway-dummy/releases/download/1.10.0/woocommerce-gateway-dummy.zip",
+		"."
 	],
-	"themes": [
-	  "WordPress/twentytwentyfour"
-	],
+	"themes": [ "WordPress/twentytwentyfour" ],
 	"port": 8888,
 	"testsPort": 8889,
 	"config": {
-	  "WP_DEBUG": true,
-	  "WP_DEBUG_LOG": true,
-	  "WP_DEBUG_DISPLAY": false,
-	  "SCRIPT_DEBUG": true,
-	  "WP_ENVIRONMENT_TYPE": "local"
+		"WP_DEBUG": true,
+		"WP_DEBUG_LOG": true,
+		"WP_DEBUG_DISPLAY": false,
+		"SCRIPT_DEBUG": true,
+		"WP_ENVIRONMENT_TYPE": "local"
 	},
 	"mappings": {
-	  "wp-content/plugins/wc-ai-review-responder": "."
+		"wp-content/plugins/wc-ai-review-responder": "."
 	}
-  }
-  
+}
