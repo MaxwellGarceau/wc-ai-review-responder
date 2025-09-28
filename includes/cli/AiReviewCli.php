@@ -18,7 +18,7 @@ use WcAiReviewResponder\Exceptions\AI_Response_Failure;
 /**
  * WP-CLI command class to exercise the integration flow for generating replies.
  */
-class AI_Review_CLI {
+class AiReviewCli {
 	/**
 	 * Review handler dependency.
 	 *

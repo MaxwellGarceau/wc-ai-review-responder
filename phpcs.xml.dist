@@ -4,7 +4,10 @@
 
     <!-- Standards -->
     <rule ref="WooCommerce-Core" />
-    <rule ref="WordPress" />
+    <rule ref="WordPress">
+        <!-- Allow PSR-4 style filenames; we'll use namespaces instead of WP filename conventions. -->
+        <exclude name="WordPress.Files.FileName"/>
+    </rule>
 
     <!-- Configurations -->
     <config name="minimum_supported_wp_version" value="6.0"/>

@@ -27,7 +27,7 @@ use WcAiReviewResponder\Models\Review_Model;
 use WcAiReviewResponder\LLM\Prompt_Builder;
 use WcAiReviewResponder\Clients\AI_Client;
 use WcAiReviewResponder\Validation\Validate_AI_Response;
-use WcAiReviewResponder\CLI\AI_Review_CLI;
+use WcAiReviewResponder\CLI\AiReviewCli;
 use DI\ContainerBuilder;
 
 // phpcs:disable WordPress.Files.FileName
@@ -85,15 +85,33 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 			$container = $builder->build();
 
 			if ( is_admin() ) {
-				new Setup();
-				$ajax = $container->get( Ajax_Handler::class );
-				$ajax->register();
+				$this->register_admin( $container );
 			}
 
 			if ( defined( 'WP_CLI' ) && WP_CLI ) {
-				$cli = $container->get( AI_Review_CLI::class );
-				\WP_CLI::add_command( 'ai-review', $cli );
+				$this->register_cli( $container );
 			}
+		}
+
+		/**
+		 * Register admin-only hooks and setup.
+		 *
+		 * @param \DI\Container $container Dependency injection container.
+		 */
+		private function register_admin( $container ) {
+			new Setup();
+			$ajax = $container->get( Ajax_Handler::class );
+			$ajax->register();
+		}
+
+		/**
+		 * Register WP-CLI commands.
+		 *
+		 * @param \DI\Container $container Dependency injection container.
+		 */
+		private function register_cli( $container ) {
+			$cli = $container->get( AiReviewCli::class );
+			\WP_CLI::add_command( 'ai-review', $cli );
 		}
 
 		/**
