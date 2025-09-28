@@ -21,12 +21,6 @@ if ( ! defined( 'MAIN_PLUGIN_FILE' ) ) {
 
 require_once plugin_dir_path( __FILE__ ) . '/vendor/autoload.php';
 
-use WcAiReviewResponder\Admin\Setup;
-use WcAiReviewResponder\Endpoints\AjaxHandler;
-use WcAiReviewResponder\Models\ReviewModel;
-use WcAiReviewResponder\LLM\PromptBuilder;
-use WcAiReviewResponder\Clients\GeminiClient;
-use WcAiReviewResponder\Validation\ValidateAiResponse;
 use WcAiReviewResponder\CLI\AiReviewCli;
 use WcAiReviewResponder\Core\ContainerFactory;
 
@@ -75,10 +69,6 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 		public function __construct() {
 			$container = $this->build_container();
 
-			if ( is_admin() ) {
-				$this->register_admin( $container );
-			}
-
 			if ( defined( 'WP_CLI' ) && WP_CLI ) {
 				$this->register_cli( $container );
 			}
@@ -92,17 +82,6 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 		private function build_container() {
 			$factory = new ContainerFactory();
 			return $factory->build();
-		}
-
-		/**
-		 * Register admin-only hooks and setup.
-		 *
-		 * @param \DI\Container $container Dependency injection container.
-		 */
-		private function register_admin( $container ) {
-			new Setup();
-			$ajax = $container->get( AjaxHandler::class );
-			$ajax->register();
 		}
 
 		/**

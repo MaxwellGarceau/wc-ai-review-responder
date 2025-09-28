@@ -189,6 +189,8 @@ add_filter('comment_row_actions', $callback, 10, 2);
 add_action('admin_enqueue_scripts', $callback);
 
 // AJAX handlers
+// Prefer using the class constant to avoid string duplication:
+// add_action('wp_ajax_' . AjaxHandler::ACTION_GENERATE_AI_RESPONSE, $callback);
 add_action('wp_ajax_generate_ai_response', $callback);
 ```
 
