@@ -22,7 +22,9 @@
 		"logs:wp": "wp-env run cli cat /var/www/html/wp-content/debug.log",
 		"logs:wp:clear": "wp-env run cli sh -c \"echo '' > /var/www/html/wp-content/debug.log\"",
 		"cli": "wp-env run cli wp --",
-		"test": "wp-env run cli wp test"
+		"test": "wp-env run cli wp test",
+		"test-ai": "wp-env run cli wp ai-review test",
+		"test-ai-review": "wp-env run cli wp ai-review test"
 	},
 	"dependencies": {
 		"@woocommerce/components": "latest",
