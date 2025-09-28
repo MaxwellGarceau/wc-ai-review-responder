@@ -74,6 +74,8 @@ class AjaxHandler {
 	 *
 	 * @return void
 	 * @throws InvalidArgumentsException When comment ID is missing or invalid.
+	 * @throws InvalidReviewException When the review is missing required data.
+	 * @throws AiResponseFailure When the AI provider fails to return a valid response.
 	 *
 	 * Response examples:
 	 *
