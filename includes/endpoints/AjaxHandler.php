@@ -95,32 +95,26 @@ class AjaxHandler {
 
 			wp_send_json_success( array( 'reply' => $reply ) );
 		} catch ( InvalidReviewException $e ) {
-			$this->send_error( 'invalid_review', $e->getMessage() );
+			$this->send_error( 'invalid_review', $e->getMessage(), 400 );
 		} catch ( AiResponseFailure $e ) {
-			$message = $e->getMessage();
-			wp_send_json_error(
-				array(
-					'code'    => 'ai_failure',
-					'message' => $message,
-				),
-				500
-			);
+			$this->send_error( 'ai_failure', $e->getMessage(), 500 );
 		}
 	}
 
 	/**
 	 * Send a standardized JSON error and exit.
 	 *
-	 * @param string $code    Error code.
-	 * @param string $message Error message.
+	 * @param string $error_type Error type.
+	 * @param string $message    Error message.
+	 * @param int    $code       HTTP status code.
 	 */
-	private function send_error( $code, $message ) {
+	private function send_error( $error_type, $message, $code ) {
 		wp_send_json_error(
 			array(
-				'code'    => $code,
-				'message' => $message,
+				'error_type' => $error_type,
+				'message'    => $message,
 			),
-			400
+			$code
 		);
 	}
 }
