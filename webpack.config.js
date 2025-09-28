@@ -4,7 +4,7 @@ const WooCommerceDependencyExtractionWebpackPlugin = require( '@woocommerce/depe
 module.exports = {
 	...defaultConfig,
 	entry: {
-		index: './src/index.js',
+		index: './src/index.ts',
 	},
 	plugins: [
 		...defaultConfig.plugins.filter(

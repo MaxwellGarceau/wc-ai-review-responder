@@ -62,8 +62,8 @@ document.addEventListener('DOMContentLoaded', (): void => {
 						replyTextarea.dispatchEvent(new Event('change'));
 					}
 					
-					// Show success message
-					alert('AI response generated successfully!');
+					// Log the generated reply in alert
+					alert(data.data.reply);
 				} else {
 					const errorMessage: string = data.data.message || 'Failed to generate AI response';
 					alert(`Error: ${errorMessage}`);
