@@ -34,7 +34,8 @@ class ContainerFactory {
 						\DI\get( \WcAiReviewResponder\LLM\PromptBuilder::class ),
 						\DI\get( \WcAiReviewResponder\Clients\GeminiClient::class ),
 						\DI\get( \WcAiReviewResponder\Validation\ValidateAiResponse::class ),
-						\DI\get( \WcAiReviewResponder\Validation\ReviewValidator::class )
+						\DI\get( \WcAiReviewResponder\Validation\ReviewValidator::class ),
+						\DI\get( \WcAiReviewResponder\Validation\AiInputSanitizer::class )
 					),
 				\WcAiReviewResponder\Endpoints\AjaxHandler::class => \DI\create()
 					->constructor(
@@ -42,7 +43,7 @@ class ContainerFactory {
 						\DI\get( \WcAiReviewResponder\LLM\PromptBuilder::class ),
 						\DI\get( \WcAiReviewResponder\Clients\GeminiClient::class ),
 						\DI\get( \WcAiReviewResponder\Validation\ValidateAiResponse::class ),
-						\DI\get( \WcAiReviewResponder\Validation\ValidateAiInput::class ),
+						\DI\get( \WcAiReviewResponder\Validation\AiInputSanitizer::class ),
 						\DI\get( \WcAiReviewResponder\Validation\ReviewValidator::class )
 					),
 			)

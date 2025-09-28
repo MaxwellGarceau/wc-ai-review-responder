@@ -1,6 +1,6 @@
 <?php
 /**
- * AI input validator: validates, normalizes, and sanitizes user review input
+ * AI input sanitizer: normalizes and sanitizes user review input
  * before building prompts for the AI provider.
  *
  * WordPress sanitizes on input and escapes on output, but comments can still
@@ -14,9 +14,9 @@
 namespace WcAiReviewResponder\Validation;
 
 /**
- * Validate and sanitize the AI input context.
+ * Sanitize and normalize the AI input context.
  */
-class ValidateAiInput {
+class AiInputSanitizer {
 	/**
 	 * Maximum character limit for AI input text to control token usage.
 	 *
@@ -24,7 +24,7 @@ class ValidateAiInput {
 	 */
 	private const MAX_CHARS = 8000;
 	/**
-	 * Validate and normalize the review input.
+	 * Sanitize and normalize the review input for AI processing.
 	 *
 	 * Expects an associative array with the following keys:
 	 * - rating (int)
@@ -34,9 +34,9 @@ class ValidateAiInput {
 	 * Returns a cleaned version of the same shape.
 	 *
 	 * @param array{rating:int|mixed,comment:string|mixed,product_name:string|mixed} $context Raw review context.
-	 * @return array{rating:int,comment:string,product_name:string} Cleaned context.
+	 * @return array{rating:int,comment:string,product_name:string} Sanitized context.
 	 */
-	public function validate( array $context ): array {
+	public function sanitize( array $context ): array {
 		$rating      = isset( $context['rating'] ) ? (int) $context['rating'] : 0;
 		$raw_comment = isset( $context['comment'] ) ? (string) $context['comment'] : '';
 		$raw_product = isset( $context['product_name'] ) ? (string) $context['product_name'] : '';
