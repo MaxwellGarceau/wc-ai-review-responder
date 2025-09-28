@@ -29,11 +29,11 @@ class ReviewModel implements ModelInterface {
 			throw new InvalidReviewException( 'Comment is not a WooCommerce product review.' );
 		}
 
-		$product_id = (int) $comment->comment_post_ID;
-		$rating     = get_comment_meta( $comment_id, 'rating', true );
-		$content    = (string) $comment->comment_content;
+		$product_id         = (int) $comment->comment_post_ID;
+		$rating             = get_comment_meta( $comment_id, 'rating', true );
+		$comment_content    = (string) $comment->comment_content;
 
-		if ( '' === trim( $content ) ) {
+		if ( '' === trim( $comment_content ) ) {
 			throw new InvalidReviewException( 'Review is missing a comment.' );
 		}
 
@@ -50,7 +50,7 @@ class ReviewModel implements ModelInterface {
 			'product_name'        => is_string( $product_name ) ? $product_name : '',
 			'product_description' => is_string( $product_description ) ? $product_description : '',
 			'rating'              => (int) $rating,
-			'comment'             => $content,
+			'comment'             => $comment_content,
 			'author'              => (string) $comment->comment_author,
 		);
 	}
