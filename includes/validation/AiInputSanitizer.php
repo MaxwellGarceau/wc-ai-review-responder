@@ -18,11 +18,11 @@ namespace WcAiReviewResponder\Validation;
  */
 class AiInputSanitizer {
 	/**
-	 * Maximum character limit for AI input text to control token usage.
+	 * Default maximum character limit for AI input text to control token usage.
 	 *
 	 * @var int
 	 */
-	private const MAX_CHARS = 8000;
+	private const DEFAULT_MAX_CHARS = 8000;
 	/**
 	 * Sanitize and normalize the review input for AI processing.
 	 *
@@ -77,12 +77,13 @@ class AiInputSanitizer {
 		$text = preg_replace( '/https?:\/\/\S+/i', '[redacted-url]', $text );
 
 		// Enforce a conservative character cap to control token usage.
+		$max_chars = $this->get_max_chars();
 		if ( function_exists( 'mb_strlen' ) && function_exists( 'mb_substr' ) ) {
-			if ( mb_strlen( $text, 'UTF-8' ) > self::MAX_CHARS ) {
-				$text = mb_substr( $text, 0, self::MAX_CHARS, 'UTF-8' ) . '…';
+			if ( mb_strlen( $text, 'UTF-8' ) > $max_chars ) {
+				$text = mb_substr( $text, 0, $max_chars, 'UTF-8' ) . '…';
 			}
-		} elseif ( strlen( $text ) > self::MAX_CHARS ) {
-			$text = substr( $text, 0, self::MAX_CHARS ) . '…';
+		} elseif ( strlen( $text ) > $max_chars ) {
+			$text = substr( $text, 0, $max_chars ) . '…';
 		}
 
 		return $text;
@@ -121,5 +122,26 @@ class AiInputSanitizer {
 		$text = normalize_whitespace( $text );
 
 		return $text;
+	}
+
+	/**
+	 * Get the maximum character limit for AI input text.
+	 *
+	 * Allows filtering via WordPress hook 'wc_ai_review_responder_max_chars'.
+	 *
+	 * @return int Maximum character limit.
+	 */
+	private function get_max_chars(): int {
+		/**
+		 * Filter the maximum character limit for AI input text.
+		 *
+		 * This filter allows customization of the character limit used to control
+		 * token usage when sending data to AI providers. The default is 8000 characters.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param int $max_chars Maximum character limit. Default 8000.
+		 */
+		return apply_filters( 'wc_ai_review_responder_max_chars', self::DEFAULT_MAX_CHARS );
 	}
 }
