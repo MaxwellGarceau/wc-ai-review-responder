@@ -40,7 +40,8 @@ class ContainerFactory {
 						\DI\get( \WcAiReviewResponder\Models\ReviewModel::class ),
 						\DI\get( \WcAiReviewResponder\LLM\PromptBuilder::class ),
 						\DI\get( \WcAiReviewResponder\Clients\GeminiClient::class ),
-						\DI\get( \WcAiReviewResponder\Validation\ValidateAiResponse::class )
+						\DI\get( \WcAiReviewResponder\Validation\ValidateAiResponse::class ),
+						\DI\get( \WcAiReviewResponder\Validation\ValidateAiInput::class )
 					),
 			)
 		);
