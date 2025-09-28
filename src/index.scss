@@ -14,11 +14,24 @@ h1 {
 
 .wc-ai-editor-row .colspanchange {
 	padding: 0;
+	width: 100%;
+}
+
+.wc-ai-editor-row {
+	width: 100%;
+}
+
+.wc-ai-editor-row td {
+	width: 100%;
+	padding: 0;
 }
 
 .wc-ai-editor-container {
 	padding: 20px;
 	border-top: 1px solid #c3c4c7;
+	width: 100%;
+	min-width: 100%;
+	box-sizing: border-box;
 }
 
 .wc-ai-editor-container h4 {
@@ -29,8 +42,26 @@ h1 {
 }
 
 .wc-ai-editor-container textarea {
-	width: 100%;
+	width: 100% !important;
+	min-width: 100% !important;
 	margin-bottom: 15px;
+	box-sizing: border-box;
+}
+
+/* Ensure WordPress editor components get full width */
+.wc-ai-editor-container .wp-editor-wrap {
+	width: 100% !important;
+	min-width: 100% !important;
+}
+
+.wc-ai-editor-container .wp-editor-container {
+	width: 100% !important;
+	min-width: 100% !important;
+}
+
+.wc-ai-editor-container .wp-editor-area {
+	width: 100% !important;
+	min-width: 100% !important;
 }
 
 .wc-ai-editor-actions {
