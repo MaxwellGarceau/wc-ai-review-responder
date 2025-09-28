@@ -7,17 +7,6 @@
 
 interface WcAiReviewResponder {
 	ajaxurl: string;
-	editorNonce: string;
-	editorSettings: {
-		teeny: boolean;
-		media_buttons: boolean;
-		textarea_rows: number;
-		quicktags: boolean;
-		tinymce: {
-			toolbar1: string;
-			toolbar2: string;
-		};
-	};
 }
 
 interface AiResponseData {
@@ -28,160 +17,131 @@ interface AiResponseData {
 	};
 }
 
-interface EditorResponseData {
-	success: boolean;
-	data: {
-		editor_html?: string;
-		message?: string;
-	};
-}
-
 declare const wcAiReviewResponder: WcAiReviewResponder;
 
 /**
- * Creates a custom reply box with WordPress editor
+ * Creates a textarea placeholder under the comment and initializes the WYSIWYG editor
  */
-async function createCustomReplyBox(commentId: string): Promise<HTMLElement> {
-	const replyBox = document.createElement('tr');
-	replyBox.className = 'inline-edit-row wc-ai-custom-reply-row';
-	replyBox.id = `wc-ai-reply-${commentId}`;
-	replyBox.style.display = 'none';
-	
-	// Get the comment post ID from the comment row
+function createAndInitializeEditor(commentId: string): void {
+	// Check if editor already exists for this comment
+	const existingEditor = document.getElementById(`wc-ai-editor-${commentId}`);
+	if (existingEditor) {
+		// Editor already exists, just show it
+		existingEditor.style.display = 'block';
+		existingEditor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		return;
+	}
+
+	// Find the comment row
 	const commentRow = document.querySelector(`#comment-${commentId}`);
-	const commentPostId = commentRow?.getAttribute('data-post-id') || '';
-	
-	// Create basic structure first
-	replyBox.innerHTML = `
+	if (!commentRow) {
+		console.error(`Comment row not found for ID: ${commentId}`);
+		return;
+	}
+
+	// Create the editor container
+	const editorContainer = document.createElement('tr');
+	editorContainer.id = `wc-ai-editor-${commentId}`;
+	editorContainer.className = 'wc-ai-editor-row';
+	editorContainer.innerHTML = `
 		<td colspan="7" class="colspanchange">
-			<fieldset class="comment-reply">
-				<legend>
-					<span class="hidden" id="editlegend-${commentId}" style="display: none;">Edit Comment</span>
-					<span class="hidden" id="replyhead-${commentId}" style="display: inline;">Reply to Comment</span>
-					<span class="hidden" id="addhead-${commentId}" style="display: none;">Add Comment</span>
-				</legend>
-
-				<div id="replycontainer-${commentId}">
-					<div id="wp-editor-loading-${commentId}" class="wp-editor-loading">
-						<span class="spinner is-active"></span> Loading editor...
-					</div>
+			<div class="wc-ai-editor-container">
+				<h4>AI Reply Editor</h4>
+				<textarea name="wc_ai_reply_content" id="wc-ai-editor-${commentId}" rows="10" class="large-text"></textarea>
+				<div class="wc-ai-editor-actions">
+					<button type="button" class="button button-primary wc-ai-save-reply" data-comment-id="${commentId}">Save Reply</button>
+					<button type="button" class="button wc-ai-cancel-reply" data-comment-id="${commentId}">Cancel</button>
 				</div>
-
-				<div id="edithead-${commentId}" style="display:none;">
-					<div class="inside">
-						<label for="author-name-${commentId}">Name</label>
-						<input type="text" name="newcomment_author" size="50" value="" id="author-name-${commentId}">
-					</div>
-					<div class="inside">
-						<label for="author-email-${commentId}">Email</label>
-						<input type="text" name="newcomment_author_email" size="50" value="" id="author-email-${commentId}">
-					</div>
-					<div class="inside">
-						<label for="author-url-${commentId}">URL</label>
-						<input type="text" id="author-url-${commentId}" name="newcomment_author_url" class="code" size="103" value="">
-					</div>
-				</div>
-
-				<div id="replysubmit-${commentId}" class="submit">
-					<p class="reply-submit-buttons">
-						<button type="button" class="save button button-primary">
-							<span id="addbtn-${commentId}" style="display: none;">Add Comment</span>
-							<span id="savebtn-${commentId}" style="display: none;">Update Comment</span>
-							<span id="replybtn-${commentId}" style="">Reply</span>
-						</button>
-						<button type="button" class="cancel button">Cancel</button>
-						<span class="waiting spinner"></span>
-					</p>
-					<div class="notice notice-error notice-alt inline hidden"><p class="error"></p></div>
-				</div>
-
-				<input type="hidden" name="action" id="action-${commentId}" value="replyto-comment">
-				<input type="hidden" name="comment_ID" id="comment_ID-${commentId}" value="${commentId}">
-				<input type="hidden" name="comment_post_ID" id="comment_post_ID-${commentId}" value="${commentPostId}">
-				<input type="hidden" name="status" id="status-${commentId}" value="">
-				<input type="hidden" name="position" id="position-${commentId}" value="-1">
-				<input type="hidden" name="checkbox" id="checkbox-${commentId}" value="1">
-				<input type="hidden" name="mode" id="mode-${commentId}" value="detail">
-				<input type="hidden" id="_ajax_nonce-replyto-comment-${commentId}" name="_ajax_nonce-replyto-comment" value="">
-				<input type="hidden" id="_wp_unfiltered_html_comment-${commentId}" name="_wp_unfiltered_html_comment" value="">
-			</fieldset>
+			</div>
 		</td>
 	`;
-	
-	// Load WordPress editor via AJAX
-	try {
-		const formData = new FormData();
-		formData.append('action', 'get_wp_editor_html');
-		formData.append('comment_id', commentId);
-		formData.append('_wpnonce', wcAiReviewResponder.editorNonce);
-		
-		const response = await fetch(wcAiReviewResponder.ajaxurl, {
-			method: 'POST',
-			body: formData
-		});
-		
-		const data: EditorResponseData = await response.json();
-		
-		if (data.success && data.data.editor_html) {
-			// Replace loading message with actual editor
-			const container = replyBox.querySelector(`#replycontainer-${commentId}`);
-			if (container) {
-				container.innerHTML = data.data.editor_html;
+
+	// Insert the editor after the comment row
+	const commentTable = commentRow.closest('table');
+	if (commentTable) {
+		// Find the tbody element within the table
+		const tbody = commentTable.querySelector('tbody');
+		if (tbody) {
+			// Insert after the comment row within the tbody
+			const nextSibling = commentRow.nextElementSibling;
+			if (nextSibling) {
+				tbody.insertBefore(editorContainer, nextSibling);
+			} else {
+				// If no next sibling, append to the end of tbody
+				tbody.appendChild(editorContainer);
 			}
 		} else {
-			// Fallback to simple textarea if editor fails
-			const container = replyBox.querySelector(`#replycontainer-${commentId}`);
-			if (container) {
-				container.innerHTML = `
-					<label for="replycontent-${commentId}" class="screen-reader-text">Comment</label>
-					<textarea name="replycontent" id="replycontent-${commentId}" rows="10" cols="40" class="large-text"></textarea>
-				`;
-			}
-		}
-	} catch (error) {
-		console.error('Failed to load WordPress editor:', error);
-		// Fallback to simple textarea
-		const container = replyBox.querySelector(`#replycontainer-${commentId}`);
-		if (container) {
-			container.innerHTML = `
-				<label for="replycontent-${commentId}" class="screen-reader-text">Comment</label>
-				<textarea name="replycontent" id="replycontent-${commentId}" rows="10" cols="40" class="large-text"></textarea>
-			`;
+			// Fallback: append to the table directly
+			commentTable.appendChild(editorContainer);
 		}
 	}
-	
-	return replyBox;
+
+	// Initialize the WordPress editor
+	initializeWordPressEditor(`wc-ai-editor-${commentId}`);
+
+	// Set up event listeners
+	setupEditorEventListeners(commentId);
+
+	// Scroll to the editor
+	editorContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 /**
- * Shows the custom reply box with fade-in animation
+ * Initialize WordPress editor using wp.editor.initialize
  */
-function showReplyBox(replyBox: HTMLElement): void {
-	replyBox.style.display = 'block';
-	replyBox.style.opacity = '0';
-	replyBox.style.transform = 'translateY(-10px)';
-	
-	// Trigger reflow to ensure initial styles are applied
-	replyBox.offsetHeight;
-	
-	// Animate in
-	replyBox.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-	replyBox.style.opacity = '1';
-	replyBox.style.transform = 'translateY(0)';
+function initializeWordPressEditor(editorId: string): void {
+	// Wait for WordPress editor to be available
+	if (typeof (window as any).wp !== 'undefined' && (window as any).wp.editor) {
+		(window as any).wp.editor.initialize(editorId, {
+			tinymce: {
+				wp_skip_init: true, // Prevent WordPress from auto-initializing
+				plugins: 'wordpress,wplink,wpeMCE,media,fullscreen,paste,image',
+				toolbar1: 'bold,italic,strikethrough,bullist,numlist,blockquote,hr,alignleft,aligncenter,alignright,link,unlink,wp_more,spellchecker,dfw,wp_adv',
+				toolbar2: 'formatselect,underline,alignjustify,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help',
+			},
+			quicktags: true, // Enable Quicktags (Text tab)
+			mediaButtons: true // Enable media upload button
+		});
+	} else {
+		// Fallback: try again after a short delay
+		setTimeout(() => {
+			initializeWordPressEditor(editorId);
+		}, 100);
+	}
 }
 
 /**
- * Hides the custom reply box with fade-out animation
+ * Set up event listeners for the editor
  */
-function hideReplyBox(replyBox: HTMLElement): void {
-	replyBox.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-	replyBox.style.opacity = '0';
-	replyBox.style.transform = 'translateY(-10px)';
-	
-	setTimeout(() => {
-		replyBox.style.display = 'none';
-	}, 300);
+function setupEditorEventListeners(commentId: string): void {
+	// Cancel button
+	const cancelButton = document.querySelector(`.wc-ai-cancel-reply[data-comment-id="${commentId}"]`);
+	if (cancelButton) {
+		cancelButton.addEventListener('click', () => {
+			hideEditor(commentId);
+		});
+	}
+
+	// Save button (placeholder for future functionality)
+	const saveButton = document.querySelector(`.wc-ai-save-reply[data-comment-id="${commentId}"]`);
+	if (saveButton) {
+		saveButton.addEventListener('click', () => {
+			// TODO: Implement actual reply saving
+			alert('Reply saving functionality will be implemented in a future update.');
+		});
+	}
 }
+
+/**
+ * Hide the editor
+ */
+function hideEditor(commentId: string): void {
+	const editor = document.getElementById(`wc-ai-editor-${commentId}`);
+	if (editor) {
+		editor.style.display = 'none';
+	}
+}
+
 
 document.addEventListener('DOMContentLoaded', (): void => {
 	const aiResponseLinks: NodeListOf<HTMLAnchorElement> = document.querySelectorAll('.ai-generate-response');
@@ -203,22 +163,8 @@ document.addEventListener('DOMContentLoaded', (): void => {
 			link.textContent = 'Generating...';
 			link.style.pointerEvents = 'none';
 			
-			// Create or get existing custom reply box
-			let replyBox: HTMLElement | null = document.getElementById(`wc-ai-reply-${commentId}`);
-			if (!replyBox) {
-				replyBox = await createCustomReplyBox(commentId);
-				// Insert the reply box after the comment row
-				const commentRow = link.closest('tr');
-				if (commentRow && commentRow.parentNode) {
-					commentRow.parentNode.insertBefore(replyBox, commentRow.nextSibling);
-				}
-			}
-			
-			// Show the reply box
-			showReplyBox(replyBox);
-			
-			// Set up event listeners for the reply box
-			setupReplyBoxEventListeners(replyBox, commentId);
+			// Create and initialize the editor
+			createAndInitializeEditor(commentId);
 			
 			try {
 				// Make AJAX request
@@ -235,14 +181,24 @@ document.addEventListener('DOMContentLoaded', (): void => {
 				const data: AiResponseData = await response.json();
 				
 				if (data.success && data.data.reply) {
-					// Insert the generated response into the textarea
-					const replyTextarea: HTMLTextAreaElement | null = replyBox.querySelector(`#replycontent-${commentId}`);
-					if (replyTextarea && data.data.reply) {
-						replyTextarea.value = data.data.reply;
+					// Insert the generated response into the editor
+					const editorTextarea: HTMLTextAreaElement | null = document.querySelector(`#wc-ai-editor-${commentId}`);
+					if (editorTextarea && data.data.reply) {
+						// Set the content in the textarea
+						editorTextarea.value = data.data.reply;
+						
+						// If TinyMCE is active, update it as well
+						if (typeof (window as any).tinymce !== 'undefined') {
+							const editor = (window as any).tinymce.get(`wc-ai-editor-${commentId}`);
+							if (editor) {
+								editor.setContent(data.data.reply);
+							}
+						}
+						
 						// Trigger change event to update any listeners
-						replyTextarea.dispatchEvent(new Event('change'));
-						// Focus the textarea so user can see the generated content
-						replyTextarea.focus();
+						editorTextarea.dispatchEvent(new Event('change'));
+						// Focus the editor
+						editorTextarea.focus();
 					}
 				} else {
 					const errorMessage: string = data.data.message || 'Failed to generate AI response';
@@ -260,30 +216,4 @@ document.addEventListener('DOMContentLoaded', (): void => {
 	});
 });
 
-/**
- * Sets up event listeners for the custom reply box
- */
-function setupReplyBoxEventListeners(replyBox: HTMLElement, commentId: string): void {
-	// Cancel button
-	const cancelButton = replyBox.querySelector('.cancel');
-	if (cancelButton) {
-		cancelButton.addEventListener('click', () => {
-			hideReplyBox(replyBox);
-		});
-	}
-	
-	// Submit button - integrate with WordPress comment reply functionality
-	const submitButton = replyBox.querySelector('.save');
-	if (submitButton) {
-		submitButton.addEventListener('click', () => {
-			// Use WordPress's native comment reply functionality
-			if (typeof (window as any).replytoComment === 'function') {
-				(window as any).replytoComment(commentId);
-			} else {
-				// Fallback: show alert for now
-				alert('Reply submission functionality will be implemented in a future update.');
-			}
-		});
-	}
-}
 

@@ -63,7 +63,7 @@ class ReviewActions {
 		wp_enqueue_media();
 		wp_enqueue_script( 'quicktags' );
 
-		// Enqueue the main script (which now includes admin review actions).
+		// Enqueue the main script.
 		$script_path       = '/build/index.js';
 		$script_asset_path = dirname( MAIN_PLUGIN_FILE ) . '/build/index.asset.php';
 		$script_asset      = file_exists( $script_asset_path )
@@ -82,23 +82,12 @@ class ReviewActions {
 			true
 		);
 
-		// Localize script to provide ajaxurl and editor settings.
+		// Localize script to provide ajaxurl.
 		wp_localize_script(
 			'wc-ai-review-responder',
 			'wcAiReviewResponder',
 			array(
-				'ajaxurl'        => admin_url( 'admin-ajax.php' ),
-				'editorNonce'    => wp_create_nonce( 'get_wp_editor_html' ),
-				'editorSettings' => array(
-					'teeny'         => true,
-					'media_buttons' => false,
-					'textarea_rows' => 10,
-					'quicktags'     => true,
-					'tinymce'       => array(
-						'toolbar1' => 'bold,italic,link,unlink,blockquote,del,ins,img,ul,ol,li,code,close',
-						'toolbar2' => '',
-					),
-				),
+				'ajaxurl' => admin_url( 'admin-ajax.php' ),
 			)
 		);
 	}
@@ -173,39 +162,5 @@ class ReviewActions {
 		}
 
 		return $reordered_actions;
-	}
-
-	/**
-	 * Generate WordPress editor HTML for a comment reply.
-	 *
-	 * @param string $comment_id The comment ID.
-	 * @return string The HTML for the WordPress editor.
-	 * @since 1.0.0
-	 */
-	public function generate_wp_editor_html( string $comment_id ): string {
-		$editor_id = "replycontent-{$comment_id}";
-
-		// WordPress editor settings.
-		$editor_settings = array(
-			'teeny'         => true,
-			'media_buttons' => false,
-			'textarea_rows' => 10,
-			'quicktags'     => true,
-			'tinymce'       => array(
-				'toolbar1' => 'bold,italic,link,unlink,blockquote,del,ins,img,ul,ol,li,code,close',
-				'toolbar2' => '',
-			),
-		);
-
-		// Start output buffering.
-		ob_start();
-
-		// Generate the WordPress editor.
-		wp_editor( '', $editor_id, $editor_settings );
-
-		// Get the editor HTML.
-		$editor_html = ob_get_clean();
-
-		return $editor_html;
 	}
 }

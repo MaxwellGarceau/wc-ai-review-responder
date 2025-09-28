@@ -2,9 +2,9 @@ h1 {
 	background-color: #ffd700;
 }
 
-/* Custom Reply Box Styling - WordPress Admin Theme Compatible */
-.wc-ai-custom-reply-row {
-	/* Ensure the custom reply row matches WordPress inline-edit-row styling */
+/* AI Editor Styling - WordPress Admin Theme Compatible */
+.wc-ai-editor-row {
+	/* Ensure the editor row matches WordPress inline-edit-row styling */
 	background: #fff;
 	border: 1px solid #c3c4c7;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
@@ -12,8 +12,35 @@ h1 {
 	z-index: 10;
 }
 
-.wc-ai-custom-reply-row .colspanchange {
+.wc-ai-editor-row .colspanchange {
 	padding: 0;
+}
+
+.wc-ai-editor-container {
+	padding: 20px;
+	border-top: 1px solid #c3c4c7;
+}
+
+.wc-ai-editor-container h4 {
+	margin: 0 0 15px 0;
+	font-size: 14px;
+	font-weight: 600;
+	color: #1d2327;
+}
+
+.wc-ai-editor-container textarea {
+	width: 100%;
+	margin-bottom: 15px;
+}
+
+.wc-ai-editor-actions {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+.wc-ai-editor-actions .button {
+	margin: 0;
 }
 
 .wc-ai-custom-reply-row .comment-reply {
