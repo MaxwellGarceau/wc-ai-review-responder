@@ -27,6 +27,7 @@ use WcAiReviewResponder\Models\Review_Model;
 use WcAiReviewResponder\LLM\Prompt_Builder;
 use WcAiReviewResponder\Clients\AI_Client;
 use WcAiReviewResponder\Validation\Validate_AI_Response;
+use WcAiReviewResponder\CLI\AI_Review_CLI;
 use DI\ContainerBuilder;
 
 // phpcs:disable WordPress.Files.FileName
@@ -72,22 +73,26 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 		 * Constructor.
 		 */
 		public function __construct() {
+			$builder = new ContainerBuilder();
+			$builder->useAnnotations( false );
+			$builder->addDefinitions(
+				array(
+					WcAiReviewResponder\LLM\Build_Prompt_Interface::class => \DI\get( Prompt_Builder::class ),
+					WcAiReviewResponder\Validation\Validate_AI_Response_Interface::class => \DI\get( Validate_AI_Response::class ),
+					\WcAiReviewResponder\Clients\AI_Client::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY' ) ),
+				)
+			);
+			$container = $builder->build();
+
 			if ( is_admin() ) {
 				new Setup();
-
-				$builder = new ContainerBuilder();
-				$builder->useAnnotations( false );
-				$builder->addDefinitions(
-					array(
-						WcAiReviewResponder\LLM\Build_Prompt_Interface::class => \DI\get( Prompt_Builder::class ),
-						WcAiReviewResponder\Validation\Validate_AI_Response_Interface::class => \DI\get( Validate_AI_Response::class ),
-						\WcAiReviewResponder\Clients\AI_Client::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY' ) ),
-					)
-				);
-				$container = $builder->build();
-
 				$ajax = $container->get( Ajax_Handler::class );
 				$ajax->register();
+			}
+
+			if ( defined( 'WP_CLI' ) && WP_CLI ) {
+				$cli = $container->get( AI_Review_CLI::class );
+				\WP_CLI::add_command( 'ai-review', $cli );
 			}
 		}
 

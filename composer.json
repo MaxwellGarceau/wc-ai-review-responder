@@ -4,7 +4,10 @@
 	"autoload": {
 		"psr-4": {
 			"WcAiReviewResponder\\": "includes/"
-		}
+		},
+		"classmap": [
+			"includes/cli/"
+		]
 	},
 	"require-dev": {
 		"phpunit/phpunit": "^9.0",
