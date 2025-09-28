@@ -74,12 +74,12 @@ class AjaxHandler {
 	 */
 	public function handle_generate() {
 		if ( ! current_user_can( 'moderate_comments' ) ) {
-			$this->send_error( 'unauthorized', 'Insufficient permissions.', 401 );
+			$this->send_error( 'unauthorized', 'Insufficient permissions.', HTTP_UNAUTHORIZED );
 		}
 
 		$nonce = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
 		if ( ! wp_verify_nonce( $nonce, 'generate_ai_response' ) ) {
-			$this->send_error( 'invalid_nonce', 'Security check failed.', 403 );
+			$this->send_error( 'invalid_nonce', 'Security check failed.', HTTP_FORBIDDEN );
 		}
 
 		$comment_id = isset( $_POST['comment_id'] ) ? (int) $_POST['comment_id'] : 0;
@@ -95,9 +95,9 @@ class AjaxHandler {
 
 			wp_send_json_success( array( 'reply' => $reply ) );
 		} catch ( InvalidReviewException $e ) {
-			$this->send_error( 'invalid_review', $e->getMessage(), 400 );
+			$this->send_error( 'invalid_review', $e->getMessage(), HTTP_BAD_REQUEST );
 		} catch ( AiResponseFailure $e ) {
-			$this->send_error( 'ai_failure', $e->getMessage(), 500 );
+			$this->send_error( 'ai_failure', $e->getMessage(), HTTP_INTERNAL_SERVER_ERROR );
 		}
 	}
 
@@ -108,7 +108,7 @@ class AjaxHandler {
 	 * @param string $message    Error message.
 	 * @param int    $code       HTTP status code.
 	 */
-	private function send_error( string $error_type, string $message, int $code ) {
+	private function send_error( string $error_type, string $message, int $code = HTTP_BAD_REQUEST ) {
 		wp_send_json_error(
 			array(
 				'error_type' => $error_type,
