@@ -22,7 +22,9 @@
 		"logs:wp": "wp-env run cli cat /var/www/html/wp-content/debug.log",
 		"logs:wp:clear": "wp-env run cli sh -c \"echo '' > /var/www/html/wp-content/debug.log\"",
 		"cli": "wp-env run cli wp --",
-		"test": "wp-env run cli wp test",
+		"test": "wp-env run tests-cli --env-cwd=wp-content/plugins/wc-ai-review-responder ./vendor/bin/phpunit",
+		"test:watch": "wp-env run tests-cli --env-cwd=wp-content/plugins/wc-ai-review-responder ./vendor/bin/phpunit --watch",
+		"test:coverage": "wp-env run tests-cli --env-cwd=wp-content/plugins/wc-ai-review-responder ./vendor/bin/phpunit --coverage-html coverage",
 		"test-ai": "wp-env run cli wp ai-review test",
 		"test-ai-review": "wp-env run cli wp ai-review test"
 	},
