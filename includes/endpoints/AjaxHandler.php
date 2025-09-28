@@ -74,12 +74,12 @@ class AjaxHandler {
 	 */
 	public function handle_generate() {
 		if ( ! current_user_can( 'moderate_comments' ) ) {
-			$this->send_error( 'unauthorized', 'Insufficient permissions.' );
+			$this->send_error( 'unauthorized', 'Insufficient permissions.', 401 );
 		}
 
 		$nonce = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
 		if ( ! wp_verify_nonce( $nonce, 'generate_ai_response' ) ) {
-			$this->send_error( 'invalid_nonce', 'Security check failed.' );
+			$this->send_error( 'invalid_nonce', 'Security check failed.', 403 );
 		}
 
 		$comment_id = isset( $_POST['comment_id'] ) ? (int) $_POST['comment_id'] : 0;
@@ -108,7 +108,7 @@ class AjaxHandler {
 	 * @param string $message    Error message.
 	 * @param int    $code       HTTP status code.
 	 */
-	private function send_error( $error_type, $message, $code ) {
+	private function send_error( string $error_type, string $message, int $code ) {
 		wp_send_json_error(
 			array(
 				'error_type' => $error_type,
