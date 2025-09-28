@@ -25,7 +25,7 @@ use WcAiReviewResponder\Admin\Setup;
 use WcAiReviewResponder\Endpoints\AjaxHandler;
 use WcAiReviewResponder\Models\ReviewModel;
 use WcAiReviewResponder\LLM\PromptBuilder;
-use WcAiReviewResponder\Clients\AiClient;
+use WcAiReviewResponder\Clients\GeminiClient;
 use WcAiReviewResponder\Validation\ValidateAiResponse;
 use WcAiReviewResponder\CLI\AiReviewCli;
 use WcAiReviewResponder\Core\ContainerFactory;

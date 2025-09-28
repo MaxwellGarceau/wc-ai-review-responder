@@ -10,7 +10,7 @@ namespace WcAiReviewResponder\CLI;
 
 use WcAiReviewResponder\Models\ReviewModel;
 use WcAiReviewResponder\LLM\PromptBuilder;
-use WcAiReviewResponder\Clients\AiClient;
+use WcAiReviewResponder\Clients\GeminiClient;
 use WcAiReviewResponder\Validation\ValidateAiResponse;
 use WcAiReviewResponder\Exceptions\InvalidReviewException;
 use WcAiReviewResponder\Exceptions\AiResponseFailure;
@@ -36,7 +36,7 @@ class AiReviewCli {
 	/**
 	 * AI client dependency.
 	 *
-	 * @var \WcAiReviewResponder\Clients\AiClient
+	 * @var \WcAiReviewResponder\Clients\GeminiClient
 	 */
 	private $ai_client;
 
@@ -52,10 +52,10 @@ class AiReviewCli {
 	 *
 	 * @param ReviewModel        $review_handler     Review handler.
 	 * @param PromptBuilder      $prompt_builder     Prompt builder.
-	 * @param AiClient           $ai_client          AI client.
+	 * @param GeminiClient       $ai_client          AI client.
 	 * @param ValidateAiResponse $response_validator Response validator.
 	 */
-	public function __construct( ReviewModel $review_handler, PromptBuilder $prompt_builder, AiClient $ai_client, ValidateAiResponse $response_validator ) {
+	public function __construct( ReviewModel $review_handler, PromptBuilder $prompt_builder, GeminiClient $ai_client, ValidateAiResponse $response_validator ) {
 		$this->review_handler     = $review_handler;
 		$this->prompt_builder     = $prompt_builder;
 		$this->ai_client          = $ai_client;
