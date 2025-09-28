@@ -89,12 +89,35 @@ class AiReviewCli {
 		}
 
 		try {
-			$context     = $this->review_handler->get_by_id( $comment_id );
-			$prompt      = $this->prompt_builder->build_prompt( $context );
-			$ai_response = $this->ai_client->get( $prompt );
-			$reply       = $this->response_validator->validate( $ai_response );
+			\WP_CLI::log( 'Step 1: Fetching review context...' );
+			$context = $this->review_handler->get_by_id( $comment_id );
+			\WP_CLI::log( '✓ This is the output from Fetching review context' );
+			\WP_CLI::log( 'Review context data: ' . wp_json_encode( $context, JSON_PRETTY_PRINT ) );
 
-			\WP_CLI::success( $reply );
+			\WP_CLI::log( '' );
+
+			\WP_CLI::log( 'Step 2: Building AI prompt...' );
+			$prompt = $this->prompt_builder->build_prompt( $context );
+			\WP_CLI::log( '✓ This is the output from Building AI prompt' );
+			\WP_CLI::log( 'Generated prompt: ' . $prompt );
+
+			\WP_CLI::log( '' );
+
+			\WP_CLI::log( 'Step 3: Sending request to AI client...' );
+			$ai_response = $this->ai_client->get( $prompt );
+			\WP_CLI::log( '✓ This is the output from Sending request to AI client' );
+			\WP_CLI::log( 'AI response data: ' . wp_json_encode( $ai_response, JSON_PRETTY_PRINT ) );
+
+			\WP_CLI::log( '' );
+
+			\WP_CLI::log( 'Step 4: Validating AI response...' );
+			$reply = $this->response_validator->validate( $ai_response );
+			\WP_CLI::log( '✓ This is the output from Validating AI response' );
+			\WP_CLI::log( 'Validated reply: ' . $reply );
+
+			\WP_CLI::log( '' );
+
+			\WP_CLI::success( 'Generated AI reply: ' . $reply );
 		} catch ( InvalidReviewException $e ) {
 			\WP_CLI::error( $e->getMessage() );
 		} catch ( AiResponseFailure $e ) {

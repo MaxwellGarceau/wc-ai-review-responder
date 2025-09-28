@@ -27,7 +27,7 @@ class PromptBuilder implements BuildPromptInterface {
 		$prompt .= "\nProduct: {$product}";
 		$prompt .= "\nRating: {$rating}/5";
 		$prompt .= "\nReview: {$comment}";
-		$prompt .= "\nReply:";
+		$prompt .= "\nYour reply:";
 
 		return $prompt;
 	}
