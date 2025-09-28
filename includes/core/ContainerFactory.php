@@ -25,21 +25,21 @@ class ContainerFactory {
 		$builder->addDefinitions(
 			array(
 				// Load environment variables.
-				\WcAiReviewResponder\Clients\AiClient::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY', 'test-key' ), \DI\get( \WcAiReviewResponder\Clients\Request::class ) ),
+				\WcAiReviewResponder\Clients\GeminiClient::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY', 'test-key' ), \DI\get( \WcAiReviewResponder\Clients\Request::class ) ),
 
 				// Resolve interfaces to concrete implementations.
 				\WcAiReviewResponder\CLI\AiReviewCli::class => \DI\create()
 					->constructor(
 						\DI\get( \WcAiReviewResponder\Models\ReviewModel::class ),
 						\DI\get( \WcAiReviewResponder\LLM\PromptBuilder::class ),
-						\DI\get( \WcAiReviewResponder\Clients\AiClient::class ),
+						\DI\get( \WcAiReviewResponder\Clients\GeminiClient::class ),
 						\DI\get( \WcAiReviewResponder\Validation\ValidateAiResponse::class )
 					),
 				\WcAiReviewResponder\Endpoints\AjaxHandler::class => \DI\create()
 					->constructor(
 						\DI\get( \WcAiReviewResponder\Models\ReviewModel::class ),
 						\DI\get( \WcAiReviewResponder\LLM\PromptBuilder::class ),
-						\DI\get( \WcAiReviewResponder\Clients\AiClient::class ),
+						\DI\get( \WcAiReviewResponder\Clients\GeminiClient::class ),
 						\DI\get( \WcAiReviewResponder\Validation\ValidateAiResponse::class )
 					),
 			)

@@ -12,14 +12,14 @@ use WcAiReviewResponder\Exceptions\AiResponseFailure;
 use WcAiReviewResponder\Clients\Request;
 
 /**
- * AI client class that sends prompts to the Gemini API and returns raw responses.
+ * Gemini client class that sends prompts to the Gemini API and returns raw responses.
  */
-class AiClient implements AiClientInterface {
+class GeminiClient implements AiClientInterface {
 	/**
 	 * Gemini API endpoint URL.
 	 *
 	 * We can leave this as one big URL for now because we only need to send one request.
-	 * 
+	 *
 	 * @var string
 	 */
 	private const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
@@ -73,7 +73,7 @@ class AiClient implements AiClientInterface {
 	}
 
 	/**
-	 * Make a request to the Gemini API.
+	 * Assemble the request body, make the request, and extract the response text.
 	 *
 	 * @param string $prompt The prompt to send to Gemini.
 	 * @return string The generated response from Gemini.
