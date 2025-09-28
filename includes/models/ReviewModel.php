@@ -44,6 +44,10 @@ class ReviewModel implements ModelInterface {
 			throw new InvalidReviewException( 'Review is missing a rating.' );
 		}
 
+		if ( $rating < 1 || $rating > 5 ) {
+			throw new InvalidReviewException( 'Rating must be between 1 and 5.' );
+		}
+
 		$product_name        = get_the_title( $product_id );
 		$product_description = $this->get_product_description( $product_id );
 

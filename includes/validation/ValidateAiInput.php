@@ -41,11 +41,6 @@ class ValidateAiInput {
 		$raw_comment = isset( $context['comment'] ) ? (string) $context['comment'] : '';
 		$raw_product = isset( $context['product_name'] ) ? (string) $context['product_name'] : '';
 
-		// Clamp rating to expected WooCommerce range.
-		if ( $rating < 1 || $rating > 5 ) {
-			$rating = max( 1, min( 5, $rating ) );
-		}
-
 		// Normalize and sanitize the comment for AI consumption (not for HTML output).
 		$comment = $this->normalize_text_for_ai( $raw_comment );
 
