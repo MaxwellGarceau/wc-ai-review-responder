@@ -21,8 +21,10 @@ if ( ! defined( 'MAIN_PLUGIN_FILE' ) ) {
 
 require_once plugin_dir_path( __FILE__ ) . '/vendor/autoload.php';
 
+use WcAiReviewResponder\Admin\ReviewActions;
 use WcAiReviewResponder\CLI\AiReviewCli;
 use WcAiReviewResponder\Core\ContainerFactory;
+use WcAiReviewResponder\Endpoints\AjaxHandler;
 
 // phpcs:disable WordPress.Files.FileName
 // phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed
@@ -69,9 +71,28 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 		public function __construct() {
 			$container = $this->build_container();
 
+			// Initialize admin functionality.
+			$this->init_admin();
+
 			if ( defined( 'WP_CLI' ) && WP_CLI ) {
 				$this->register_cli( $container );
 			}
+		}
+
+		/**
+		 * Initialize admin functionality.
+		 *
+		 * @since 1.0.0
+		 */
+		private function init_admin() {
+			$container = $this->build_container();
+
+			// Initialize admin review actions.
+			new ReviewActions();
+
+			// Register AJAX handler.
+			$ajax_handler = $container->get( AjaxHandler::class );
+			$ajax_handler->register();
 		}
 
 		/**

@@ -22,7 +22,7 @@
 │
 ├── 📁 includes/                         ════► PHP SOURCE CODE
 │   └── 📁 admin/
-│       └── 📄 setup.php                 ════► Admin Setup & WooCommerce Integration
+│       └── 📄 ReviewActions.php         ════► AI Response Generation in Comment Actions
 │
 ├── 📁 src/                              ════► FRONTEND SOURCE
 │   ├── 📄 index.js                      ════► React Components & WooCommerce Admin
@@ -76,9 +76,9 @@
          │                       │                       │
          ▼                       ▼                       ▼
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│ wc-ai-review-   │    │ includes/admin/ │    │ src/index.js    │
-│ responder.php   │    │ setup.php       │    │ + index.scss    │
-│ (Entry Point)   │    │ (Admin Setup)   │    │ (Frontend)      │
+│ wc-ai-review-   │    │ includes/Admin/ │    │ src/index.ts    │
+│ responder.php   │    │ ReviewActions.php│    │ + index.scss    │
+│ (Entry Point)   │    │ (Review Actions)│    │ (Frontend)      │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
          │                       │                       │
          ▼                       ▼                       ▼

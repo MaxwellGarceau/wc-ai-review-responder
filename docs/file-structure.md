@@ -44,12 +44,12 @@ wc-ai-review-responder/
 ### PHP Backend (`includes/`)
 ```
 includes/
-└── 📁 admin/
-    └── 📄 setup.php                  # Admin setup and page registration
+└── 📁 Admin/
+    └── 📄 ReviewActions.php          # AI response generation in comment actions
 ```
 
 **Key PHP Classes:**
-- `WcAiReviewResponder\Admin\Setup` - Handles admin page setup, script registration, and WooCommerce admin integration
+- `WcAiReviewResponder\Admin\ReviewActions` - Handles AI response generation links in comment row actions
 
 ### JavaScript Frontend (`src/`)
 ```
