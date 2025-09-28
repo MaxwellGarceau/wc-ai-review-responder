@@ -63,18 +63,16 @@ class ValidateAiInput {
 	 * @return string Cleaned text.
 	 */
 	private function normalize_text_for_ai( string $text ): string {
+		// Use WordPress functions for initial sanitization.
 		$text = strip_shortcodes( $text );
 		$text = wp_strip_all_tags( $text, false );
 		$text = wp_specialchars_decode( $text, ENT_QUOTES );
 
+		// Use WordPress function to normalize whitespace.
+		$text = normalize_whitespace( $text );
+
 		// Remove control characters except newlines and tabs.
 		$text = preg_replace( '/[^\P{C}\n\t]+/u', '', $text );
-
-		// Collapse runs of spaces/tabs; preserve newlines.
-		$text = preg_replace( '/[ \t]+/u', ' ', $text );
-
-		// Trim surrounding whitespace.
-		$text = trim( $text );
 
 		// Optional lightweight PII redaction.
 		$text = preg_replace( '/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i', '[redacted-email]', $text );
@@ -101,10 +99,14 @@ class ValidateAiInput {
 	 * @return string Clean inline text.
 	 */
 	private function normalize_inline_text( string $text ): string {
+		// Use WordPress functions for sanitization.
 		$text = strip_shortcodes( $text );
 		$text = wp_strip_all_tags( $text, true );
 		$text = wp_specialchars_decode( $text, ENT_QUOTES );
-		$text = preg_replace( '/\s+/u', ' ', $text );
+
+		// Use WordPress function to normalize whitespace.
+		$text = normalize_whitespace( $text );
+
 		return trim( $text );
 	}
 }
