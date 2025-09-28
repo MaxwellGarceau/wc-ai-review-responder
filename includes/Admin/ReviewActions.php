@@ -21,7 +21,7 @@ class ReviewActions {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-		add_filter( 'comment_row_actions', array( $this, 'add_ai_response_action' ), 10, 2 );
+		add_filter( 'comment_row_actions', array( $this, 'add_ai_response_action' ), 20, 2 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_review_scripts' ) );
 	}
 
@@ -34,30 +34,16 @@ class ReviewActions {
 	 * @since 1.0.0
 	 */
 	public function add_ai_response_action( array $actions, $comment ): array {
-		// Only add the action for product reviews.
-		if ( ! $comment || 'review' !== get_comment_type( $comment ) ) {
+		// Only add the action for valid product reviews.
+		if ( ! $this->is_valid_product_review( $comment ) ) {
 			return $actions;
 		}
 
-		// Check if the comment is associated with a product.
-		if ( 'product' !== get_post_type( $comment->comment_post_ID ) ) {
-			return $actions;
-		}
+		// Create the AI response generation action.
+		$ai_response_action = $this->create_ai_response_action( $comment );
 
-		// Check user capabilities.
-		if ( ! current_user_can( 'moderate_comments' ) ) {
-			return $actions;
-		}
-
-		// Add the AI response generation action.
-		$actions['ai_response'] = sprintf(
-			'<a href="#" class="ai-generate-response" data-comment-id="%d" data-nonce="%s">%s</a>',
-			esc_attr( $comment->comment_ID ),
-			esc_attr( wp_create_nonce( 'generate_ai_response' ) ),
-			esc_html__( 'Generate AI Response', 'wc_ai_review_responder' )
-		);
-
-		return $actions;
+		// Insert the AI response action after the "reply" action.
+		return $this->insert_action_after( $actions, 'reply', 'ai_response', $ai_response_action );
 	}
 
 	/**
@@ -99,5 +85,77 @@ class ReviewActions {
 				'ajaxurl' => admin_url( 'admin-ajax.php' ),
 			)
 		);
+	}
+
+	/**
+	 * Check if a comment is a valid product review.
+	 *
+	 * @param WP_Comment|null $comment The comment object.
+	 * @return bool True if the comment is a valid product review, false otherwise.
+	 * @since 1.0.0
+	 */
+	private function is_valid_product_review( $comment ): bool {
+		// Check if comment exists and is a review.
+		if ( ! $comment || 'review' !== get_comment_type( $comment ) ) {
+			return false;
+		}
+
+		// Check if the comment is associated with a product.
+		if ( 'product' !== get_post_type( $comment->comment_post_ID ) ) {
+			return false;
+		}
+
+		// Check user capabilities.
+		if ( ! current_user_can( 'moderate_comments' ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Create the AI response generation action HTML.
+	 *
+	 * @param WP_Comment $comment The comment object.
+	 * @return string The HTML for the AI response action link.
+	 * @since 1.0.0
+	 */
+	private function create_ai_response_action( $comment ): string {
+		return sprintf(
+			'<a href="#" class="ai-generate-response" data-comment-id="%d" data-nonce="%s">%s</a>',
+			esc_attr( $comment->comment_ID ),
+			esc_attr( wp_create_nonce( 'generate_ai_response' ) ),
+			esc_html__( 'Generate AI Response', 'wc_ai_review_responder' )
+		);
+	}
+
+	/**
+	 * Insert a new action after a specified action in the actions array.
+	 *
+	 * @param array  $actions        The original actions array.
+	 * @param string $after_key      The key to insert after.
+	 * @param string $new_key        The key for the new action.
+	 * @param string $new_action     The HTML for the new action.
+	 * @return array The reordered actions array.
+	 * @since 1.0.0
+	 */
+	private function insert_action_after( array $actions, string $after_key, string $new_key, string $new_action ): array {
+		$reordered_actions = array();
+
+		foreach ( $actions as $key => $action ) {
+			$reordered_actions[ $key ] = $action;
+
+			// Insert new action after the specified key.
+			if ( $after_key === $key ) {
+				$reordered_actions[ $new_key ] = $new_action;
+			}
+		}
+
+		// If the target action wasn't found, just append the new action.
+		if ( ! isset( $actions[ $after_key ] ) ) {
+			$reordered_actions[ $new_key ] = $new_action;
+		}
+
+		return $reordered_actions;
 	}
 }
