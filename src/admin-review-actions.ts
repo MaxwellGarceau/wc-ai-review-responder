@@ -5,6 +5,8 @@
  * @since   1.0.0
  */
 
+import loadingModalTemplate from './templates/loading-modal.html';
+
 interface WcAiReviewResponder {
 	ajaxurl: string;
 }
@@ -33,82 +35,6 @@ function triggerWordPressReply(commentId: string): void {
 }
 
 /**
- * Creates the loading modal HTML content
- */
-function createLoadingModalHTML(): string {
-	return `
-		<div class="modal-content">
-			<div class="spinner"></div>
-			<h3>Generating AI Response</h3>
-			<p>Please wait while we generate a personalized response to this review...</p>
-		</div>
-	`;
-}
-
-/**
- * Injects the CSS styles for the loading modal
- */
-function injectLoadingModalCSS(): void {
-	// Check if CSS already exists
-	if (document.getElementById('wc-ai-loading-modal-css')) {
-		return;
-	}
-
-	const style = document.createElement('style');
-	style.id = 'wc-ai-loading-modal-css';
-	style.textContent = `
-		#wc-ai-loading-modal {
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background: rgba(0, 0, 0, 0.5);
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			z-index: 999999;
-			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-		}
-		#wc-ai-loading-modal .modal-content {
-			background: white;
-			padding: 30px;
-			border-radius: 8px;
-			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-			text-align: center;
-			max-width: 400px;
-			width: 90%;
-		}
-		#wc-ai-loading-modal .spinner {
-			width: 40px;
-			height: 40px;
-			border: 4px solid #f3f3f3;
-			border-top: 4px solid #2271b1;
-			border-radius: 50%;
-			animation: spin 1s linear infinite;
-			margin: 0 auto 20px;
-		}
-		#wc-ai-loading-modal h3 {
-			margin: 0 0 10px 0;
-			color: #1d2327;
-			font-size: 18px;
-			font-weight: 600;
-		}
-		#wc-ai-loading-modal p {
-			margin: 0;
-			color: #646970;
-			font-size: 14px;
-			line-height: 1.4;
-		}
-		@keyframes spin {
-			0% { transform: rotate(0deg); }
-			100% { transform: rotate(360deg); }
-		}
-	`;
-	document.head.appendChild(style);
-}
-
-/**
  * Shows a loading modal over the reply box
  */
 function showLoadingModal(): void {
@@ -119,13 +45,10 @@ function showLoadingModal(): void {
 		return;
 	}
 
-	// Inject CSS styles
-	injectLoadingModalCSS();
-
 	// Create the loading modal
 	modal = document.createElement('div');
 	modal.id = 'wc-ai-loading-modal';
-	modal.innerHTML = createLoadingModalHTML();
+	modal.innerHTML = loadingModalTemplate;
 	document.body.appendChild(modal);
 }
 
