@@ -11,6 +11,7 @@ namespace WcAiReviewResponder\Endpoints;
 use WcAiReviewResponder\Exceptions\InvalidArgumentsException;
 use WcAiReviewResponder\Exceptions\InvalidReviewException;
 use WcAiReviewResponder\Exceptions\AiResponseFailure;
+use WcAiReviewResponder\Exceptions\RateLimitExceededException;
 use WcAiReviewResponder\Enums\ErrorType;
 use WcAiReviewResponder\Enums\HttpStatus;
 
@@ -47,11 +48,18 @@ class AjaxHandler {
 	private $response_validator;
 
 	/**
-	 * Input validator dependency.
+	 * Input sanitizer dependency.
 	 *
-	 * @var \WcAiReviewResponder\Validation\ValidateAiInput
+	 * @var \WcAiReviewResponder\Validation\AiInputSanitizer
 	 */
-	private $input_validator;
+	private $input_sanitizer;
+
+	/**
+	 * Review validator dependency.
+	 *
+	 * @var \WcAiReviewResponder\Validation\ReviewValidator
+	 */
+	private $review_validator;
 
 	/**
 	 * Constructor.
@@ -62,14 +70,16 @@ class AjaxHandler {
 	 * @param \WcAiReviewResponder\LLM\BuildPromptInterface               $prompt_builder     Prompt builder.
 	 * @param \WcAiReviewResponder\Clients\AiClientInterface              $ai_client          AI client.
 	 * @param \WcAiReviewResponder\Validation\ValidateAiResponseInterface $response_validator Response validator.
-	 * @param \WcAiReviewResponder\Validation\ValidateAiInput             $input_validator    Input validator.
+	 * @param \WcAiReviewResponder\Validation\AiInputSanitizer            $input_sanitizer    Input sanitizer.
+	 * @param \WcAiReviewResponder\Validation\ReviewValidator             $review_validator   Review validator.
 	 */
-	public function __construct( \WcAiReviewResponder\Models\ModelInterface $review_handler, \WcAiReviewResponder\LLM\BuildPromptInterface $prompt_builder, \WcAiReviewResponder\Clients\AiClientInterface $ai_client, \WcAiReviewResponder\Validation\ValidateAiResponseInterface $response_validator, \WcAiReviewResponder\Validation\ValidateAiInput $input_validator ) {
+	public function __construct( \WcAiReviewResponder\Models\ModelInterface $review_handler, \WcAiReviewResponder\LLM\BuildPromptInterface $prompt_builder, \WcAiReviewResponder\Clients\AiClientInterface $ai_client, \WcAiReviewResponder\Validation\ValidateAiResponseInterface $response_validator, \WcAiReviewResponder\Validation\AiInputSanitizer $input_sanitizer, \WcAiReviewResponder\Validation\ReviewValidator $review_validator ) {
 		$this->review_handler     = $review_handler;
 		$this->prompt_builder     = $prompt_builder;
 		$this->ai_client          = $ai_client;
 		$this->response_validator = $response_validator;
-		$this->input_validator    = $input_validator;
+		$this->input_sanitizer    = $input_sanitizer;
+		$this->review_validator   = $review_validator;
 	}
 	/**
 	 * Boot hooks.
@@ -119,8 +129,9 @@ class AjaxHandler {
 		}
 
 		try {
-			$context     = $this->review_handler->get_by_id( $comment_id );
-			$clean       = $this->input_validator->validate( $context );
+			$context = $this->review_handler->get_by_id( $comment_id );
+			$this->review_validator->validate_for_ai_processing( $context );
+			$clean       = $this->input_sanitizer->sanitize( $context );
 			$prompt      = $this->prompt_builder->build_prompt( $clean );
 			$ai_response = $this->ai_client->get( $prompt );
 			$reply       = $this->response_validator->validate( $ai_response );
@@ -128,6 +139,8 @@ class AjaxHandler {
 			wp_send_json_success( array( 'reply' => $reply ) );
 		} catch ( InvalidReviewException $e ) {
 			$this->send_error( ErrorType::INVALID_REVIEW, $e->getMessage(), HttpStatus::BAD_REQUEST );
+		} catch ( RateLimitExceededException $e ) {
+			$this->send_error( ErrorType::RATE_LIMIT_EXCEEDED, $e->getMessage(), HttpStatus::TOO_MANY_REQUESTS );
 		} catch ( AiResponseFailure $e ) {
 			$this->send_error( ErrorType::AI_FAILURE, $e->getMessage(), HttpStatus::INTERNAL_SERVER_ERROR );
 		}

@@ -25,7 +25,7 @@ class ContainerFactory {
 		$builder->addDefinitions(
 			array(
 				// Load environment variables.
-				\WcAiReviewResponder\Clients\GeminiClient::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY', 'test-key' ), \DI\get( \WcAiReviewResponder\Clients\Request::class ) ),
+				\WcAiReviewResponder\Clients\GeminiClient::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY', 'test-key' ), \DI\get( \WcAiReviewResponder\Clients\Request::class ), \DI\get( \WcAiReviewResponder\RateLimiting\RateLimiter::class ) ),
 
 				// Resolve interfaces to concrete implementations.
 				\WcAiReviewResponder\CLI\AiReviewCli::class => \DI\create()
@@ -33,7 +33,9 @@ class ContainerFactory {
 						\DI\get( \WcAiReviewResponder\Models\ReviewModel::class ),
 						\DI\get( \WcAiReviewResponder\LLM\PromptBuilder::class ),
 						\DI\get( \WcAiReviewResponder\Clients\GeminiClient::class ),
-						\DI\get( \WcAiReviewResponder\Validation\ValidateAiResponse::class )
+						\DI\get( \WcAiReviewResponder\Validation\ValidateAiResponse::class ),
+						\DI\get( \WcAiReviewResponder\Validation\ReviewValidator::class ),
+						\DI\get( \WcAiReviewResponder\Validation\AiInputSanitizer::class )
 					),
 				\WcAiReviewResponder\Endpoints\AjaxHandler::class => \DI\create()
 					->constructor(
@@ -41,7 +43,8 @@ class ContainerFactory {
 						\DI\get( \WcAiReviewResponder\LLM\PromptBuilder::class ),
 						\DI\get( \WcAiReviewResponder\Clients\GeminiClient::class ),
 						\DI\get( \WcAiReviewResponder\Validation\ValidateAiResponse::class ),
-						\DI\get( \WcAiReviewResponder\Validation\ValidateAiInput::class )
+						\DI\get( \WcAiReviewResponder\Validation\AiInputSanitizer::class ),
+						\DI\get( \WcAiReviewResponder\Validation\ReviewValidator::class )
 					),
 			)
 		);

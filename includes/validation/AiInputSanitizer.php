@@ -1,6 +1,6 @@
 <?php
 /**
- * AI input validator: validates, normalizes, and sanitizes user review input
+ * AI input sanitizer: normalizes and sanitizes user review input
  * before building prompts for the AI provider.
  *
  * WordPress sanitizes on input and escapes on output, but comments can still
@@ -14,17 +14,17 @@
 namespace WcAiReviewResponder\Validation;
 
 /**
- * Validate and sanitize the AI input context.
+ * Sanitize and normalize the AI input context.
  */
-class ValidateAiInput {
+class AiInputSanitizer {
 	/**
-	 * Maximum character limit for AI input text to control token usage.
+	 * Default maximum character limit for AI input text to control token usage.
 	 *
 	 * @var int
 	 */
-	private const MAX_CHARS = 8000;
+	private const DEFAULT_MAX_CHARS = 8000;
 	/**
-	 * Validate and normalize the review input.
+	 * Sanitize and normalize the review input for AI processing.
 	 *
 	 * Expects an associative array with the following keys:
 	 * - rating (int)
@@ -34,17 +34,12 @@ class ValidateAiInput {
 	 * Returns a cleaned version of the same shape.
 	 *
 	 * @param array{rating:int|mixed,comment:string|mixed,product_name:string|mixed} $context Raw review context.
-	 * @return array{rating:int,comment:string,product_name:string} Cleaned context.
+	 * @return array{rating:int,comment:string,product_name:string} Sanitized context.
 	 */
-	public function validate( array $context ): array {
+	public function sanitize( array $context ): array {
 		$rating      = isset( $context['rating'] ) ? (int) $context['rating'] : 0;
 		$raw_comment = isset( $context['comment'] ) ? (string) $context['comment'] : '';
 		$raw_product = isset( $context['product_name'] ) ? (string) $context['product_name'] : '';
-
-		// Clamp rating to expected WooCommerce range.
-		if ( $rating < 1 || $rating > 5 ) {
-			$rating = max( 1, min( 5, $rating ) );
-		}
 
 		// Normalize and sanitize the comment for AI consumption (not for HTML output).
 		$comment = $this->normalize_text_for_ai( $raw_comment );
@@ -76,19 +71,10 @@ class ValidateAiInput {
 		$text = preg_replace( '/[^\P{C}\n\t]+/u', '', $text );
 
 		// Optional lightweight PII redaction.
-		// Example: "Contact me at john@example.com or visit https://example.com" becomes
-		// "Contact me at [redacted-email] or visit [redacted-url]".
-		$text = preg_replace( '/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i', '[redacted-email]', $text );
-		$text = preg_replace( '/https?:\/\/\S+/i', '[redacted-url]', $text );
+		$text = $this->redact_pii( $text );
 
 		// Enforce a conservative character cap to control token usage.
-		if ( function_exists( 'mb_strlen' ) && function_exists( 'mb_substr' ) ) {
-			if ( mb_strlen( $text, 'UTF-8' ) > self::MAX_CHARS ) {
-				$text = mb_substr( $text, 0, self::MAX_CHARS, 'UTF-8' ) . '…';
-			}
-		} elseif ( strlen( $text ) > self::MAX_CHARS ) {
-			$text = substr( $text, 0, self::MAX_CHARS ) . '…';
-		}
+		$text = $this->truncate_text( $text );
 
 		return $text;
 	}
@@ -124,6 +110,70 @@ class ValidateAiInput {
 
 		// Normalize whitespace.
 		$text = normalize_whitespace( $text );
+
+		return $text;
+	}
+
+	/**
+	 * Get the maximum character limit for AI input text.
+	 *
+	 * Allows filtering via WordPress hook 'wc_ai_review_responder_max_chars'.
+	 *
+	 * @return int Maximum character limit.
+	 */
+	private function get_max_chars(): int {
+		/**
+		 * Filter the maximum character limit for AI input text.
+		 *
+		 * This filter allows customization of the character limit used to control
+		 * token usage when sending data to AI providers. The default is 8000 characters.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param int $max_chars Maximum character limit. Default 8000.
+		 */
+		return apply_filters( 'wc_ai_review_responder_max_chars', self::DEFAULT_MAX_CHARS );
+	}
+
+	/**
+	 * Redact personally identifiable information from text.
+	 *
+	 * Removes email addresses and URLs to protect user privacy when sending
+	 * data to AI providers.
+	 *
+	 * TODO: mgarceau 2025-09-28: Email address matching is complicated and we would
+	 * be better off using a library for this.
+	 *
+	 * @param string $text Input text.
+	 * @return string Text with PII redacted.
+	 */
+	private function redact_pii( string $text ): string {
+		// Example: "Contact me at john@example.com or visit https://example.com" becomes
+		// "Contact me at [redacted-email] or visit [redacted-url]".
+		$text = preg_replace( '/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i', '[redacted-email]', $text );
+		$text = preg_replace( '/https?:\/\/\S+/i', '[redacted-url]', $text );
+
+		return $text;
+	}
+
+	/**
+	 * Truncate text to the maximum character limit.
+	 *
+	 * Uses multibyte functions when available for proper UTF-8 handling.
+	 * Adds ellipsis when text is truncated.
+	 *
+	 * @param string $text Input text.
+	 * @return string Truncated text with ellipsis if needed.
+	 */
+	private function truncate_text( string $text ): string {
+		$max_chars = $this->get_max_chars();
+		if ( function_exists( 'mb_strlen' ) && function_exists( 'mb_substr' ) ) {
+			if ( mb_strlen( $text, 'UTF-8' ) > $max_chars ) {
+				$text = mb_substr( $text, 0, $max_chars, 'UTF-8' ) . '…';
+			}
+		} elseif ( strlen( $text ) > $max_chars ) {
+			$text = substr( $text, 0, $max_chars ) . '…';
+		}
 
 		return $text;
 	}

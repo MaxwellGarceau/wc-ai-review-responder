@@ -12,8 +12,11 @@ use WcAiReviewResponder\Models\ReviewModel;
 use WcAiReviewResponder\LLM\PromptBuilder;
 use WcAiReviewResponder\Clients\GeminiClient;
 use WcAiReviewResponder\Validation\ValidateAiResponse;
+use WcAiReviewResponder\Validation\ReviewValidator;
+use WcAiReviewResponder\Validation\AiInputSanitizer;
 use WcAiReviewResponder\Exceptions\InvalidReviewException;
 use WcAiReviewResponder\Exceptions\AiResponseFailure;
+use WcAiReviewResponder\Exceptions\RateLimitExceededException;
 
 /**
  * WP-CLI command class to exercise the integration flow for generating replies.
@@ -48,18 +51,36 @@ class AiReviewCli {
 	private $response_validator;
 
 	/**
+	 * Review validator dependency.
+	 *
+	 * @var \WcAiReviewResponder\Validation\ReviewValidator
+	 */
+	private $review_validator;
+
+	/**
+	 * Input sanitizer dependency.
+	 *
+	 * @var \WcAiReviewResponder\Validation\AiInputSanitizer
+	 */
+	private $input_sanitizer;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param ReviewModel        $review_handler     Review handler.
 	 * @param PromptBuilder      $prompt_builder     Prompt builder.
 	 * @param GeminiClient       $ai_client          AI client.
 	 * @param ValidateAiResponse $response_validator Response validator.
+	 * @param ReviewValidator    $review_validator   Review validator.
+	 * @param AiInputSanitizer   $input_sanitizer    Input sanitizer.
 	 */
-	public function __construct( ReviewModel $review_handler, PromptBuilder $prompt_builder, GeminiClient $ai_client, ValidateAiResponse $response_validator ) {
+	public function __construct( ReviewModel $review_handler, PromptBuilder $prompt_builder, GeminiClient $ai_client, ValidateAiResponse $response_validator, ReviewValidator $review_validator, AiInputSanitizer $input_sanitizer ) {
 		$this->review_handler     = $review_handler;
 		$this->prompt_builder     = $prompt_builder;
 		$this->ai_client          = $ai_client;
 		$this->response_validator = $response_validator;
+		$this->review_validator   = $review_validator;
+		$this->input_sanitizer    = $input_sanitizer;
 	}
 
 	/**
@@ -96,21 +117,34 @@ class AiReviewCli {
 
 			\WP_CLI::log( '' );
 
-			\WP_CLI::log( 'Step 2: Building AI prompt...' );
-			$prompt = $this->prompt_builder->build_prompt( $context );
+			\WP_CLI::log( 'Step 1.5: Validating review for AI processing...' );
+			$this->review_validator->validate_for_ai_processing( $context );
+			\WP_CLI::log( '✓ Review validation passed' );
+
+			\WP_CLI::log( '' );
+
+			\WP_CLI::log( 'Step 2: Sanitizing input for AI processing...' );
+			$clean = $this->input_sanitizer->sanitize( $context );
+			\WP_CLI::log( '✓ Input sanitization completed' );
+			\WP_CLI::log( 'Sanitized context data: ' . wp_json_encode( $clean, JSON_PRETTY_PRINT ) );
+
+			\WP_CLI::log( '' );
+
+			\WP_CLI::log( 'Step 3: Building AI prompt...' );
+			$prompt = $this->prompt_builder->build_prompt( $clean );
 			\WP_CLI::log( '✓ This is the output from Building AI prompt' );
 			\WP_CLI::log( 'Generated prompt: ' . $prompt );
 
 			\WP_CLI::log( '' );
 
-			\WP_CLI::log( 'Step 3: Sending request to AI client...' );
+			\WP_CLI::log( 'Step 4: Sending request to AI client...' );
 			$ai_response = $this->ai_client->get( $prompt );
 			\WP_CLI::log( '✓ This is the output from Sending request to AI client' );
 			\WP_CLI::log( 'AI response data: ' . wp_json_encode( $ai_response, JSON_PRETTY_PRINT ) );
 
 			\WP_CLI::log( '' );
 
-			\WP_CLI::log( 'Step 4: Validating AI response...' );
+			\WP_CLI::log( 'Step 5: Validating AI response...' );
 			$reply = $this->response_validator->validate( $ai_response );
 			\WP_CLI::log( '✓ This is the output from Validating AI response' );
 			\WP_CLI::log( 'Validated reply: ' . $reply );
@@ -120,6 +154,8 @@ class AiReviewCli {
 			\WP_CLI::success( 'Generated AI reply: ' . $reply );
 		} catch ( InvalidReviewException $e ) {
 			\WP_CLI::error( $e->getMessage() );
+		} catch ( RateLimitExceededException $e ) {
+			\WP_CLI::error( 'Rate limit exceeded: ' . $e->getMessage() );
 		} catch ( AiResponseFailure $e ) {
 			\WP_CLI::error( $e->getMessage() );
 		}

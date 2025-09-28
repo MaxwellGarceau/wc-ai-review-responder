@@ -33,17 +33,6 @@ class ReviewModel implements ModelInterface {
 		$rating          = get_comment_meta( $comment_id, 'rating', true );
 		$comment_content = (string) $comment->comment_content;
 
-		// TODO: mgarceau 2025-09-27: In the future, we will support reviews without ratings and comments
-		// by passing more context regarding the user, the product, the order, and any possible difficulties
-		// that the user might have encountered.
-		if ( '' === trim( $comment_content ) ) {
-			throw new InvalidReviewException( 'Review is missing a comment.' );
-		}
-
-		if ( '' === (string) $rating ) {
-			throw new InvalidReviewException( 'Review is missing a rating.' );
-		}
-
 		$product_name        = get_the_title( $product_id );
 		$product_description = $this->get_product_description( $product_id );
 
