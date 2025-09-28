@@ -9,6 +9,13 @@
     processIsolation="false"
     stopOnFailure="false"
 >
+    <php>
+        <env name="WP_PHPUNIT__DIR" value="vendor/wp-phpunit/wp-phpunit"/>
+        <const name="WP_TESTS_DOMAIN" value="example.org"/>
+        <const name="WP_TESTS_EMAIL" value="admin@example.org"/>
+        <const name="WP_TESTS_TITLE" value="Test Blog"/>
+        <const name="WP_PHP_BINARY" value="php"/>
+    </php>
     <testsuites>
         <testsuite name="WC AI Review Responder">
             <directory>tests/</directory>

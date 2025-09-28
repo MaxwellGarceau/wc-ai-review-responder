@@ -67,7 +67,7 @@ class GeminiClient implements AiClientInterface {
 	 *
 	 * @param string $prompt Prepared prompt string.
 	 * @return string Raw AI response.
-	 * @throws AiResponseFailure|RateLimitExceededException When API request fails or rate limit is exceeded.
+	 * @throws AiResponseFailure When the API request fails.
 	 */
 	public function get( string $prompt ): string {
 		if ( empty( $this->api_key ) ) {

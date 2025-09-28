@@ -6,15 +6,20 @@
 // Load PHPUnit Polyfills before WordPress test bootstrap
 require_once dirname( __DIR__ ) . '/vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php';
 
-// Load WordPress test environment
+// Resolve WordPress test environment directory
+// Prefer wp-env provided test suite inside the container
 $_tests_dir = getenv( 'WP_TESTS_DIR' );
-
 if ( ! $_tests_dir ) {
-    $_tests_dir = rtrim( sys_get_temp_dir(), '/\\' ) . '/wordpress-tests-lib';
+    $_tests_dir = getenv( 'WP_PHPUNIT__DIR' );
+}
+if ( ! $_tests_dir ) {
+    // Fallback to Composer-installed wp-phpunit
+    $_tests_dir = dirname( __DIR__ ) . '/vendor/wp-phpunit/wp-phpunit';
 }
 
 if ( ! file_exists( $_tests_dir . '/includes/functions.php' ) ) {
-    echo "Could not find $_tests_dir/includes/functions.php, have you run bin/install-wp-tests.sh ?" . PHP_EOL;
+    echo "Could not find WordPress test library in: $_tests_dir\n";
+    echo "Ensure wp-phpunit is installed (composer require --dev wp-phpunit/wp-phpunit)\n";
     exit( 1 );
 }
 
