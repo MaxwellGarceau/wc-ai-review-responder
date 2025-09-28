@@ -12,6 +12,7 @@ use WcAiReviewResponder\Models\ReviewModel;
 use WcAiReviewResponder\LLM\PromptBuilder;
 use WcAiReviewResponder\Clients\GeminiClient;
 use WcAiReviewResponder\Validation\ValidateAiResponse;
+use WcAiReviewResponder\Validation\ReviewValidator;
 use WcAiReviewResponder\Exceptions\InvalidReviewException;
 use WcAiReviewResponder\Exceptions\AiResponseFailure;
 
@@ -48,18 +49,27 @@ class AiReviewCli {
 	private $response_validator;
 
 	/**
+	 * Review validator dependency.
+	 *
+	 * @var \WcAiReviewResponder\Validation\ReviewValidator
+	 */
+	private $review_validator;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param ReviewModel        $review_handler     Review handler.
 	 * @param PromptBuilder      $prompt_builder     Prompt builder.
 	 * @param GeminiClient       $ai_client          AI client.
 	 * @param ValidateAiResponse $response_validator Response validator.
+	 * @param ReviewValidator    $review_validator   Review validator.
 	 */
-	public function __construct( ReviewModel $review_handler, PromptBuilder $prompt_builder, GeminiClient $ai_client, ValidateAiResponse $response_validator ) {
+	public function __construct( ReviewModel $review_handler, PromptBuilder $prompt_builder, GeminiClient $ai_client, ValidateAiResponse $response_validator, ReviewValidator $review_validator ) {
 		$this->review_handler     = $review_handler;
 		$this->prompt_builder     = $prompt_builder;
 		$this->ai_client          = $ai_client;
 		$this->response_validator = $response_validator;
+		$this->review_validator   = $review_validator;
 	}
 
 	/**
@@ -93,6 +103,12 @@ class AiReviewCli {
 			$context = $this->review_handler->get_by_id( $comment_id );
 			\WP_CLI::log( '✓ This is the output from Fetching review context' );
 			\WP_CLI::log( 'Review context data: ' . wp_json_encode( $context, JSON_PRETTY_PRINT ) );
+
+			\WP_CLI::log( '' );
+
+			\WP_CLI::log( 'Step 1.5: Validating review for AI processing...' );
+			$this->review_validator->validate_for_ai_processing( $context );
+			\WP_CLI::log( '✓ Review validation passed' );
 
 			\WP_CLI::log( '' );
 
