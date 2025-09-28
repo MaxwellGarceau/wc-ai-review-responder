@@ -39,12 +39,7 @@ function triggerWordPressReply(commentId: string): void {
 function createLoadingModalHTML(): string {
 	return `
 		<div class="modal-content">
-			<svg class="spinner-svg" width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<circle cx="20" cy="20" r="18" stroke="#f3f3f3" stroke-width="4"/>
-				<path d="M 20 2 A 18 18 0 1 1 19.9 2" stroke="#2271b1" stroke-width="4" stroke-linecap="round">
-					<animateTransform attributeName="transform" type="rotate" dur="1s" repeatCount="indefinite" values="0 20 20;360 20 20"/>
-				</path>
-			</svg>
+			<div class="spinner"></div>
 			<h3>Generating AI Response</h3>
 			<p>Please wait while we generate a personalized response to this review...</p>
 		</div>

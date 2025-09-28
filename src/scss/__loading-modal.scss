@@ -23,11 +23,16 @@
 	width: 90%;
 }
 
-#wc-ai-loading-modal .spinner-gif {
+#wc-ai-loading-modal .spinner {
 	width: 40px;
 	height: 40px;
+	border: 4px solid #f3f3f3;
+	border-top: 4px solid #2271b1;
+	border-radius: 50%;
+	animation: spin 1s linear infinite;
 	margin: 0 auto 20px;
-	display: block;
+    visibility: visible;
+    background: transparent;
 }
 
 #wc-ai-loading-modal h3 {
@@ -42,4 +47,9 @@
 	color: #646970;
 	font-size: 14px;
 	line-height: 1.4;
+}
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
 }
