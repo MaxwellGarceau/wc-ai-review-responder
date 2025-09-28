@@ -81,24 +81,24 @@ class AjaxHandler {
 	/**
 	 * Process the AJAX request.
 	 *
-     * Response examples:
-     *
-     * Success:
-     * {
-     *   "success": true,
-     *   "data": {
-     *     "reply": "Thank you for your review! We're glad you're enjoying the Amazing Widget. We appreciate your feedback about pricing and are always working to provide the best value for our customers."
-     *   }
-     * }
-     *
-     * Error:
-     * {
-     *   "success": false,
-     *   "data": {
-     *     "error_type": "invalid_review",
-     *     "message": "Review is missing required data."
-     *   }
-     * }
+	 * Response examples:
+	 *
+	 * Success:
+	 * {
+	 *   "success": true,
+	 *   "data": {
+	 *     "reply": "Thank you for your review! We're glad you're enjoying the Amazing Widget. We appreciate your feedback about pricing and are always working to provide the best value for our customers."
+	 *   }
+	 * }
+	 *
+	 * Error:
+	 * {
+	 *   "success": false,
+	 *   "data": {
+	 *     "error_type": "invalid_review",
+	 *     "message": "Review is missing required data."
+	 *   }
+	 * }
 	 *
 	 * @return void
 	 * @throws InvalidArgumentsException When the request contains an invalid comment ID.
