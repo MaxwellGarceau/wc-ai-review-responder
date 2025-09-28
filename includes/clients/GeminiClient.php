@@ -9,7 +9,9 @@
 namespace WcAiReviewResponder\Clients;
 
 use WcAiReviewResponder\Exceptions\AiResponseFailure;
+use WcAiReviewResponder\Exceptions\RateLimitExceededException;
 use WcAiReviewResponder\Clients\Request;
+use WcAiReviewResponder\RateLimiting\RateLimiter;
 
 /**
  * Gemini client class that sends prompts to the Gemini API and returns raw responses.
@@ -38,16 +40,25 @@ class GeminiClient implements AiClientInterface {
 	 */
 	private $request;
 
+	/**
+	 * Rate limiter instance.
+	 *
+	 * @var RateLimiter
+	 */
+	private $rate_limiter;
+
 
 	/**
 	 * Constructor.
 	 *
-	 * @param string  $api_key Gemini API key.
-	 * @param Request $request Request handler instance.
+	 * @param string      $api_key     Gemini API key.
+	 * @param Request     $request     Request handler instance.
+	 * @param RateLimiter $rate_limiter Rate limiter instance.
 	 */
-	public function __construct( string $api_key, Request $request ) {
-		$this->api_key = $api_key;
-		$this->request = $request;
+	public function __construct( string $api_key, Request $request, RateLimiter $rate_limiter ) {
+		$this->api_key      = $api_key;
+		$this->request      = $request;
+		$this->rate_limiter = $rate_limiter;
 	}
 
 
@@ -56,18 +67,25 @@ class GeminiClient implements AiClientInterface {
 	 *
 	 * @param string $prompt Prepared prompt string.
 	 * @return string Raw AI response.
-	 * @throws AiResponseFailure When API key is missing or AI returns empty response.
+	 * @throws AiResponseFailure|RateLimitExceededException When API request fails or rate limit is exceeded.
 	 */
 	public function get( string $prompt ): string {
 		if ( empty( $this->api_key ) ) {
 			throw new AiResponseFailure( 'Missing Gemini API key.' );
 		}
 
+		// Check rate limits before making the request.
+		$identifier = $this->get_rate_limit_identifier();
+		$this->rate_limiter->check_rate_limit( $identifier );
+
 		$response = $this->make_gemini_request( $prompt );
 
 		if ( ! is_string( $response ) || '' === trim( $response ) ) {
 			throw new AiResponseFailure( 'AI returned an empty response.', 0, null, array( 'prompt' => wp_kses_post( $prompt ) ) );
 		}
+
+		// Record successful request for rate limiting.
+		$this->rate_limiter->record_request( $identifier );
 
 		return $response;
 	}
@@ -120,5 +138,56 @@ class GeminiClient implements AiClientInterface {
 		}
 
 		return $data['candidates'][0]['content']['parts'][0]['text'];
+	}
+
+	/**
+	 * Get the identifier for rate limiting.
+	 *
+	 * Uses user ID for logged-in users, IP address for anonymous users.
+	 *
+	 * @return string Rate limiting identifier.
+	 */
+	private function get_rate_limit_identifier(): string {
+		if ( is_user_logged_in() ) {
+			return 'user_' . get_current_user_id();
+		}
+
+		// For anonymous users, use IP address.
+		$ip = $this->get_client_ip();
+		return 'ip_' . $ip;
+	}
+
+	/**
+	 * Get the client's IP address.
+	 *
+	 * @return string Client IP address.
+	 */
+	private function get_client_ip(): string {
+		$ip_headers = array(
+			'HTTP_CF_CONNECTING_IP',     // Cloudflare.
+			'HTTP_CLIENT_IP',
+			'HTTP_X_FORWARDED_FOR',
+			'HTTP_X_FORWARDED',
+			'HTTP_X_CLUSTER_CLIENT_IP',
+			'HTTP_FORWARDED_FOR',
+			'HTTP_FORWARDED',
+			'REMOTE_ADDR',
+		);
+
+		foreach ( $ip_headers as $header ) {
+			if ( ! empty( $_SERVER[ $header ] ) ) {
+				$ip = sanitize_text_field( wp_unslash( $_SERVER[ $header ] ) );
+				// Handle comma-separated IPs (from proxies).
+				$ip = explode( ',', $ip )[0];
+				$ip = trim( $ip );
+
+				if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) ) {
+					return $ip;
+				}
+			}
+		}
+
+		// Fallback to REMOTE_ADDR even if it's a private IP.
+		return isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : 'unknown';
 	}
 }

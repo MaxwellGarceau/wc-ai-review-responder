@@ -16,6 +16,7 @@ use WcAiReviewResponder\Validation\ReviewValidator;
 use WcAiReviewResponder\Validation\AiInputSanitizer;
 use WcAiReviewResponder\Exceptions\InvalidReviewException;
 use WcAiReviewResponder\Exceptions\AiResponseFailure;
+use WcAiReviewResponder\Exceptions\RateLimitExceededException;
 
 /**
  * WP-CLI command class to exercise the integration flow for generating replies.
@@ -153,6 +154,8 @@ class AiReviewCli {
 			\WP_CLI::success( 'Generated AI reply: ' . $reply );
 		} catch ( InvalidReviewException $e ) {
 			\WP_CLI::error( $e->getMessage() );
+		} catch ( RateLimitExceededException $e ) {
+			\WP_CLI::error( 'Rate limit exceeded: ' . $e->getMessage() );
 		} catch ( AiResponseFailure $e ) {
 			\WP_CLI::error( $e->getMessage() );
 		}

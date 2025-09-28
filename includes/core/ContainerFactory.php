@@ -25,7 +25,7 @@ class ContainerFactory {
 		$builder->addDefinitions(
 			array(
 				// Load environment variables.
-				\WcAiReviewResponder\Clients\GeminiClient::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY', 'test-key' ), \DI\get( \WcAiReviewResponder\Clients\Request::class ) ),
+				\WcAiReviewResponder\Clients\GeminiClient::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY', 'test-key' ), \DI\get( \WcAiReviewResponder\Clients\Request::class ), \DI\get( \WcAiReviewResponder\RateLimiting\RateLimiter::class ) ),
 
 				// Resolve interfaces to concrete implementations.
 				\WcAiReviewResponder\CLI\AiReviewCli::class => \DI\create()

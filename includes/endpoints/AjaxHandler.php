@@ -11,6 +11,7 @@ namespace WcAiReviewResponder\Endpoints;
 use WcAiReviewResponder\Exceptions\InvalidArgumentsException;
 use WcAiReviewResponder\Exceptions\InvalidReviewException;
 use WcAiReviewResponder\Exceptions\AiResponseFailure;
+use WcAiReviewResponder\Exceptions\RateLimitExceededException;
 use WcAiReviewResponder\Enums\ErrorType;
 use WcAiReviewResponder\Enums\HttpStatus;
 
@@ -138,6 +139,8 @@ class AjaxHandler {
 			wp_send_json_success( array( 'reply' => $reply ) );
 		} catch ( InvalidReviewException $e ) {
 			$this->send_error( ErrorType::INVALID_REVIEW, $e->getMessage(), HttpStatus::BAD_REQUEST );
+		} catch ( RateLimitExceededException $e ) {
+			$this->send_error( ErrorType::RATE_LIMIT_EXCEEDED, $e->getMessage(), HttpStatus::TOO_MANY_REQUESTS );
 		} catch ( AiResponseFailure $e ) {
 			$this->send_error( ErrorType::AI_FAILURE, $e->getMessage(), HttpStatus::INTERNAL_SERVER_ERROR );
 		}

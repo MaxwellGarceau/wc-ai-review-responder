@@ -14,8 +14,9 @@ namespace WcAiReviewResponder\Enums;
  * @since 1.0.0
  */
 enum ErrorType: string {
-	case UNAUTHORIZED   = 'unauthorized';
-	case INVALID_NONCE  = 'invalid_nonce';
-	case INVALID_REVIEW = 'invalid_review';
-	case AI_FAILURE     = 'ai_failure';
+	case UNAUTHORIZED        = 'unauthorized';
+	case INVALID_NONCE       = 'invalid_nonce';
+	case INVALID_REVIEW      = 'invalid_review';
+	case RATE_LIMIT_EXCEEDED = 'rate_limit_exceeded';
+	case AI_FAILURE          = 'ai_failure';
 }
