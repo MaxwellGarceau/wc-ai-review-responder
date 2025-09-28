@@ -141,6 +141,9 @@ class AiInputSanitizer {
 	 * Removes email addresses and URLs to protect user privacy when sending
 	 * data to AI providers.
 	 *
+	 * TODO: mgarceau 2025-09-28: Email address matching is complicated and we would
+	 * be better off using a library for this.
+	 *
 	 * @param string $text Input text.
 	 * @return string Text with PII redacted.
 	 */
