@@ -1,6 +1,7 @@
 /* Error Modal Component - Layered Architecture */
 @use "../variables" as tokens;
 @use "modal-base";
+@use "../visual/error-modal" as visual;
 
 .wc-ai-rr-error-modal {
 	@extend .wc-ai-rr-modal;

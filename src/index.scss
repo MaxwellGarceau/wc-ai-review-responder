@@ -1,8 +1,5 @@
 // Import design system layers
 @use "scss/variables";
-@use "scss/layout/modal" as layout;
-@use "scss/visual/modal" as visual;
-@use "scss/visual/error-modal" as error-visual;
 
 // Import component styles
 @use "scss/components/modal-base";
