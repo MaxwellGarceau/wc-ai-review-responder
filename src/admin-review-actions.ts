@@ -16,7 +16,7 @@ import {
 } from './utils/wordpress-utils';
 import { showLoadingModal, hideLoadingModal } from './modals/loading-modal';
 import { showPromptModal, getSelectedTemplate } from './modals/prompt-modal';
-import { generateAiResponse } from './services/ajax-handler';
+import { generateAiResponse } from './api/ajax-handler';
 
 document.addEventListener( 'DOMContentLoaded', (): void => {
 	const aiResponseLinks: NodeListOf< HTMLAnchorElement > =
