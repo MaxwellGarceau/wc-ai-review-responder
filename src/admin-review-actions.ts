@@ -18,9 +18,16 @@
  * Internal dependencies
  */
 import loadingModalTemplate from './templates/loading-modal.html';
+import promptModalTemplate from './templates/prompt-selection-modal.html';
+
+interface Template {
+	value: string;
+	label: string;
+}
 
 interface WcAiReviewResponder {
 	ajaxurl: string;
+	templates: Template[];
 }
 
 interface AiResponseData {
@@ -85,12 +92,74 @@ function hideLoadingModal(): void {
 	}
 }
 
+/**
+ * Shows the prompt selection modal.
+ *
+ * @param {() => void} onGenerate - Callback function to execute when the generate button is clicked.
+ * @param {() => void} onCancel - Callback function to execute when the cancel button is clicked.
+ */
+function showPromptModal( onGenerate: () => void, onCancel: () => void ): void {
+	// Insert the modal HTML if it doesn't exist
+	if ( ! document.querySelector( '.wc-ai-prompt-modal' ) ) {
+		document.body.insertAdjacentHTML( 'beforeend', promptModalTemplate );
+	}
+
+	const modal = document.querySelector( '.wc-ai-prompt-modal' ) as HTMLElement;
+	const select = modal.querySelector( '#wc-ai-prompt-modal-select' ) as HTMLSelectElement;
+	const generateButton = modal.querySelector( '#wc-ai-prompt-modal-generate' ) as HTMLButtonElement;
+	const cancelButton = modal.querySelector( '#wc-ai-prompt-modal-cancel' ) as HTMLButtonElement;
+	const overlay = modal.querySelector( '.wc-ai-prompt-modal__overlay' ) as HTMLElement;
+
+	// Populate select options
+	select.innerHTML = ''; // Clear existing options
+	wcAiReviewResponder.templates.forEach( ( template: Template ) => {
+		const option = document.createElement( 'option' );
+		option.value = template.value;
+		option.textContent = template.label;
+		select.appendChild( option );
+	} );
+
+	// Event listeners for buttons
+	const generateClickHandler = () => {
+		onGenerate();
+		cleanup();
+	};
+
+	const cancelClickHandler = () => {
+		onCancel();
+		cleanup();
+	};
+
+	const cleanup = () => {
+		generateButton.removeEventListener( 'click', generateClickHandler );
+		cancelButton.removeEventListener( 'click', cancelClickHandler );
+		overlay.removeEventListener( 'click', cancelClickHandler );
+		modal.style.display = 'none';
+	};
+
+	generateButton.addEventListener( 'click', generateClickHandler );
+	cancelButton.addEventListener( 'click', cancelClickHandler );
+	overlay.addEventListener( 'click', cancelClickHandler );
+
+	modal.style.display = 'flex';
+}
+
+/**
+ * Gets the selected template from the prompt modal.
+ *
+ * @return {string} The selected template value.
+ */
+function getSelectedTemplate(): string {
+	const select = document.querySelector( '#wc-ai-prompt-modal-select' ) as HTMLSelectElement;
+	return select ? select.value : 'default';
+}
+
 document.addEventListener( 'DOMContentLoaded', (): void => {
 	const aiResponseLinks: NodeListOf< HTMLAnchorElement > =
 		document.querySelectorAll( '.ai-generate-response' );
 
 	aiResponseLinks.forEach( ( link: HTMLAnchorElement ): void => {
-		link.addEventListener( 'click', async ( e: Event ): Promise< void > => {
+		link.addEventListener( 'click', ( e: Event ): void => {
 			e.preventDefault();
 
 			const commentId: string | null =
@@ -102,87 +171,91 @@ document.addEventListener( 'DOMContentLoaded', (): void => {
 				return;
 			}
 
-			// Show loading state
-			const originalText: string = link.textContent || '';
-			link.textContent = 'Generating...';
-			link.style.pointerEvents = 'none';
-
 			// Trigger the native WordPress reply box
 			triggerWordPressReply( commentId );
 
-			// Show loading modal after a short delay to ensure reply box is open
-			setTimeout( () => {
-				showLoadingModal();
-			}, 100 );
-
-			try {
-				// Make AJAX request
-				const formData: FormData = new FormData();
-				formData.append( 'action', 'generate_ai_response' );
-				formData.append( 'comment_id', commentId );
-				// TODO: mgarceau 2025-09-29: Append template selection here
-				formData.append( '_wpnonce', nonce );
-
-				const response: Response = await fetch(
-					wcAiReviewResponder.ajaxurl,
-					{
-						method: 'POST',
-						body: formData,
-					}
-				);
-
-				const data: AiResponseData = await response.json();
-
-				if ( data.success && data.data.reply ) {
-					// Insert the generated response into the WordPress reply textarea
-					const replyTextarea: HTMLTextAreaElement | null =
-						document.querySelector(
-							'textarea[name="replycontent"]'
-						);
-					if ( replyTextarea && data.data.reply ) {
-						replyTextarea.value = data.data.reply;
-
-						// If TinyMCE is active, update it as well
-						if (
-							typeof (
-								window as unknown as { tinymce?: unknown }
-							 ).tinymce !== 'undefined'
-						) {
-							const tinymce = (
-								window as unknown as {
-									tinymce: {
-										get: ( id: string ) => {
-											setContent: (
-												content: string
-											) => void;
-										};
-									};
-								}
-							 ).tinymce;
-							const editor = tinymce.get( replyTextarea.id );
-							if ( editor ) {
-								editor.setContent( data.data.reply );
-							}
-						}
-
-						replyTextarea.dispatchEvent( new Event( 'change' ) );
-						replyTextarea.focus();
-					}
-
-					// Hide loading modal on success
-					hideLoadingModal();
-				} else {
-					// Error occurred - hide loading modal
-					hideLoadingModal();
-				}
-			} catch ( error: unknown ) {
-				// Handle error silently - user will see the loading modal disappear
-				hideLoadingModal();
-			} finally {
-				// Restore original state
+			// Show loading state on the link
+			const originalText: string = link.textContent || '';
+			const restoreLinkState = () => {
 				link.textContent = originalText;
 				link.style.pointerEvents = 'auto';
-			}
+			};
+			link.textContent = 'Generating...';
+			link.style.pointerEvents = 'none';
+
+			// Define what happens when the user clicks "Generate" in the modal
+			const handleGenerate = async () => {
+				showLoadingModal();
+
+				try {
+					// Make AJAX request
+					const formData: FormData = new FormData();
+					formData.append( 'action', 'generate_ai_response' );
+					formData.append( 'comment_id', commentId );
+					formData.append( 'template', getSelectedTemplate() );
+					formData.append( '_wpnonce', nonce );
+
+					const response: Response = await fetch(
+						wcAiReviewResponder.ajaxurl,
+						{
+							method: 'POST',
+							body: formData,
+						}
+					);
+
+					const data: AiResponseData = await response.json();
+
+					if ( data.success && data.data.reply ) {
+						// Insert the generated response into the WordPress reply textarea
+						const replyTextarea: HTMLTextAreaElement | null =
+							document.querySelector(
+								'textarea[name="replycontent"]'
+							);
+						if ( replyTextarea && data.data.reply ) {
+							replyTextarea.value = data.data.reply;
+
+							// If TinyMCE is active, update it as well
+							if (
+								typeof (
+									window as unknown as { tinymce?: unknown }
+								).tinymce !== 'undefined'
+							) {
+								const tinymce = (
+									window as unknown as {
+										tinymce: {
+											get: ( id: string ) => {
+												setContent: (
+													content: string
+												) => void;
+											};
+										};
+									}
+								).tinymce;
+								const editor = tinymce.get( replyTextarea.id );
+								if ( editor ) {
+									editor.setContent( data.data.reply );
+								}
+							}
+
+							replyTextarea.dispatchEvent( new Event( 'change' ) );
+							replyTextarea.focus();
+						}
+					}
+				} catch ( error: unknown ) {
+					// Handle fetch error silently
+				} finally {
+					hideLoadingModal();
+					restoreLinkState();
+				}
+			};
+
+			// Define what happens when the user clicks "Cancel" in the modal
+			const handleCancel = () => {
+				restoreLinkState();
+			};
+
+			// Show the prompt selection modal
+			showPromptModal( handleGenerate, handleCancel );
 		} );
 	} );
 } );

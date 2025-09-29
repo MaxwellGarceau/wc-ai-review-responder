@@ -14,6 +14,7 @@ use WcAiReviewResponder\Exceptions\AiResponseFailure;
 use WcAiReviewResponder\Exceptions\RateLimitExceededException;
 use WcAiReviewResponder\Enums\ErrorType;
 use WcAiReviewResponder\Enums\HttpStatus;
+use WcAiReviewResponder\LLM\Prompts\TemplateType;
 
 /**
  * AJAX handler class for generating AI responses to product reviews.
@@ -132,15 +133,15 @@ class AjaxHandler {
 			throw new InvalidArgumentsException( 'Missing or invalid comment_id.' );
 		}
 
-		// TODO: mgarceau 2025-09-29: Get template selection from AJAX request
+		$template_value = isset( $_POST['template'] ) ? sanitize_text_field( wp_unslash( $_POST['template'] ) ) : 'default';
+		$template       = TemplateType::tryFrom( $template_value ) ?? TemplateType::DEFAULT;
 
 		try {
 			$context = $this->review_handler->get_by_id( $comment_id );
 			$this->review_validator->validate_for_ai_processing( $context );
-			$clean       = $this->input_sanitizer->sanitize( $context );
+			$clean = $this->input_sanitizer->sanitize( $context );
 
-			// TODO: mgarceau 2025-09-29: Pass the template selection here
-			$prompt      = $this->prompt_builder->build_prompt( $clean );
+			$prompt      = $this->prompt_builder->build_prompt( $clean, $template );
 			$ai_response = $this->ai_client->get( $prompt );
 			$reply       = $this->response_validator->validate( $ai_response );
 
