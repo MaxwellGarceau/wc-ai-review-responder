@@ -8,12 +8,15 @@
 
 namespace WcAiReviewResponder\LLM;
 
+use WcAiReviewResponder\LLM\Prompts\TemplateType;
+
 interface BuildPromptInterface {
 	/**
-	 * Build a prompt string from the provided context.
+	 * Build a prompt string from the provided context and template.
 	 *
 	 * @param array{rating:int,comment:string,product_name:string} $context Review context shape.
+	 * @param TemplateType                                         $template Template type to use for building the prompt.
 	 * @return string Prompt to send to the AI provider.
 	 */
-	public function build_prompt( array $context ): string;
+	public function build_prompt( array $context, TemplateType $template = TemplateType::DEFAULT ): string;
 }
