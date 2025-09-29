@@ -60,3 +60,9 @@ GEMINI_API_KEY=your_api_key_here
 ```
 
 The plugin loads environment variables using `vlucas/phpdotenv`. Ensure `.env` is not committed (already ignored in `.gitignore`).
+
+## Documentation
+
+For detailed information about the project's architecture and patterns, see the `/docs` folder:
+
+- [SCSS Architecture](docs/scss-architecture.md) - Layered SCSS architecture and patterns
