@@ -1,2 +1,9 @@
+// Import design system layers
+@use "scss/variables";
+@use "scss/layout/modal" as layout;
+@use "scss/visual/modal" as visual;
+
 // Import component styles
-@use "scss/__loading-modal";
+@use "scss/components/modal-base";
+@use "scss/components/loading-modal";
+@use "scss/components/prompt-modal";

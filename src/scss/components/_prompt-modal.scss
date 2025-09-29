@@ -1,0 +1,38 @@
+/* Prompt Modal Component - Layered Architecture */
+@use "../variables" as tokens;
+@use "modal-base";
+
+.wc-ai-rr-prompt-modal {
+	@extend .wc-ai-rr-modal;
+	z-index: map-get(tokens.$z-index, modal);
+
+	&__overlay {
+		@extend .wc-ai-rr-modal__overlay;
+	}
+
+	&__content {
+		@extend .wc-ai-rr-modal__content;
+		max-width: 450px;
+	}
+
+	&__title {
+		@extend .wc-ai-rr-modal__title;
+		font-size: map-get(tokens.$typography, font-size-xl);
+	}
+
+	&__message {
+		@extend .wc-ai-rr-modal__message;
+		margin: 0 0 map-get(tokens.$spacing, lg) 0;
+		line-height: map-get(tokens.$typography, line-height-relaxed);
+	}
+
+	&__select {
+		@extend .wc-ai-rr-modal__select;
+		// Select styles are already defined in visual layer
+	}
+
+	&__actions {
+		@extend .wc-ai-rr-modal__actions;
+		// Action layout is already defined in layout layer
+	}
+}

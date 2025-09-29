@@ -11,6 +11,8 @@
 
 namespace WcAiReviewResponder\Admin;
 
+use WcAiReviewResponder\LLM\Prompts\TemplateType;
+
 /**
  * Admin review actions class for adding AI response generation links.
  */
@@ -94,8 +96,16 @@ class ReviewActions {
 			'wc-ai-review-responder',
 			'wcAiReviewResponder',
 			array(
-				'ajaxurl' => admin_url( 'admin-ajax.php' ),
-				// TODO: mgarceau 2025-09-29: Localize template selection here from TemplateType enum.
+				'ajaxurl'   => admin_url( 'admin-ajax.php' ),
+				'templates' => array_map(
+					function ( $enum_case ) {
+						return array(
+							'value' => $enum_case->value,
+							'label' => ucwords( str_replace( '_', ' ', $enum_case->value ) ),
+						);
+					},
+					TemplateType::cases()
+				),
 			)
 		);
 	}
