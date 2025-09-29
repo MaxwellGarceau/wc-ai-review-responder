@@ -21,24 +21,24 @@ export function showPromptModal(
 	onCancel: () => void
 ): void {
 	// Insert the modal HTML if it doesn't exist
-	if ( ! document.querySelector( '.wc-ai-prompt-modal' ) ) {
+	if ( ! document.querySelector( '.wc-ai-rr-prompt-modal' ) ) {
 		document.body.insertAdjacentHTML( 'beforeend', promptModalTemplate );
 	}
 
 	const modal = document.querySelector(
-		'.wc-ai-prompt-modal'
+		'.wc-ai-rr-prompt-modal'
 	) as HTMLElement;
 	const select = modal.querySelector(
-		'#wc-ai-prompt-modal-select'
+		'#wc-ai-rr-prompt-modal-select'
 	) as HTMLSelectElement;
 	const generateButton = modal.querySelector(
-		'#wc-ai-prompt-modal-generate'
+		'#wc-ai-rr-prompt-modal-generate'
 	) as HTMLButtonElement;
 	const cancelButton = modal.querySelector(
-		'#wc-ai-prompt-modal-cancel'
+		'#wc-ai-rr-prompt-modal-cancel'
 	) as HTMLButtonElement;
 	const overlay = modal.querySelector(
-		'.wc-ai-prompt-modal__overlay'
+		'.wc-ai-rr-prompt-modal__overlay'
 	) as HTMLElement;
 
 	// Populate select options
@@ -89,7 +89,7 @@ export function showPromptModal(
  */
 export function getSelectedTemplate(): string {
 	const select = document.querySelector(
-		'#wc-ai-prompt-modal-select'
+		'#wc-ai-rr-prompt-modal-select'
 	) as HTMLSelectElement;
 	return select ? select.value : 'default';
 }

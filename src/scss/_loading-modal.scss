@@ -1,25 +1,16 @@
 /* Loading Modal Styles - BEM Methodology */
-.wc-ai-loading-modal {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0, 0, 0, 0.5);
-	display: flex;
-	justify-content: center;
-	align-items: center;
+@use "modal-base";
+.wc-ai-rr-loading-modal {
+	@extend .wc-ai-rr-modal;
 	z-index: 999999;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+	&__overlay {
+		@extend .wc-ai-rr-modal__overlay;
+	}
 
 	&__content {
-		background: #fff;
-		padding: 30px;
-		border-radius: 8px;
-		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-		text-align: center;
+		@extend .wc-ai-rr-modal__content;
 		max-width: 400px;
-		width: 90%;
 	}
 
 	&__spinner {
@@ -35,17 +26,8 @@
 	}
 
 	&__title {
-		margin: 0 0 10px 0;
-		color: #1d2327;
+		@extend .wc-ai-rr-modal__title;
 		font-size: 18px;
-		font-weight: 600;
-	}
-
-	&__message {
-		margin: 0;
-		color: #646970;
-		font-size: 14px;
-		line-height: 1.4;
 	}
 }
 
