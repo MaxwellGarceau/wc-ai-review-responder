@@ -6,4 +6,4 @@
  * Internal dependencies
  */
 import './index.scss';
-import './admin-review-actions';
+import './admin-review-listeners';
