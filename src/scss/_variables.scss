@@ -17,7 +17,11 @@ $colors: (
   border: #ddd,
   
   // Neutral colors
-  gray-100: #f3f3f3
+  gray-100: #f3f3f3,
+  
+  // Error colors
+  error: #d63638, // WordPress error color
+  error-background: rgba(214, 54, 56, 0.1)
 );
 
 // Spacing Scale

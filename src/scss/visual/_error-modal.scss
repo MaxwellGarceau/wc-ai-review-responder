@@ -4,8 +4,8 @@
 .wc-ai-rr-error-modal {
 	&__icon {
 		// Error icon appearance
-		color: #d63638; // WordPress error color
-		background-color: rgba(214, 54, 56, 0.1);
+		color: map-get(tokens.$colors, error);
+		background-color: map-get(tokens.$colors, error-background);
 		border-radius: map-get(tokens.$border-radius, full);
 		
 		svg {
@@ -16,7 +16,7 @@
 
 	&__title {
 		// Error title appearance
-		color: #d63638; // WordPress error color
+		color: map-get(tokens.$colors, error);
 		font-size: map-get(tokens.$typography, font-size-lg);
 		margin-bottom: map-get(tokens.$spacing, sm);
 	}
