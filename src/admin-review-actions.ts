@@ -61,21 +61,14 @@ function createLoadingModalHTML(): string {
  */
 function showLoadingModal(): void {
 	// Check if modal already exists
-	let modal = document.querySelector( '.wc-ai-loading-modal' );
+	const modal = document.querySelector( '.wc-ai-loading-modal' );
 	if ( modal ) {
 		modal.style.display = 'flex';
 		return;
 	}
 
-	// Create a temporary container to parse the HTML template
-	const tempContainer = document.createElement( 'div' );
-	tempContainer.innerHTML = createLoadingModalHTML();
-
-	// Get the modal element from the parsed template
-	modal = tempContainer.firstElementChild;
-	if ( modal ) {
-		document.body.appendChild( modal );
-	}
+	// Insert the modal HTML directly into the body
+	document.body.insertAdjacentHTML( 'beforeend', createLoadingModalHTML() );
 }
 
 /**
