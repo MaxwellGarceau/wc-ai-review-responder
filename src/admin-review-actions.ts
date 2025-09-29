@@ -61,7 +61,7 @@ function createLoadingModalHTML(): string {
  */
 function showLoadingModal(): void {
 	// Check if modal already exists
-	let modal = document.getElementById( 'wc-ai-loading-modal' );
+	let modal = document.querySelector( '.wc-ai-loading-modal' );
 	if ( modal ) {
 		modal.style.display = 'flex';
 		return;
@@ -69,7 +69,7 @@ function showLoadingModal(): void {
 
 	// Create the loading modal
 	modal = document.createElement( 'div' );
-	modal.id = 'wc-ai-loading-modal';
+	modal.className = 'wc-ai-loading-modal';
 	modal.innerHTML = createLoadingModalHTML();
 	document.body.appendChild( modal );
 }
@@ -78,7 +78,7 @@ function showLoadingModal(): void {
  * Hides the loading modal
  */
 function hideLoadingModal(): void {
-	const modal = document.getElementById( 'wc-ai-loading-modal' );
+	const modal = document.querySelector( '.wc-ai-loading-modal' );
 	if ( modal ) {
 		modal.style.display = 'none';
 	}
