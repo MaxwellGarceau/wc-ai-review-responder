@@ -90,10 +90,10 @@ document.addEventListener( 'DOMContentLoaded', (): void => {
 				link.getAttribute( 'data-comment-id' );
 			const nonce: string | null = link.getAttribute( 'data-nonce' );
 
-		if ( ! commentId || ! nonce ) {
-			// Missing required data attributes - cannot proceed
-			return;
-		}
+			if ( ! commentId || ! nonce ) {
+				// Missing required data attributes - cannot proceed
+				return;
+			}
 
 			// Show loading state
 			const originalText: string = link.textContent || '';
@@ -136,9 +136,20 @@ document.addEventListener( 'DOMContentLoaded', (): void => {
 
 						// If TinyMCE is active, update it as well
 						if (
-							typeof ( window as { tinymce?: unknown } ).tinymce !== 'undefined'
+							typeof ( window as { tinymce?: unknown } )
+								.tinymce !== 'undefined'
 						) {
-							const tinymce = ( window as { tinymce: { get: ( id: string ) => { setContent: ( content: string ) => void } } } ).tinymce;
+							const tinymce = (
+								window as {
+									tinymce: {
+										get: ( id: string ) => {
+											setContent: (
+												content: string
+											) => void;
+										};
+									};
+								}
+							 ).tinymce;
 							const editor = tinymce.get( replyTextarea.id );
 							if ( editor ) {
 								editor.setContent( data.data.reply );
@@ -155,10 +166,10 @@ document.addEventListener( 'DOMContentLoaded', (): void => {
 					// Error occurred - hide loading modal
 					hideLoadingModal();
 				}
-		} catch ( error: unknown ) {
-			// Handle error silently - user will see the loading modal disappear
-			hideLoadingModal();
-		} finally {
+			} catch ( error: unknown ) {
+				// Handle error silently - user will see the loading modal disappear
+				hideLoadingModal();
+			} finally {
 				// Restore original state
 				link.textContent = originalText;
 				link.style.pointerEvents = 'auto';
