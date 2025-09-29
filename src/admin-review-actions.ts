@@ -120,6 +120,7 @@ document.addEventListener( 'DOMContentLoaded', (): void => {
 				const formData: FormData = new FormData();
 				formData.append( 'action', 'generate_ai_response' );
 				formData.append( 'comment_id', commentId );
+				// TODO: mgarceau 2025-09-29: Append template selection here
 				formData.append( '_wpnonce', nonce );
 
 				const response: Response = await fetch(
