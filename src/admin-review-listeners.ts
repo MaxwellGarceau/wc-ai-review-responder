@@ -11,6 +11,7 @@
  * Internal dependencies
  */
 import { handleAiResponseClick } from './handlers/review-action-handler';
+import { showErrorModal, showGenericError } from './modals/error-modal';
 
 document.addEventListener( 'DOMContentLoaded', (): void => {
 	const aiResponseLinks: NodeListOf< HTMLAnchorElement > =
@@ -22,4 +23,8 @@ document.addEventListener( 'DOMContentLoaded', (): void => {
 			handleAiResponseClick( link );
 		} );
 	} );
+
+	// Temporary test function for error modal - remove in production
+	// Uncomment the line below to test the error modal
+	// showErrorModal( { title: 'Test Error', message: 'This is a test error message to verify the modal works correctly.' } );
 } );

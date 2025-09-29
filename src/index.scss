@@ -2,8 +2,10 @@
 @use "scss/variables";
 @use "scss/layout/modal" as layout;
 @use "scss/visual/modal" as visual;
+@use "scss/visual/error-modal" as error-visual;
 
 // Import component styles
 @use "scss/components/modal-base";
 @use "scss/components/loading-modal";
 @use "scss/components/prompt-modal";
+@use "scss/components/error-modal";

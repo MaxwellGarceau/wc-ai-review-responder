@@ -10,6 +10,7 @@
 import { triggerWordPressReply, updateReplyTextarea } from '../utils/wordpress-utils';
 import { showLoadingModal, hideLoadingModal } from '../modals/loading-modal';
 import { showPromptModal, getSelectedTemplate } from '../modals/prompt-modal';
+import { showGenericError } from '../modals/error-modal';
 import { generateAiResponse } from '../api/ajax-handler';
 
 /**
@@ -53,7 +54,11 @@ export function handleAiResponseClick( link: HTMLAnchorElement ): void {
 				updateReplyTextarea( data.data.reply );
 			}
 		} catch ( error: unknown ) {
-			// TODO: mgarceau 2025-09-29: Handle error from BE here
+			// Display user-friendly error message
+			showGenericError( 
+				error as Error, 
+				'Failed to generate AI response' 
+			);
 		} finally {
 			hideLoadingModal();
 			restoreLinkState();
