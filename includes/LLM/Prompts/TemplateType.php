@@ -2,6 +2,10 @@
 /**
  * Enum for prompt template types.
  *
+ * Template types are defined here, in the PromptBuilder class,
+ * and also have a class in /LLM/Prompts/Templates/
+ *
+ * @see PromptBuilder
  * @package WcAiReviewResponder
  * @since   1.0.0
  */

@@ -25,6 +25,10 @@ class PromptBuilder implements BuildPromptInterface {
 	/**
 	 * Available prompt templates.
 	 *
+	 * Template types are defined here, in the TemplateType enum, and
+	 * also have a class in /LLM/Prompts/Templates/
+	 *
+	 * @see TemplateType
 	 * @var array<string, class-string<PromptTemplateInterface>>
 	 */
 	private const TEMPLATES = array(
