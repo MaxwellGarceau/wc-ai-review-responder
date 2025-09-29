@@ -101,7 +101,7 @@ class ReviewActions {
 					function ( $enum_case ) {
 						return array(
 							'value' => $enum_case->value,
-							'label' => ucwords( str_replace( '_', ' ', $enum_case->name ) ),
+							'label' => ucwords( str_replace( '_', ' ', $enum_case->value ) ),
 						);
 					},
 					TemplateType::cases()
