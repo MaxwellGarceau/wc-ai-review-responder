@@ -1,0 +1,78 @@
+/* Visual Layer - Appearance, colors, typography, and effects */
+@use "../variables" as tokens;
+
+.wc-ai-rr-modal {
+  // Typography
+  font-family: map-get(tokens.$typography, font-family);
+
+  &__overlay {
+    // Overlay appearance
+    background: map-get(tokens.$colors, overlay);
+  }
+
+  &__content {
+    // Content appearance
+    background: map-get(tokens.$colors, background);
+    padding: map-get(tokens.$spacing, xl);
+    border-radius: map-get(tokens.$border-radius, lg);
+    box-shadow: map-get(tokens.$shadows, lg);
+    text-align: center;
+  }
+
+  &__title {
+    // Title typography
+    margin: 0 0 map-get(tokens.$spacing, sm) 0;
+    color: map-get(tokens.$colors, text-primary);
+    font-size: map-get(tokens.$typography, font-size-lg);
+    font-weight: map-get(tokens.$typography, font-weight-semibold);
+    line-height: map-get(tokens.$typography, line-height-tight);
+  }
+
+  &__message {
+    // Message typography
+    margin: 0;
+    color: map-get(tokens.$colors, text-secondary);
+    font-size: map-get(tokens.$typography, font-size-base);
+    line-height: map-get(tokens.$typography, line-height-base);
+  }
+
+  &__select {
+    // Form input appearance
+    width: 100%;
+    padding: map-get(tokens.$spacing, sm);
+    margin-bottom: map-get(tokens.$spacing, lg);
+    border: 1px solid map-get(tokens.$colors, border);
+    border-radius: map-get(tokens.$border-radius, base);
+    font-size: map-get(tokens.$typography, font-size-base);
+    background-color: map-get(tokens.$colors, background);
+    box-sizing: border-box;
+    color: map-get(tokens.$colors, text-primary);
+    
+    // Focus state
+    &:focus {
+      outline: none;
+      border-color: map-get(tokens.$colors, primary);
+      box-shadow: 0 0 0 2px rgba(map-get(tokens.$colors, primary), 0.2);
+    }
+  }
+
+  &__spinner {
+    // Spinner appearance
+    border: 4px solid map-get(tokens.$colors, gray-100);
+    border-top: 4px solid map-get(tokens.$colors, primary);
+    border-radius: map-get(tokens.$border-radius, full);
+    animation: wc-ai-review-responder-spin map-get(tokens.$durations, slow) map-get(tokens.$easings, linear) infinite;
+    visibility: visible;
+    background: transparent;
+  }
+}
+
+// Animations
+@keyframes wc-ai-review-responder-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
