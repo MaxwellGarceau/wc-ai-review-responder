@@ -1,6 +1,12 @@
 /**
  * Admin review actions functionality for WC AI Review Responder.
  *
+ * We use a function-based approach here instead of a class-based approach because:
+ * - The logic is primarily procedural and event-driven, matching the structure of WordPress admin scripts.
+ * - Functions provide a simpler, more readable way to organize small, self-contained behaviors.
+ * - There is no need for stateful objects or inheritance, so classes would add unnecessary complexity.
+ * - This approach aligns with WordPress and WooCommerce JavaScript best practices for admin UI enhancements.
+ *
  * @since 1.0.0
  */
 
