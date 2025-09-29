@@ -4,7 +4,7 @@
 **Plugin Name:** WC AI Review Responder  
 **Goal:** AI-powered response generation for WooCommerce product reviews  
 **Timeline:** 2-Day MVP  
-**Tech Stack:** PHP, WordPress, WooCommerce, Gemini SDK, JavaScript/jQuery
+**Tech Stack:** PHP, WordPress, WooCommerce, Gemini SDK, Modern JavaScript (ES6+)
 
 ## MVP Requirements (V1)
 ### Core Functionality

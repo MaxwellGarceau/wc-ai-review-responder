@@ -58,7 +58,7 @@ class ReviewActions {
 			return;
 		}
 
-		// Enqueue the main script (which now includes admin review actions).
+		// Enqueue the main script.
 		$script_path       = '/build/index.js';
 		$script_asset_path = dirname( MAIN_PLUGIN_FILE ) . '/build/index.asset.php';
 		$script_asset      = file_exists( $script_asset_path )
@@ -76,6 +76,18 @@ class ReviewActions {
 			$script_asset['version'],
 			true
 		);
+
+		// Enqueue the CSS file that webpack extracts.
+		$css_path = '/build/index.css';
+		$css_url  = plugins_url( $css_path, MAIN_PLUGIN_FILE );
+		if ( file_exists( dirname( MAIN_PLUGIN_FILE ) . $css_path ) ) {
+			wp_enqueue_style(
+				'wc-ai-review-responder',
+				$css_url,
+				array(),
+				$script_asset['version']
+			);
+		}
 
 		// Localize script to provide ajaxurl.
 		wp_localize_script(

@@ -6,6 +6,16 @@ module.exports = {
 	entry: {
 		index: './src/index.ts',
 	},
+	module: {
+		...defaultConfig.module,
+		rules: [
+			...defaultConfig.module.rules,
+			{
+				test: /\.html$/,
+				use: 'raw-loader',
+			},
+		],
+	},
 	plugins: [
 		...defaultConfig.plugins.filter(
 			( plugin ) =>
