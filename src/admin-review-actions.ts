@@ -67,11 +67,15 @@ function showLoadingModal(): void {
 		return;
 	}
 
-	// Create the loading modal
-	modal = document.createElement( 'div' );
-	modal.className = 'wc-ai-loading-modal';
-	modal.innerHTML = createLoadingModalHTML();
-	document.body.appendChild( modal );
+	// Create a temporary container to parse the HTML template
+	const tempContainer = document.createElement( 'div' );
+	tempContainer.innerHTML = createLoadingModalHTML();
+
+	// Get the modal element from the parsed template
+	modal = tempContainer.firstElementChild;
+	if ( modal ) {
+		document.body.appendChild( modal );
+	}
 }
 
 /**
