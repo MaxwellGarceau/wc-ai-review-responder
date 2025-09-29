@@ -61,7 +61,9 @@ function createLoadingModalHTML(): string {
  */
 function showLoadingModal(): void {
 	// Check if modal already exists
-	const modal = document.querySelector( '.wc-ai-loading-modal' );
+	const modal = document.querySelector(
+		'.wc-ai-loading-modal'
+	) as HTMLElement;
 	if ( modal ) {
 		modal.style.display = 'flex';
 		return;
@@ -75,7 +77,9 @@ function showLoadingModal(): void {
  * Hides the loading modal
  */
 function hideLoadingModal(): void {
-	const modal = document.querySelector( '.wc-ai-loading-modal' );
+	const modal = document.querySelector(
+		'.wc-ai-loading-modal'
+	) as HTMLElement;
 	if ( modal ) {
 		modal.style.display = 'none';
 	}
