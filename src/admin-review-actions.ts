@@ -104,11 +104,21 @@ function showPromptModal( onGenerate: () => void, onCancel: () => void ): void {
 		document.body.insertAdjacentHTML( 'beforeend', promptModalTemplate );
 	}
 
-	const modal = document.querySelector( '.wc-ai-prompt-modal' ) as HTMLElement;
-	const select = modal.querySelector( '#wc-ai-prompt-modal-select' ) as HTMLSelectElement;
-	const generateButton = modal.querySelector( '#wc-ai-prompt-modal-generate' ) as HTMLButtonElement;
-	const cancelButton = modal.querySelector( '#wc-ai-prompt-modal-cancel' ) as HTMLButtonElement;
-	const overlay = modal.querySelector( '.wc-ai-prompt-modal__overlay' ) as HTMLElement;
+	const modal = document.querySelector(
+		'.wc-ai-prompt-modal'
+	) as HTMLElement;
+	const select = modal.querySelector(
+		'#wc-ai-prompt-modal-select'
+	) as HTMLSelectElement;
+	const generateButton = modal.querySelector(
+		'#wc-ai-prompt-modal-generate'
+	) as HTMLButtonElement;
+	const cancelButton = modal.querySelector(
+		'#wc-ai-prompt-modal-cancel'
+	) as HTMLButtonElement;
+	const overlay = modal.querySelector(
+		'.wc-ai-prompt-modal__overlay'
+	) as HTMLElement;
 
 	// Populate select options
 	select.innerHTML = ''; // Clear existing options
@@ -120,21 +130,28 @@ function showPromptModal( onGenerate: () => void, onCancel: () => void ): void {
 	} );
 
 	// Event listeners for buttons
-	const generateClickHandler = () => {
+	let generateClickHandler: ( () => void ) | null = null;
+	let cancelClickHandler: ( () => void ) | null = null;
+
+	const cleanup = () => {
+		if ( generateClickHandler ) {
+			generateButton.removeEventListener( 'click', generateClickHandler );
+		}
+		if ( cancelClickHandler ) {
+			cancelButton.removeEventListener( 'click', cancelClickHandler );
+			overlay.removeEventListener( 'click', cancelClickHandler );
+		}
+		modal.style.display = 'none';
+	};
+
+	generateClickHandler = () => {
 		onGenerate();
 		cleanup();
 	};
 
-	const cancelClickHandler = () => {
+	cancelClickHandler = () => {
 		onCancel();
 		cleanup();
-	};
-
-	const cleanup = () => {
-		generateButton.removeEventListener( 'click', generateClickHandler );
-		cancelButton.removeEventListener( 'click', cancelClickHandler );
-		overlay.removeEventListener( 'click', cancelClickHandler );
-		modal.style.display = 'none';
 	};
 
 	generateButton.addEventListener( 'click', generateClickHandler );
@@ -150,7 +167,9 @@ function showPromptModal( onGenerate: () => void, onCancel: () => void ): void {
  * @return {string} The selected template value.
  */
 function getSelectedTemplate(): string {
-	const select = document.querySelector( '#wc-ai-prompt-modal-select' ) as HTMLSelectElement;
+	const select = document.querySelector(
+		'#wc-ai-prompt-modal-select'
+	) as HTMLSelectElement;
 	return select ? select.value : 'default';
 }
 
@@ -218,7 +237,7 @@ document.addEventListener( 'DOMContentLoaded', (): void => {
 							if (
 								typeof (
 									window as unknown as { tinymce?: unknown }
-								).tinymce !== 'undefined'
+								 ).tinymce !== 'undefined'
 							) {
 								const tinymce = (
 									window as unknown as {
@@ -230,14 +249,16 @@ document.addEventListener( 'DOMContentLoaded', (): void => {
 											};
 										};
 									}
-								).tinymce;
+								 ).tinymce;
 								const editor = tinymce.get( replyTextarea.id );
 								if ( editor ) {
 									editor.setContent( data.data.reply );
 								}
 							}
 
-							replyTextarea.dispatchEvent( new Event( 'change' ) );
+							replyTextarea.dispatchEvent(
+								new Event( 'change' )
+							);
 							replyTextarea.focus();
 						}
 					}
