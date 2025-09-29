@@ -64,7 +64,7 @@ class ReviewActions {
 		$script_asset      = file_exists( $script_asset_path )
 			? require $script_asset_path
 			: array(
-				'dependencies' => array( 'jquery' ),
+				'dependencies' => array(),
 				'version'      => filemtime( dirname( MAIN_PLUGIN_FILE ) . $script_path ),
 			);
 		$script_url        = plugins_url( $script_path, MAIN_PLUGIN_FILE );
