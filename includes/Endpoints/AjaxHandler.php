@@ -132,10 +132,14 @@ class AjaxHandler {
 			throw new InvalidArgumentsException( 'Missing or invalid comment_id.' );
 		}
 
+		// TODO: mgarceau 2025-09-29: Get template selection from AJAX request
+
 		try {
 			$context = $this->review_handler->get_by_id( $comment_id );
 			$this->review_validator->validate_for_ai_processing( $context );
 			$clean       = $this->input_sanitizer->sanitize( $context );
+
+			// TODO: mgarceau 2025-09-29: Pass the template selection here
 			$prompt      = $this->prompt_builder->build_prompt( $clean );
 			$ai_response = $this->ai_client->get( $prompt );
 			$reply       = $this->response_validator->validate( $ai_response );

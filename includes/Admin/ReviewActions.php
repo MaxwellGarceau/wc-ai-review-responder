@@ -95,6 +95,7 @@ class ReviewActions {
 			'wcAiReviewResponder',
 			array(
 				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+				// TODO: mgarceau 2025-09-29: Localize template selection here from TemplateType enum.
 			)
 		);
 	}
