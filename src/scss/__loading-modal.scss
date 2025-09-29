@@ -28,7 +28,7 @@
 		border: 4px solid #f3f3f3;
 		border-top: 4px solid #2271b1;
 		border-radius: 50%;
-		animation: spin 1s linear infinite;
+		animation: wc-ai-review-responder-spin 1s linear infinite;
 		margin: 0 auto 20px;
 		visibility: visible;
 		background: transparent;
@@ -49,7 +49,7 @@
 	}
 }
 
-@keyframes spin {
+@keyframes wc-ai-review-responder-spin {
 	0% {
 		transform: rotate(0deg);
 	}
