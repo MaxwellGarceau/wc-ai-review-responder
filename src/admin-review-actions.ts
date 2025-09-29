@@ -143,11 +143,12 @@ document.addEventListener( 'DOMContentLoaded', (): void => {
 
 						// If TinyMCE is active, update it as well
 						if (
-							typeof ( window as { tinymce?: unknown } )
-								.tinymce !== 'undefined'
+							typeof (
+								window as unknown as { tinymce?: unknown }
+							 ).tinymce !== 'undefined'
 						) {
 							const tinymce = (
-								window as {
+								window as unknown as {
 									tinymce: {
 										get: ( id: string ) => {
 											setContent: (
