@@ -14,7 +14,9 @@
 		"wp-coding-standards/wpcs": "^3.0",
 		"woocommerce/woocommerce-sniffs": "^1.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
-		"wp-phpunit/wp-phpunit": "^6.0"
+		"wp-phpunit/wp-phpunit": "^6.0",
+		"php-stubs/wordpress-stubs": "^6.6",
+		"php-stubs/woocommerce-stubs": "^8.9"
 	},
 	"scripts": {
 		"phpcs": [
