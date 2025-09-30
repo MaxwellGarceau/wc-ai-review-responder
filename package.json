@@ -13,7 +13,7 @@
 		"fix:php": "composer phpcbf",
 		"packages-update": "wp-scripts packages-update",
 		"plugin-zip": "wp-scripts plugin-zip",
-		"start": "wp-scripts start --blocks-manifest",
+		"start": "wp-scripts start",
 		"postinstall": "composer install",
 		"dev": "wp-env start",
 		"dev:stop": "wp-env stop",
@@ -26,7 +26,8 @@
 		"test:watch": "wp-env run tests-cli --env-cwd=wp-content/plugins/wc-ai-review-responder ./vendor/bin/phpunit --watch",
 		"test:coverage": "wp-env run tests-cli --env-cwd=wp-content/plugins/wc-ai-review-responder ./vendor/bin/phpunit --coverage-html coverage",
 		"test-ai": "wp-env run cli wp ai-review test",
-		"test-ai-review": "wp-env run cli wp ai-review test"
+		"test-ai-review": "wp-env run cli wp ai-review test",
+		"test:unit": "wp-scripts test-unit-js"
 	},
 	"dependencies": {
 		"@woocommerce/components": "latest",
@@ -39,6 +40,6 @@
 		"@wordpress/prettier-config": "latest",
 		"@wordpress/scripts": "latest",
 		"raw-loader": "^4.0.2",
-		"typescript": "^5.9.2"
+		"typescript": "^5.4.5"
 	}
 }
