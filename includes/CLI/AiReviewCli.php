@@ -68,6 +68,13 @@ class AiReviewCli {
 	private $input_sanitizer;
 
 	/**
+	 * Translations dependency.
+	 *
+	 * @var \WcAiReviewResponder\Localization\Translations
+	 */
+	private $translations;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param ReviewModel         $review_handler     Review handler.
@@ -76,14 +83,16 @@ class AiReviewCli {
 	 * @param ValidateAiResponse  $response_validator Response validator.
 	 * @param ReviewValidator     $review_validator   Review validator.
 	 * @param AiInputSanitizer    $input_sanitizer    Input sanitizer.
+	 * @param Translations        $translations       Translations service.
 	 */
-	public function __construct( ReviewModel $review_handler, PromptBuilder $prompt_builder, GeminiClientFactory $ai_client_factory, ValidateAiResponse $response_validator, ReviewValidator $review_validator, AiInputSanitizer $input_sanitizer ) {
+	public function __construct( ReviewModel $review_handler, PromptBuilder $prompt_builder, GeminiClientFactory $ai_client_factory, ValidateAiResponse $response_validator, ReviewValidator $review_validator, AiInputSanitizer $input_sanitizer, Translations $translations ) {
 		$this->review_handler     = $review_handler;
 		$this->prompt_builder     = $prompt_builder;
 		$this->ai_client_factory  = $ai_client_factory;
 		$this->response_validator = $response_validator;
 		$this->review_validator   = $review_validator;
 		$this->input_sanitizer    = $input_sanitizer;
+		$this->translations       = $translations;
 	}
 
 	/**
@@ -105,7 +114,7 @@ class AiReviewCli {
 	public function test( $args, $assoc_args ) {
 		list( $comment_id ) = $args;
 		$comment_id         = (int) $comment_id;
-		$cli_strings        = Translations::get_cli_strings();
+		$cli_strings        = $this->translations->get_cli_strings();
 
 		// Parameter is part of the WP-CLI signature but unused here.
 		unset( $assoc_args );

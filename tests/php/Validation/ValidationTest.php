@@ -30,7 +30,13 @@ class ValidationTest extends WP_UnitTestCase {
 	}
 
 	public function test_review_validator_rules() {
-		$validator = new \WcAiReviewResponder\Validation\ReviewValidator();
+		$translations = $this->createMock( \WcAiReviewResponder\Localization\Translations::class );
+		$translations->method( 'get_php_strings' )->willReturn( array(
+			'reviewMissingComment' => 'Review is missing a comment.',
+			'reviewMissingRating' => 'Review is missing a rating.',
+			'ratingInvalidRange' => 'Rating must be between 1 and 5.'
+		) );
+		$validator = new \WcAiReviewResponder\Validation\ReviewValidator( $translations );
 
 		// Valid data should not throw.
 		$validator->validate_for_ai_processing( array(

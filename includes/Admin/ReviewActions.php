@@ -19,12 +19,22 @@ use WcAiReviewResponder\Localization\Translations;
  * Admin review actions class for adding AI response generation links.
  */
 class ReviewActions {
+
+	/**
+	 * Translations dependency.
+	 *
+	 * @var \WcAiReviewResponder\Localization\Translations
+	 */
+	private $translations;
+
 	/**
 	 * Constructor.
 	 *
+	 * @param Translations $translations Translations service.
 	 * @since 1.0.0
 	 */
-	public function __construct() {
+	public function __construct( Translations $translations ) {
+		$this->translations = $translations;
 		add_filter( 'comment_row_actions', array( $this, 'add_ai_response_action' ), 20, 2 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_review_scripts' ) );
 	}
@@ -117,7 +127,7 @@ class ReviewActions {
 					},
 					MoodsType::cases()
 				),
-				'i18n'      => Translations::get_js_strings(),
+				'i18n'      => $this->translations->get_js_strings(),
 			)
 		);
 	}
@@ -156,7 +166,7 @@ class ReviewActions {
 	 * @since 1.0.0
 	 */
 	private function create_ai_response_action( $comment ): string {
-		$php_strings = Translations::get_php_strings();
+		$php_strings = $this->translations->get_php_strings();
 		return sprintf(
 			'<a href="#" class="ai-generate-response" data-comment-id="%d" data-suggest-nonce="%s" data-generate-nonce="%s">%s</a>',
 			esc_attr( $comment->comment_ID ),

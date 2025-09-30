@@ -9,6 +9,7 @@
 namespace WcAiReviewResponder\Core;
 
 use DI\ContainerBuilder;
+use WcAiReviewResponder\Localization\Translations;
 
 /**
  * Factory class for creating and configuring the dependency injection container.
@@ -27,6 +28,9 @@ class ContainerFactory {
 				// Load environment variables.
 				\WcAiReviewResponder\Clients\GeminiClientFactory::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY', 'test-key' ), \DI\get( \WcAiReviewResponder\Clients\Request::class ), \DI\get( \WcAiReviewResponder\RateLimiting\RateLimiter::class ) ),
 
+				// Localization service.
+				Translations::class => \DI\autowire(),
+
 				// Resolve interfaces to concrete implementations.
 				\WcAiReviewResponder\CLI\AiReviewCli::class => \DI\create()
 					->constructor(
@@ -35,8 +39,13 @@ class ContainerFactory {
 						\DI\get( \WcAiReviewResponder\Clients\GeminiClientFactory::class ),
 						\DI\get( \WcAiReviewResponder\Validation\ValidateAiResponse::class ),
 						\DI\get( \WcAiReviewResponder\Validation\ReviewValidator::class ),
-						\DI\get( \WcAiReviewResponder\Validation\AiInputSanitizer::class )
+						\DI\get( \WcAiReviewResponder\Validation\AiInputSanitizer::class ),
+						\DI\get( Translations::class )
 					),
+				\WcAiReviewResponder\Validation\ReviewValidator::class => \DI\create()
+					->constructor( \DI\get( Translations::class ) ),
+				\WcAiReviewResponder\Admin\ReviewActions::class => \DI\create()
+					->constructor( \DI\get( Translations::class ) ),
 				\WcAiReviewResponder\Endpoints\AjaxHandler::class => \DI\create()
 					->constructor(
 						\DI\get( \WcAiReviewResponder\Models\ReviewModel::class ),

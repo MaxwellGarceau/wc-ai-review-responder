@@ -20,6 +20,22 @@ use WcAiReviewResponder\Localization\Translations;
 class ReviewValidator {
 
 	/**
+	 * Translations dependency.
+	 *
+	 * @var \WcAiReviewResponder\Localization\Translations
+	 */
+	private $translations;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param Translations $translations Translations service.
+	 */
+	public function __construct( Translations $translations ) {
+		$this->translations = $translations;
+	}
+
+	/**
 	 * Validate review data for AI processing.
 	 *
 	 * @param array{comment_id:int,product_id:int,product_name:string,product_description:string,rating:int,comment:string,author:string} $review_data Review data from ReviewModel.
@@ -29,7 +45,7 @@ class ReviewValidator {
 	public function validate_for_ai_processing( array $review_data ): void {
 		$comment_content = $review_data['comment'] ?? '';
 		$rating          = $review_data['rating'] ?? 0;
-		$php_strings     = Translations::get_php_strings();
+		$php_strings     = $this->translations->get_php_strings();
 
 		// TODO: mgarceau 2025-09-27: In the future, we will support reviews without ratings and comments
 		// by passing more context regarding the user, the product, the order, and any possible difficulties

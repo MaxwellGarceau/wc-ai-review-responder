@@ -19,7 +19,7 @@ class Translations {
 	 * @return array Array of localized strings for JavaScript.
 	 * @since 1.0.0
 	 */
-	public static function get_js_strings(): array {
+	public function get_js_strings(): array {
 		return array(
 			'selectPromptOptions'      => __( 'Select Prompt Options', 'wc-ai-review-responder' ),
 			'chooseTemplateAndMood'    => __( 'Choose a template and mood to guide the AI\'s response.', 'wc-ai-review-responder' ),
@@ -52,7 +52,7 @@ class Translations {
 	 * @return array Array of localized strings for PHP.
 	 * @since 1.0.0
 	 */
-	public static function get_php_strings(): array {
+	public function get_php_strings(): array {
 		return array(
 			'generateAiResponse'     => __( 'Generate AI Response', 'wc-ai-review-responder' ),
 			/* translators: %s WC download URL link. */
@@ -71,7 +71,7 @@ class Translations {
 	 * @return array Array of localized strings for CLI.
 	 * @since 1.0.0
 	 */
-	public static function get_cli_strings(): array {
+	public function get_cli_strings(): array {
 		return array(
 			'missingCommentId'             => __( 'Missing or invalid comment_id.', 'wc-ai-review-responder' ),
 			'step1PrepareData'             => __( 'Step 1: Prepare Review Data', 'wc-ai-review-responder' ),
