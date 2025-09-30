@@ -2,7 +2,7 @@
 /**
  * Mood factory for creating and managing moods.
  *
- * Mood types are defined here and in the MoodsType enum
+ * Mood types are defined here and in the MoodsType enum.
  *
  * @package WcAiReviewResponder
  * @since   1.0.0
@@ -26,20 +26,6 @@ class MoodFactory {
 	);
 
 	/**
-	 * Get all available moods.
-	 *
-	 * @return array<string, MoodInterface> Array of mood instances.
-	 */
-	public function get_all_moods(): array {
-		$mood_instances = array();
-		foreach ( self::MOODS as $name => $class ) {
-			$mood_instances[ $name ] = new $class();
-		}
-		return $mood_instances;
-	}
-
-
-	/**
 	 * Get a specific mood by type.
 	 *
 	 * @param MoodsType $mood_type The mood type.
@@ -50,14 +36,4 @@ class MoodFactory {
 		return new $class();
 	}
 
-
-
-	/**
-	 * Get available mood types.
-	 *
-	 * @return array<MoodsType> Array of mood types.
-	 */
-	public function get_available_mood_types(): array {
-		return MoodsType::cases();
-	}
 }
