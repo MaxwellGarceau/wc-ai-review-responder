@@ -18,12 +18,18 @@ use WcAiReviewResponder\Clients\GeminiClient;
  * Test the AiReviewCli class.
  */
 class AiReviewCliTest extends WP_UnitTestCase {
-
+	
+	/** @var \WcAiReviewResponder\Models\ReviewModel&PHPUnit\Framework\MockObject\MockObject $review_handler */
 	private $review_handler;
+	/** @var \WcAiReviewResponder\LLM\PromptBuilder&PHPUnit\Framework\MockObject\MockObject $prompt_builder */
 	private $prompt_builder;
+	/** @var \WcAiReviewResponder\Clients\GeminiClientFactory&PHPUnit\Framework\MockObject\MockObject $ai_client_factory */
 	private $ai_client_factory;
+	/** @var \WcAiReviewResponder\Validation\ValidateAiResponse&PHPUnit\Framework\MockObject\MockObject $response_validator */
 	private $response_validator;
+	/** @var \WcAiReviewResponder\Validation\ReviewValidator&PHPUnit\Framework\MockObject\MockObject $review_validator */
 	private $review_validator;
+	/** @var \WcAiReviewResponder\Validation\AiInputSanitizer&PHPUnit\Framework\MockObject\MockObject $input_sanitizer */
 	private $input_sanitizer;
 	private $cli;
 

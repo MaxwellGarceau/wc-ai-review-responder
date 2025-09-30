@@ -19,7 +19,9 @@ class GeminiClientTest extends WP_UnitTestCase {
 	 * Test that missing API key throws AiResponseFailure early.
 	 */
 	public function test_missing_api_key_throws_exception() {
+		/** @var \WcAiReviewResponder\Clients\Request&PHPUnit\Framework\MockObject\MockObject $mock_request */
 		$mock_request      = $this->createMock( \WcAiReviewResponder\Clients\Request::class );
+		/** @var \WcAiReviewResponder\RateLimiting\RateLimiter&PHPUnit\Framework\MockObject\MockObject $mock_rate_limiter */
 		$mock_rate_limiter = $this->createMock( \WcAiReviewResponder\RateLimiting\RateLimiter::class );
 
 		$client = new GeminiClient( '', $mock_request, $mock_rate_limiter );
@@ -34,10 +36,12 @@ class GeminiClientTest extends WP_UnitTestCase {
 	 * The Gemini response must contain candidates[0].content.parts[0].text.
 	 */
 	public function test_invalid_response_format_throws_exception() {
+		/** @var \WcAiReviewResponder\RateLimiting\RateLimiter&PHPUnit\Framework\MockObject\MockObject $mock_rate_limiter */
 		$mock_rate_limiter = $this->createMock( \WcAiReviewResponder\RateLimiting\RateLimiter::class );
 		$mock_rate_limiter->method( 'check_rate_limit' );
 		$mock_rate_limiter->method( 'record_request' );
 
+		/** @var \WcAiReviewResponder\Clients\Request&PHPUnit\Framework\MockObject\MockObject $mock_request */
 		$mock_request = $this->createMock( \WcAiReviewResponder\Clients\Request::class );
 		$mock_request->method( 'post' )->willReturn( array( 'candidates' => array() ) );
 
@@ -51,10 +55,12 @@ class GeminiClientTest extends WP_UnitTestCase {
 	 * Test that a successful response returns the extracted text content.
 	 */
 	public function test_successful_response_returns_text() {
+		/** @var \WcAiReviewResponder\RateLimiting\RateLimiter&PHPUnit\Framework\MockObject\MockObject $mock_rate_limiter */
 		$mock_rate_limiter = $this->createMock( \WcAiReviewResponder\RateLimiting\RateLimiter::class );
 		$mock_rate_limiter->expects( $this->once() )->method( 'check_rate_limit' );
 		$mock_rate_limiter->expects( $this->once() )->method( 'record_request' );
 
+		/** @var \WcAiReviewResponder\Clients\Request&PHPUnit\Framework\MockObject\MockObject $mock_request */
 		$mock_request = $this->createMock( \WcAiReviewResponder\Clients\Request::class );
 		$mock_request->expects( $this->once() )
 			->method( 'post' )
@@ -81,10 +87,12 @@ class GeminiClientTest extends WP_UnitTestCase {
 	public function test_custom_config_is_merged_and_forwarded() {
 		$captured_body = null;
 
+		/** @var \WcAiReviewResponder\RateLimiting\RateLimiter&PHPUnit\Framework\MockObject\MockObject $mock_rate_limiter */
 		$mock_rate_limiter = $this->createMock( \WcAiReviewResponder\RateLimiting\RateLimiter::class );
 		$mock_rate_limiter->method( 'check_rate_limit' );
 		$mock_rate_limiter->method( 'record_request' );
 
+		/** @var \WcAiReviewResponder\Clients\Request&PHPUnit\Framework\MockObject\MockObject $mock_request */
 		$mock_request = $this->getMockBuilder( \WcAiReviewResponder\Clients\Request::class )
 			->onlyMethods( array( 'post' ) )
 			->getMock();

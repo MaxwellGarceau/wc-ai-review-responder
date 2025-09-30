@@ -35,6 +35,13 @@ class AjaxHandlerTest extends WP_UnitTestCase {
 		$sanitizer        = $this->createMock( \WcAiReviewResponder\Validation\AiInputSanitizer::class );
 		$review_validator = $this->createMock( \WcAiReviewResponder\Validation\ReviewValidator::class );
 
+		/** @var \WcAiReviewResponder\Models\ModelInterface&PHPUnit\Framework\MockObject\MockObject $model */
+		/** @var \WcAiReviewResponder\LLM\BuildPromptInterface&PHPUnit\Framework\MockObject\MockObject $prompt_builder */
+		/** @var \WcAiReviewResponder\Clients\GeminiClientFactory&PHPUnit\Framework\MockObject\MockObject $factory */
+		/** @var \WcAiReviewResponder\Validation\ValidateAiResponseInterface&PHPUnit\Framework\MockObject\MockObject $response_validator */
+		/** @var \WcAiReviewResponder\Validation\AiInputSanitizer&PHPUnit\Framework\MockObject\MockObject $sanitizer */
+		/** @var \WcAiReviewResponder\Validation\ReviewValidator&PHPUnit\Framework\MockObject\MockObject $review_validator */
+
 		$handler = new AjaxHandler( $model, $prompt_builder, $factory, $response_validator, $sanitizer, $review_validator );
 
 		return array(
@@ -85,6 +92,7 @@ class AjaxHandlerTest extends WP_UnitTestCase {
 		$m['review_validator']->expects( $this->once() )->method( 'validate_for_ai_processing' );
 		$m['prompt_builder']->method( 'build_prompt' )->willReturn( 'PROMPT' );
 
+		/** @var \WcAiReviewResponder\Clients\GeminiClient&PHPUnit\Framework\MockObject\MockObject $client */
 		$client = $this->createMock( \WcAiReviewResponder\Clients\GeminiClient::class );
 		$client->method( 'get' )->willReturn( 'RAW_REPLY' );
 		$m['factory']->method( 'create' )->willReturn( $client );
@@ -190,6 +198,7 @@ class AjaxHandlerTest extends WP_UnitTestCase {
 		$m['sanitizer']->method( 'sanitize' )->willReturn( array( 'rating' => 4, 'comment' => 'Ok', 'product_name' => 'Gadget' ) );
 		$m['review_validator']->expects( $this->once() )->method( 'validate_for_ai_processing' );
 		// Factory returns a client that returns JSON suggestions.
+		/** @var \WcAiReviewResponder\Clients\GeminiClient&PHPUnit\Framework\MockObject\MockObject $client */
 		$client = $this->createMock( \WcAiReviewResponder\Clients\GeminiClient::class );
 		$client->method( 'get' )->willReturn( '{"mood":"professional_educator","template":"product_misunderstanding"}' );
 		$m['factory']->method( 'create' )->willReturn( $client );
