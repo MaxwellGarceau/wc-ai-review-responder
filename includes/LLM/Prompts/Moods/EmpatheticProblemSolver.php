@@ -14,14 +14,6 @@ use WcAiReviewResponder\LLM\Prompts\ReviewContextInterface;
  * Mood for handling negative reviews with empathy and problem-solving focus.
  */
 class EmpatheticProblemSolver implements MoodInterface {
-	/**
-	 * Get the mood name.
-	 *
-	 * @return string The mood name.
-	 */
-	public function get_name(): string {
-		return 'empathetic_problem_solver';
-	}
 
 
 	/**

@@ -14,12 +14,6 @@ use WcAiReviewResponder\LLM\Prompts\ReviewContextInterface;
  * Interface for defining different moods in prompt generation.
  */
 interface MoodInterface {
-	/**
-	 * Get the mood name.
-	 *
-	 * @return string The mood name.
-	 */
-	public function get_name(): string;
 
 
 	/**

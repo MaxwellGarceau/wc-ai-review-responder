@@ -14,14 +14,6 @@ use WcAiReviewResponder\LLM\Prompts\ReviewContextInterface;
  * Mood for handling confused or misinformed reviews with professional education.
  */
 class ProfessionalEducator implements MoodInterface {
-	/**
-	 * Get the mood name.
-	 *
-	 * @return string The mood name.
-	 */
-	public function get_name(): string {
-		return 'professional_educator';
-	}
 
 
 	/**

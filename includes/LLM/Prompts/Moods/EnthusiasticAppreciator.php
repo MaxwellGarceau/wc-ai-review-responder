@@ -14,14 +14,6 @@ use WcAiReviewResponder\LLM\Prompts\ReviewContextInterface;
  * Mood for handling positive reviews with enthusiasm and appreciation.
  */
 class EnthusiasticAppreciator implements MoodInterface {
-	/**
-	 * Get the mood name.
-	 *
-	 * @return string The mood name.
-	 */
-	public function get_name(): string {
-		return 'enthusiastic_appreciator';
-	}
 
 
 	/**
