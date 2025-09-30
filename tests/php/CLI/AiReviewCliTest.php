@@ -14,6 +14,15 @@ use WcAiReviewResponder\Validation\ReviewValidator;
 use WcAiReviewResponder\Validation\AiInputSanitizer;
 use WcAiReviewResponder\Clients\GeminiClient;
 
+// Provide a minimal WP_CLI polyfill so the command can run in tests.
+if ( ! class_exists( '\\WP_CLI' ) ) {
+    class WP_CLI {
+        public static function log( $message ) {}
+        public static function success( $message ) {}
+        public static function error( $message ) { throw new \RuntimeException( $message ); }
+    }
+}
+
 /**
  * Test the AiReviewCli class.
  */
@@ -62,36 +71,29 @@ class AiReviewCliTest extends WP_UnitTestCase {
 		$this->assertInstanceOf( AiReviewCli::class, $this->cli );
 	}
 
-	// /**
-	//  * Test that the `test` command runs without errors.
-	//  */
-	// public function test_test_command_runs_successfully() {
-	// 	// Mock WP_CLI::log and WP_CLI::success to prevent output during tests.
-	// 	if ( ! function_exists( 'WP_CLI\\Utils\\get_php_binary_path' ) ) {
-	// 		// mock WP_CLI internal functions if not exists
-	// 		// It allows to run tests without WP_CLI installed
-	// 		function WP_CLI\Utils\get_php_binary_path() {
-	// 			return '/usr/bin/php';
-	// 		}
-	// 	}
-	// 	// Mock the AI client.
-	// 	$ai_client = $this->createMock( GeminiClient::class );
+	/**
+	 * Test that the `test` command runs without errors.
+	 */
+	public function test_test_command_runs_successfully() {
+		// Mock the AI client returned by the factory.
+		/** @var \WcAiReviewResponder\Clients\GeminiClient&PHPUnit\Framework\MockObject\MockObject $ai_client */
+		$ai_client = $this->createMock( GeminiClient::class );
 
-	// 	// Configure mocks.
-	// 	$this->review_handler->method( 'get_by_id' )->willReturn( array( 'comment' => 'test', 'rating' => 5 ) );
-	// 	$this->input_sanitizer->method( 'sanitize' )->willReturn( array( 'comment' => 'test', 'rating' => 5 ) );
-	// 	$this->ai_client_factory->method( 'create' )->willReturn( $ai_client );
-	// 	$ai_client->method( 'get' )->willReturn( '{"mood": "enthusiastic_appreciator", "template": "default"}' );
-	// 	$this->response_validator->method( 'validate' )->willReturn( 'A valid response' );
+		// Configure mocks.
+		$this->review_handler->method( 'get_by_id' )->willReturn( array( 'comment' => 'test', 'rating' => 5 ) );
+		$this->input_sanitizer->method( 'sanitize' )->willReturn( array( 'comment' => 'test', 'rating' => 5 ) );
+		$this->ai_client_factory->method( 'create' )->willReturn( $ai_client );
+		$ai_client->method( 'get' )->willReturn( '{"mood": "enthusiastic_appreciator", "template": "default"}' );
+		$this->response_validator->method( 'validate' )->willReturn( 'A valid response' );
 
-	// 	// Use a dummy comment ID.
-	// 	$comment_id = 123;
+		// Use a dummy comment ID.
+		$comment_id = 123;
 
-	// 	// The test will fail if any exception is thrown.
-	// 	$this->cli->test( array( $comment_id ), array() );
+		// The test will fail if any exception is thrown.
+		$this->cli->test( array( $comment_id ), array() );
 
-	// 	// Check if success was called.
-	// 	// We can't directly test WP_CLI::success, so we assume no exceptions means success.
-	// 	$this->assertTrue( true );
-	// }
+		// Check if success was called.
+		// We can't directly test WP_CLI::success, so we assume no exceptions means success.
+		$this->assertTrue( true );
+	}
 }
