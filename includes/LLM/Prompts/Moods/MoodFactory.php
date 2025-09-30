@@ -35,5 +35,4 @@ class MoodFactory {
 		$class = self::MOODS[ $mood_type->value ];
 		return new $class();
 	}
-
 }

@@ -47,6 +47,13 @@ class GeminiClient implements AiClientInterface {
 	 */
 	private $rate_limiter;
 
+	/**
+	 * Gemini API configuration options.
+	 *
+	 * @var array
+	 */
+	private $config;
+
 
 	/**
 	 * Constructor.
@@ -54,11 +61,13 @@ class GeminiClient implements AiClientInterface {
 	 * @param string      $api_key     Gemini API key.
 	 * @param Request     $request     Request handler instance.
 	 * @param RateLimiter $rate_limiter Rate limiter instance.
+	 * @param array       $config      Optional Gemini API configuration options.
 	 */
-	public function __construct( string $api_key, Request $request, RateLimiter $rate_limiter ) {
+	public function __construct( string $api_key, Request $request, RateLimiter $rate_limiter, array $config = array() ) {
 		$this->api_key      = $api_key;
 		$this->request      = $request;
 		$this->rate_limiter = $rate_limiter;
+		$this->config       = $this->merge_default_config( $config );
 	}
 
 
@@ -122,6 +131,7 @@ class GeminiClient implements AiClientInterface {
 					),
 				),
 			),
+			'generationConfig' => $this->config,
 		);
 	}
 
@@ -155,6 +165,20 @@ class GeminiClient implements AiClientInterface {
 		// For anonymous users, use IP address.
 		$ip = $this->get_client_ip();
 		return 'ip_' . $ip;
+	}
+
+	/**
+	 * Merge user-provided config with default configuration.
+	 *
+	 * @param array $user_config User-provided configuration options.
+	 * @return array Merged configuration.
+	 */
+	private function merge_default_config( array $user_config ): array {
+		$default_config = array(
+			'response_mime_type' => 'text/plain',
+		);
+
+		return array_merge( $default_config, $user_config );
 	}
 
 	/**

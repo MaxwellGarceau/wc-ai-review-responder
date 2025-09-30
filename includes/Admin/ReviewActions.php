@@ -155,8 +155,9 @@ class ReviewActions {
 	 */
 	private function create_ai_response_action( $comment ): string {
 		return sprintf(
-			'<a href="#" class="ai-generate-response" data-comment-id="%d" data-nonce="%s">%s</a>',
+			'<a href="#" class="ai-generate-response" data-comment-id="%d" data-suggest-nonce="%s" data-generate-nonce="%s">%s</a>',
 			esc_attr( $comment->comment_ID ),
+			esc_attr( wp_create_nonce( 'get_ai_suggestions' ) ),
 			esc_attr( wp_create_nonce( 'generate_ai_response' ) ),
 			esc_html__( 'Generate AI Response', 'wc_ai_review_responder' )
 		);

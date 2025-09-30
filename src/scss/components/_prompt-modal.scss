@@ -1,11 +1,12 @@
 /* Prompt Modal Component - Layered Architecture */
+@use "sass:map";
 @use "../variables" as tokens;
 @use "modal-base";
 
 .wc-ai-rr-prompt-modal {
 
 	@extend .wc-ai-rr-modal;
-	z-index: map-get(tokens.$z-index, modal);
+	z-index: map.get(tokens.$z-index, "modal");
 
 	&__overlay {
 
@@ -21,14 +22,19 @@
 	&__title {
 
 		@extend .wc-ai-rr-modal__title;
-		font-size: map-get(tokens.$typography, font-size-xl);
+		font-size: map.get(tokens.$typography, "font-size-xl");
 	}
 
 	&__message {
 
 		@extend .wc-ai-rr-modal__message;
-		margin: 0 0 map-get(tokens.$spacing, lg) 0;
-		line-height: map-get(tokens.$typography, line-height-relaxed);
+		margin: 0 0 map.get(tokens.$spacing, "lg") 0;
+		line-height: map.get(tokens.$typography, "line-height-relaxed");
+	}
+
+	&__suggestion-failure {
+		@extend .wc-ai-rr-prompt-modal__message;
+		color: map.get(tokens.$colors, "error");
 	}
 
 	&__select {
