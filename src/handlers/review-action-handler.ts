@@ -12,7 +12,7 @@ import {
 	updateReplyTextarea,
 } from '../utils/wordpress-utils';
 import { showLoadingModal, hideLoadingModal } from '../modals/loading-modal';
-import { showPromptModal, getSelectedTemplate } from '../modals/prompt-modal';
+import { showPromptModal, getSelectedTemplate, getSelectedMood } from '../modals/prompt-modal';
 import { showGenericError } from '../modals/error-modal';
 import { generateAiResponse } from '../api/ajax-handler';
 
@@ -54,6 +54,7 @@ export function handleAiResponseClick( link: HTMLAnchorElement ): void {
 			const data = await generateAiResponse(
 				commentId,
 				getSelectedTemplate(),
+				getSelectedMood(),
 				nonce
 			);
 

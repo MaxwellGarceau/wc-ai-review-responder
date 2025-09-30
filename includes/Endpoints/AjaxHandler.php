@@ -15,6 +15,7 @@ use WcAiReviewResponder\Exceptions\RateLimitExceededException;
 use WcAiReviewResponder\Enums\ErrorType;
 use WcAiReviewResponder\Enums\HttpStatus;
 use WcAiReviewResponder\LLM\Prompts\TemplateType;
+use WcAiReviewResponder\LLM\Prompts\Moods\MoodsType;
 
 /**
  * AJAX handler class for generating AI responses to product reviews.
@@ -136,12 +137,15 @@ class AjaxHandler {
 		$template_value = isset( $_POST['template'] ) ? sanitize_text_field( wp_unslash( $_POST['template'] ) ) : 'default';
 		$template       = TemplateType::tryFrom( $template_value ) ?? TemplateType::DEFAULT;
 
+		$mood_value = isset( $_POST['mood'] ) ? sanitize_text_field( wp_unslash( $_POST['mood'] ) ) : 'empathetic_problem_solver';
+		$mood       = MoodsType::tryFrom( $mood_value ) ?? MoodsType::EMPATHETIC_PROBLEM_SOLVER;
+
 		try {
 			$context = $this->review_handler->get_by_id( $comment_id );
 			$this->review_validator->validate_for_ai_processing( $context );
 			$clean = $this->input_sanitizer->sanitize( $context );
 
-			$prompt      = $this->prompt_builder->build_prompt( $clean, $template );
+			$prompt      = $this->prompt_builder->build_prompt( $clean, $template, $mood );
 			$ai_response = $this->ai_client->get( $prompt );
 			$reply       = $this->response_validator->validate( $ai_response );
 
