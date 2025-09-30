@@ -18,6 +18,7 @@ use WcAiReviewResponder\LLM\Prompts\Templates\ValuePriceConcernTemplate;
 use WcAiReviewResponder\LLM\Prompts\Templates\PromptTemplateInterface;
 use WcAiReviewResponder\LLM\Prompts\ReviewContext;
 use WcAiReviewResponder\LLM\Prompts\TemplateType;
+use WcAiReviewResponder\LLM\Prompts\Moods\MoodFactory;
 
 /**
  * Builds prompts from a well-defined review context using templates.
@@ -50,6 +51,20 @@ class PromptBuilder implements BuildPromptInterface {
 	private array $template_instances = array();
 
 	/**
+	 * Mood factory instance.
+	 *
+	 * @var MoodFactory
+	 */
+	private MoodFactory $mood_factory;
+
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		$this->mood_factory = new MoodFactory();
+	}
+
+	/**
 	 * Build a prompt string from the provided context and template.
 	 *
 	 * @param array{rating:int,comment:string,product_name:string} $context Review context shape.
@@ -60,7 +75,11 @@ class PromptBuilder implements BuildPromptInterface {
 		$template_instance = $this->get_template_instance( $template );
 		$review_context    = new ReviewContext( $context );
 
-		return $template_instance->get_prompt( $review_context );
+		$base_prompt = $template_instance->get_prompt( $review_context );
+
+		// Apply mood to the prompt.
+		$default_mood = $this->mood_factory->get_default_mood();
+		return $default_mood->apply_mood( $base_prompt, $review_context );
 	}
 
 	/**
@@ -87,5 +106,14 @@ class PromptBuilder implements BuildPromptInterface {
 	 */
 	public function get_available_templates(): array {
 		return TemplateType::cases();
+	}
+
+	/**
+	 * Get available moods.
+	 *
+	 * @return array<string, string> Array of mood names and descriptions.
+	 */
+	public function get_available_moods(): array {
+		return $this->mood_factory->get_mood_descriptions();
 	}
 }
