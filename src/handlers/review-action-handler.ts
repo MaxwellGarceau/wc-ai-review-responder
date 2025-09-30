@@ -23,9 +23,10 @@ import { generateAiResponse, getAiSuggestions } from '../api/ajax-handler';
  */
 export function handleAiResponseClick( link: HTMLAnchorElement ): void {
 	const commentId: string | null = link.getAttribute( 'data-comment-id' );
-	const nonce: string | null = link.getAttribute( 'data-nonce' );
+	const suggestNonce: string | null = link.getAttribute( 'data-suggest-nonce' );
+	const generateNonce: string | null = link.getAttribute( 'data-generate-nonce' );
 
-	if ( ! commentId || ! nonce ) {
+	if ( ! commentId || ! suggestNonce || ! generateNonce ) {
 		// Missing required data attributes - show error
 		showGenericError(
 			'Missing required data attributes. Please refresh the page and try again.',
@@ -46,7 +47,7 @@ export function handleAiResponseClick( link: HTMLAnchorElement ): void {
 	link.textContent = 'Getting suggestions...';
 	link.style.pointerEvents = 'none';
 
-	getAiSuggestions( commentId, nonce )
+	getAiSuggestions( commentId, suggestNonce )
 		.then( ( suggestions ) => {
 			let suggestedTemplate: string | undefined;
 			let suggestedMood: string | undefined;
@@ -65,7 +66,7 @@ export function handleAiResponseClick( link: HTMLAnchorElement ): void {
 						commentId,
 						getSelectedTemplate(),
 						getSelectedMood(),
-						nonce
+						generateNonce
 					);
 
 					if ( data.success && data.data.reply ) {
