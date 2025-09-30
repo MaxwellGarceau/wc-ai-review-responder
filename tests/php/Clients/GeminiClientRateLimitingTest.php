@@ -62,6 +62,7 @@ class GeminiClientRateLimitingTest extends WP_UnitTestCase {
 	 */
 	public function test_gemini_client_respects_rate_limits() {
 		// Mock the rate limiter to throw exception.
+		/** @var \WcAiReviewResponder\RateLimiting\RateLimiter&PHPUnit\Framework\MockObject\MockObject $mock_rate_limiter */
 		$mock_rate_limiter = $this->createMock( \WcAiReviewResponder\RateLimiting\RateLimiter::class );
 		$mock_rate_limiter->expects( $this->once() )
 			->method( 'check_rate_limit' )
@@ -83,6 +84,7 @@ class GeminiClientRateLimitingTest extends WP_UnitTestCase {
 	 */
 	public function test_gemini_client_records_successful_requests() {
 		// Mock the rate limiter to track calls.
+		/** @var \WcAiReviewResponder\RateLimiting\RateLimiter&PHPUnit\Framework\MockObject\MockObject $mock_rate_limiter */
 		$mock_rate_limiter = $this->createMock( \WcAiReviewResponder\RateLimiting\RateLimiter::class );
 		$mock_rate_limiter->expects( $this->once() )
 			->method( 'check_rate_limit' );
@@ -90,6 +92,7 @@ class GeminiClientRateLimitingTest extends WP_UnitTestCase {
 			->method( 'record_request' );
 
 		// Mock the request handler to return a successful response.
+		/** @var \WcAiReviewResponder\Clients\Request&PHPUnit\Framework\MockObject\MockObject $mock_request */
 		$mock_request = $this->createMock( \WcAiReviewResponder\Clients\Request::class );
 		$mock_request->expects( $this->once() )
 			->method( 'post' )
@@ -122,6 +125,7 @@ class GeminiClientRateLimitingTest extends WP_UnitTestCase {
 		// Test with logged-in user.
 		wp_set_current_user( 1 );
 
+		/** @var \WcAiReviewResponder\RateLimiting\RateLimiter&PHPUnit\Framework\MockObject\MockObject $mock_rate_limiter */
 		$mock_rate_limiter = $this->createMock( \WcAiReviewResponder\RateLimiting\RateLimiter::class );
 		$mock_rate_limiter->expects( $this->once() )
 			->method( 'check_rate_limit' )
@@ -145,6 +149,7 @@ class GeminiClientRateLimitingTest extends WP_UnitTestCase {
 		// Ensure no user is logged in.
 		wp_set_current_user( 0 );
 
+		/** @var \WcAiReviewResponder\RateLimiting\RateLimiter&PHPUnit\Framework\MockObject\MockObject $mock_rate_limiter */
 		$mock_rate_limiter = $this->createMock( \WcAiReviewResponder\RateLimiting\RateLimiter::class );
 		$mock_rate_limiter->expects( $this->once() )
 			->method( 'check_rate_limit' )

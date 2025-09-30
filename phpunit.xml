@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <phpunit
-    bootstrap="tests/bootstrap.php"
+    bootstrap="tests/php/bootstrap.php"
     backupGlobals="false"
     colors="true"
     convertErrorsToExceptions="true"
@@ -18,7 +18,7 @@
     </php>
     <testsuites>
         <testsuite name="WC AI Review Responder">
-            <directory>tests/</directory>
+            <directory>tests/php/</directory>
         </testsuite>
     </testsuites>
     <coverage>
