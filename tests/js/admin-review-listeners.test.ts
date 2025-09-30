@@ -3,6 +3,10 @@
  *
  * @since 1.2.0
  */
+
+/**
+ * Internal dependencies
+ */
 import { handleAiResponseClick } from '../../src/handlers/review-action-handler';
 
 // Mock the handler module that the listeners will call.

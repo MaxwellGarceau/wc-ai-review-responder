@@ -8,7 +8,9 @@
  * @since 1.2.0
  */
 
-// Mock dependencies from other modules.
+/**
+ * Internal dependencies
+ */
 jest.mock( '../../../src/utils/wordpress-utils', () => ( {
 	triggerWordPressReply: jest.fn(),
 	updateReplyTextarea: jest.fn(),

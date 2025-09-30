@@ -99,6 +99,7 @@ class AiReviewCli {
 	 *
 	 * @param array $args       Positional args.
 	 * @param array $assoc_args Associative args.
+	 * @throws AiResponseFailure When invalid comment ID is provided.
 	 */
 	public function test( $args, $assoc_args ) {
 		list( $comment_id ) = $args;

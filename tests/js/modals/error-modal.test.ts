@@ -3,6 +3,10 @@
  *
  * @since 1.2.0
  */
+
+/**
+ * Internal dependencies
+ */
 import {
 	showErrorModal,
 	hideErrorModal,

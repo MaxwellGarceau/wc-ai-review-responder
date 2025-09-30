@@ -176,6 +176,7 @@ class AjaxHandler {
 	 *
 	 * @return void
 	 * @throws InvalidArgumentsException When the request contains an invalid comment ID.
+	 * @throws AiResponseFailure When the AI response is invalid or fails.
 	 */
 	public function handle_get_ai_suggestions(): void {
 		if ( ! current_user_can( 'moderate_comments' ) ) {
