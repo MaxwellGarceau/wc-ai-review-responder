@@ -38,20 +38,6 @@ class MoodFactory {
 		return $mood_instances;
 	}
 
-	/**
-	 * Get a specific mood by name.
-	 *
-	 * @param string $mood_name The mood name.
-	 * @return MoodInterface|null The mood instance or null if not found.
-	 */
-	public function get_mood( string $mood_name ): ?MoodInterface {
-		if ( ! isset( self::MOODS[ $mood_name ] ) ) {
-			return null;
-		}
-
-		$class = self::MOODS[ $mood_name ];
-		return new $class();
-	}
 
 	/**
 	 * Get a specific mood by type.
