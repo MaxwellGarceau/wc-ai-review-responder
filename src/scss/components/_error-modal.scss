@@ -4,14 +4,17 @@
 @use "../visual/error-modal" as visual;
 
 .wc-ai-rr-error-modal {
+
 	@extend .wc-ai-rr-modal;
 	z-index: map-get(tokens.$z-index, modal);
 
 	&__overlay {
+
 		@extend .wc-ai-rr-modal__overlay;
 	}
 
 	&__content {
+
 		@extend .wc-ai-rr-modal__content;
 		max-width: 450px;
 	}
@@ -26,14 +29,17 @@
 	}
 
 	&__title {
+
 		@extend .wc-ai-rr-modal__title;
 	}
 
 	&__message {
+
 		@extend .wc-ai-rr-modal__message;
 	}
 
 	&__actions {
+
 		@extend .wc-ai-rr-modal__actions;
 		justify-content: center;
 	}

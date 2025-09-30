@@ -13,8 +13,8 @@ import { AiResponseData } from '../types/admin-types';
  * Makes an AJAX request to generate an AI response
  *
  * @param {string} commentId - The comment ID to generate a response for
- * @param {string} template - The template to use for the response
- * @param {string} nonce - The WordPress nonce for security
+ * @param {string} template  - The template to use for the response
+ * @param {string} nonce     - The WordPress nonce for security
  * @return {Promise<AiResponseData>} The response data from the server
  */
 export async function generateAiResponse(

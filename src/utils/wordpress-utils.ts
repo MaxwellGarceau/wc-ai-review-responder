@@ -61,6 +61,6 @@ export function updateReplyTextarea( content: string ): boolean {
 
 	replyTextarea.dispatchEvent( new Event( 'change' ) );
 	replyTextarea.focus();
-	
+
 	return true;
 }

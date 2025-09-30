@@ -2,12 +2,13 @@
 @use "../variables" as tokens;
 
 .wc-ai-rr-error-modal {
+
 	&__icon {
 		// Error icon appearance
 		color: map-get(tokens.$colors, error);
 		background-color: map-get(tokens.$colors, error-background);
 		border-radius: map-get(tokens.$border-radius, full);
-		
+
 		svg {
 			width: 24px;
 			height: 24px;

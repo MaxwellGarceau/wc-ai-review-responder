@@ -11,7 +11,7 @@
  * Internal dependencies
  */
 import { handleAiResponseClick } from './handlers/review-action-handler';
-import { showErrorModal, showGenericError } from './modals/error-modal';
+// import { showErrorModal, showGenericError } from './modals/error-modal';
 
 document.addEventListener( 'DOMContentLoaded', (): void => {
 	const aiResponseLinks: NodeListOf< HTMLAnchorElement > =

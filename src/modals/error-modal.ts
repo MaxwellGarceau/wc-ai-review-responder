@@ -63,7 +63,7 @@ export function showErrorModal( options: ErrorModalOptions ): void {
 			overlay.removeEventListener( 'click', overlayClickHandler );
 		}
 		modal.style.display = 'none';
-		
+
 		// Call the onClose callback if provided
 		if ( onClose ) {
 			onClose();
@@ -100,12 +100,15 @@ export function hideErrorModal(): void {
 /**
  * Shows an error modal for a generic error with a user-friendly message.
  *
- * @param {Error | string} error - The error object or error message
- * @param {string} context - Optional context about where the error occurred
+ * @param {Error | string} error   - The error object or error message
+ * @param {string} context         - Optional context about where the error occurred
  */
-export function showGenericError( error: Error | string, context?: string ): void {
+export function showGenericError(
+	error: Error | string,
+	context?: string
+): void {
 	let message: string;
-	
+
 	if ( error instanceof Error ) {
 		message = error.message || 'An unexpected error occurred.';
 	} else {
@@ -114,7 +117,7 @@ export function showGenericError( error: Error | string, context?: string ): voi
 
 	// Add context if provided
 	if ( context ) {
-		message = `${context}: ${message}`;
+		message = `${ context }: ${ message }`;
 	}
 
 	showErrorModal( {

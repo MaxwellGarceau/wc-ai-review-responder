@@ -7,7 +7,10 @@
 /**
  * Internal dependencies
  */
-import { triggerWordPressReply, updateReplyTextarea } from '../utils/wordpress-utils';
+import {
+	triggerWordPressReply,
+	updateReplyTextarea,
+} from '../utils/wordpress-utils';
 import { showLoadingModal, hideLoadingModal } from '../modals/loading-modal';
 import { showPromptModal, getSelectedTemplate } from '../modals/prompt-modal';
 import { showGenericError } from '../modals/error-modal';
@@ -24,7 +27,7 @@ export function handleAiResponseClick( link: HTMLAnchorElement ): void {
 
 	if ( ! commentId || ! nonce ) {
 		// Missing required data attributes - show error
-		showGenericError( 
+		showGenericError(
 			'Missing required data attributes. Please refresh the page and try again.',
 			'Configuration Error'
 		);
@@ -70,17 +73,16 @@ export function handleAiResponseClick( link: HTMLAnchorElement ): void {
 				);
 			} else {
 				// Server returned an error response
-				const errorMessage = data.data?.message || 'The server returned an error response.';
-				showGenericError(
-					errorMessage,
-					'Server Error'
-				);
+				const errorMessage =
+					data.data?.message ||
+					'The server returned an error response.';
+				showGenericError( errorMessage, 'Server Error' );
 			}
 		} catch ( error: unknown ) {
 			// Display user-friendly error message
-			showGenericError( 
-				error as Error, 
-				'Failed to generate AI response' 
+			showGenericError(
+				error as Error,
+				'Failed to generate AI response'
 			);
 		} finally {
 			hideLoadingModal();
