@@ -9,6 +9,7 @@
 namespace WcAiReviewResponder\LLM;
 
 use WcAiReviewResponder\LLM\Prompts\TemplateType;
+use WcAiReviewResponder\LLM\Prompts\Moods\MoodsType;
 
 interface BuildPromptInterface {
 	/**
@@ -16,7 +17,8 @@ interface BuildPromptInterface {
 	 *
 	 * @param array{rating:int,comment:string,product_name:string} $context Review context shape.
 	 * @param TemplateType                                         $template Template type to use for building the prompt.
+	 * @param MoodsType                                            $mood Mood type to use for building the prompt.
 	 * @return string Prompt to send to the AI provider.
 	 */
-	public function build_prompt( array $context, TemplateType $template = TemplateType::DEFAULT ): string;
+	public function build_prompt( array $context, TemplateType $template = TemplateType::DEFAULT, MoodsType $mood = MoodsType::EMPATHETIC_PROBLEM_SOLVER ): string;
 }

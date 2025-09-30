@@ -8,7 +8,7 @@
  * Internal dependencies
  */
 import promptModalTemplate from '../templates/prompt-selection-modal.html';
-import { Template } from '../types/admin-types';
+import { Template, Mood } from '../types/admin-types';
 
 /**
  * Shows the prompt selection modal.
@@ -28,8 +28,11 @@ export function showPromptModal(
 	const modal = document.querySelector(
 		'.wc-ai-rr-prompt-modal'
 	) as HTMLElement;
-	const select = modal.querySelector(
-		'#wc-ai-rr-prompt-modal-select'
+	const templateSelect = modal.querySelector(
+		'#wc-ai-rr-prompt-modal-template-select'
+	) as HTMLSelectElement;
+	const moodSelect = modal.querySelector(
+		'#wc-ai-rr-prompt-modal-mood-select'
 	) as HTMLSelectElement;
 	const generateButton = modal.querySelector(
 		'#wc-ai-rr-prompt-modal-generate'
@@ -41,13 +44,22 @@ export function showPromptModal(
 		'.wc-ai-rr-prompt-modal__overlay'
 	) as HTMLElement;
 
-	// Populate select options
-	select.innerHTML = ''; // Clear existing options
+	// Populate template select options
+	templateSelect.innerHTML = ''; // Clear existing options
 	wcAiReviewResponder.templates.forEach( ( template: Template ) => {
 		const option = document.createElement( 'option' );
 		option.value = template.value;
 		option.textContent = template.label;
-		select.appendChild( option );
+		templateSelect.appendChild( option );
+	} );
+
+	// Populate mood select options
+	moodSelect.innerHTML = ''; // Clear existing options
+	wcAiReviewResponder.moods.forEach( ( mood: Mood ) => {
+		const option = document.createElement( 'option' );
+		option.value = mood.value;
+		option.textContent = mood.label;
+		moodSelect.appendChild( option );
 	} );
 
 	// Event listeners for buttons
@@ -89,7 +101,19 @@ export function showPromptModal(
  */
 export function getSelectedTemplate(): string {
 	const select = document.querySelector(
-		'#wc-ai-rr-prompt-modal-select'
+		'#wc-ai-rr-prompt-modal-template-select'
 	) as HTMLSelectElement;
 	return select ? select.value : 'default';
+}
+
+/**
+ * Gets the selected mood from the prompt modal.
+ *
+ * @return {string} The selected mood value.
+ */
+export function getSelectedMood(): string {
+	const select = document.querySelector(
+		'#wc-ai-rr-prompt-modal-mood-select'
+	) as HTMLSelectElement;
+	return select ? select.value : 'empathetic_problem_solver';
 }

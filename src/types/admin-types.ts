@@ -9,9 +9,15 @@ export interface Template {
 	label: string;
 }
 
+export interface Mood {
+	value: string;
+	label: string;
+}
+
 export interface WcAiReviewResponder {
 	ajaxurl: string;
 	templates: Template[];
+	moods: Mood[];
 }
 
 export interface AiResponseData {

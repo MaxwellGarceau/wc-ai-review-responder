@@ -35,6 +35,10 @@
 		gap: map-get(tokens.$spacing, sm);
 	}
 
+	&__label {
+		display: block;
+	}
+
 	&__spinner {
 		// Spinner sizing
 		width: 40px;

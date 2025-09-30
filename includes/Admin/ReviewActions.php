@@ -12,6 +12,7 @@
 namespace WcAiReviewResponder\Admin;
 
 use WcAiReviewResponder\LLM\Prompts\TemplateType;
+use WcAiReviewResponder\LLM\Prompts\Moods\MoodsType;
 
 /**
  * Admin review actions class for adding AI response generation links.
@@ -105,6 +106,15 @@ class ReviewActions {
 						);
 					},
 					TemplateType::cases()
+				),
+				'moods'     => array_map(
+					function ( $enum_case ) {
+						return array(
+							'value' => $enum_case->value,
+							'label' => ucwords( str_replace( '_', ' ', $enum_case->value ) ),
+						);
+					},
+					MoodsType::cases()
 				),
 			)
 		);

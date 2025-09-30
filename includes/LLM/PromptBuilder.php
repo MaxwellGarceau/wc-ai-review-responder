@@ -18,6 +18,8 @@ use WcAiReviewResponder\LLM\Prompts\Templates\ValuePriceConcernTemplate;
 use WcAiReviewResponder\LLM\Prompts\Templates\PromptTemplateInterface;
 use WcAiReviewResponder\LLM\Prompts\ReviewContext;
 use WcAiReviewResponder\LLM\Prompts\TemplateType;
+use WcAiReviewResponder\LLM\Prompts\Moods\MoodFactory;
+use WcAiReviewResponder\LLM\Prompts\Moods\MoodsType;
 
 /**
  * Builds prompts from a well-defined review context using templates.
@@ -50,17 +52,36 @@ class PromptBuilder implements BuildPromptInterface {
 	private array $template_instances = array();
 
 	/**
+	 * Mood factory instance.
+	 *
+	 * @var MoodFactory
+	 */
+	private MoodFactory $mood_factory;
+
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		$this->mood_factory = new MoodFactory();
+	}
+
+	/**
 	 * Build a prompt string from the provided context and template.
 	 *
 	 * @param array{rating:int,comment:string,product_name:string} $context Review context shape.
 	 * @param TemplateType                                         $template Template type to use for building the prompt.
+	 * @param MoodsType                                            $mood Mood type to use for building the prompt.
 	 * @return string Prompt to send to the AI provider.
 	 */
-	public function build_prompt( array $context, TemplateType $template = TemplateType::DEFAULT ): string {
+	public function build_prompt( array $context, TemplateType $template = TemplateType::DEFAULT, MoodsType $mood = MoodsType::EMPATHETIC_PROBLEM_SOLVER ): string {
 		$template_instance = $this->get_template_instance( $template );
 		$review_context    = new ReviewContext( $context );
 
-		return $template_instance->get_prompt( $review_context );
+		$base_prompt = $template_instance->get_prompt( $review_context );
+
+		// Apply mood to the prompt.
+		$selected_mood = $this->mood_factory->get_mood_by_type( $mood );
+		return $selected_mood->apply( $base_prompt, $review_context );
 	}
 
 	/**
@@ -88,4 +109,5 @@ class PromptBuilder implements BuildPromptInterface {
 	public function get_available_templates(): array {
 		return TemplateType::cases();
 	}
+
 }

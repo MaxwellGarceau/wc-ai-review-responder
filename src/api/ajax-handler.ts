@@ -14,18 +14,21 @@ import { AiResponseData } from '../types/admin-types';
  *
  * @param {string} commentId - The comment ID to generate a response for
  * @param {string} template  - The template to use for the response
+ * @param {string} mood      - The mood to use for the response
  * @param {string} nonce     - The WordPress nonce for security
  * @return {Promise<AiResponseData>} The response data from the server
  */
 export async function generateAiResponse(
 	commentId: string,
 	template: string,
+	mood: string,
 	nonce: string
 ): Promise< AiResponseData > {
 	const formData: FormData = new FormData();
 	formData.append( 'action', 'generate_ai_response' );
 	formData.append( 'comment_id', commentId );
 	formData.append( 'template', template );
+	formData.append( 'mood', mood );
 	formData.append( '_wpnonce', nonce );
 
 	const response: Response = await fetch( wcAiReviewResponder.ajaxurl, {

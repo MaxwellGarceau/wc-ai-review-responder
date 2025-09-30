@@ -37,6 +37,11 @@
 		// Select styles are already defined in visual layer
 	}
 
+	&__label {
+
+		@extend .wc-ai-rr-modal__label;
+	}
+
 	&__actions {
 
 		@extend .wc-ai-rr-modal__actions;
