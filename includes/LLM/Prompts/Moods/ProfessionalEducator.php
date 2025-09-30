@@ -39,7 +39,7 @@ class ProfessionalEducator implements MoodInterface {
 	 * @param ReviewContextInterface $context Review context object.
 	 * @return string The prompt with mood applied.
 	 */
-	public function apply_mood( string $prompt, ReviewContextInterface $context ): string {
+	public function apply( string $prompt, ReviewContextInterface $context ): string {
 		$mood_prefix  = 'Write with patience and professionalism. Address any misconceptions clearly and helpfully. ';
 		$mood_prefix .= 'Provide clear, accurate information without being condescending. Use an informative, supportive tone. ';
 		$mood_prefix .= 'Focus on education and clarification while maintaining respect for the customer\'s perspective. ';

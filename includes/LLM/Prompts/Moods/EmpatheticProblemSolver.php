@@ -39,7 +39,7 @@ class EmpatheticProblemSolver implements MoodInterface {
 	 * @param ReviewContextInterface $context Review context object.
 	 * @return string The prompt with mood applied.
 	 */
-	public function apply_mood( string $prompt, ReviewContextInterface $context ): string {
+	public function apply( string $prompt, ReviewContextInterface $context ): string {
 		$mood_prefix  = 'Write with genuine empathy and understanding. Acknowledge the customer\'s frustration and validate their experience. ';
 		$mood_prefix .= 'Focus on finding solutions and making things right. Use a warm, caring tone that shows you truly care about their satisfaction. ';
 		$mood_prefix .= 'Demonstrate accountability and commitment to improvement. ';

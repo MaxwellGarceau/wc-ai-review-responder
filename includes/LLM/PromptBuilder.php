@@ -81,7 +81,7 @@ class PromptBuilder implements BuildPromptInterface {
 
 		// Apply mood to the prompt.
 		$selected_mood = $this->mood_factory->get_mood_by_type( $mood );
-		return $selected_mood->apply_mood( $base_prompt, $review_context );
+		return $selected_mood->apply( $base_prompt, $review_context );
 	}
 
 	/**

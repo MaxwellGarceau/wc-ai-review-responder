@@ -35,5 +35,5 @@ interface MoodInterface {
 	 * @param ReviewContextInterface $context Review context object.
 	 * @return string The prompt with mood applied.
 	 */
-	public function apply_mood( string $prompt, ReviewContextInterface $context ): string;
+	public function apply( string $prompt, ReviewContextInterface $context ): string;
 }
