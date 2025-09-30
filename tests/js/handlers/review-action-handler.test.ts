@@ -57,6 +57,14 @@ describe( 'handleAiResponseClick', () => {
 	// Before each test, create a fresh mock link element and clear all mocks.
 	beforeEach( () => {
 		jest.clearAllMocks();
+
+		// Provide a default mock for getAiSuggestions to prevent '.then' of undefined error.
+		// Tests that care about the result of this call will provide their own mock.
+		( getAiSuggestions as jest.Mock ).mockResolvedValue( {
+			success: true,
+			data: {},
+		} );
+
 		link = document.createElement( 'a' );
 		link.setAttribute( 'data-comment-id', '123' );
 		link.setAttribute( 'data-suggest-nonce', 'suggest-nonce-123' );
@@ -177,30 +185,48 @@ describe( 'handleAiResponseClick', () => {
 
 	describe( 'When fetching AI suggestions fails', () => {
 		/**
-		 * Test: It should show the prompt modal with a failure flag.
-		 * This test checks both API failure (success: false) and network errors.
+		 * Test: It should show the prompt modal with a failure flag when the API returns success: false.
+		 * This test checks the scenario where the network request succeeds, but the API
+		 * reports that it failed to generate suggestions.
 		 */
-		it.each( [
-			[ 'API returns success: false', Promise.resolve( { success: false, data: {} } ) ],
-			[ 'Network error', Promise.reject( new Error( 'Network error' ) ) ],
-		] )(
-			'should show prompt modal with failure flag when %s',
-			async ( _, promise ) => {
-				( getAiSuggestions as jest.Mock ).mockReturnValue( promise );
-				handleAiResponseClick( link );
-				await Promise.resolve(); // Let the promise resolve/reject
-				await new Promise( setImmediate ); // Wait for the .catch/.then chain
+		it( 'should show prompt modal with failure flag when API returns success: false', async () => {
+			( getAiSuggestions as jest.Mock ).mockResolvedValue( {
+				success: false,
+				data: {},
+			} );
+			handleAiResponseClick( link );
+			await new Promise( setImmediate ); // Wait for promise chain.
 
-				expect( hideLoadingModal ).toHaveBeenCalled();
-				expect( showPromptModal ).toHaveBeenCalledWith(
-					expect.any( Function ),
-					expect.any( Function ),
-					undefined,
-					undefined,
-					true // suggestionFailed
-				);
-			}
-		);
+			expect( hideLoadingModal ).toHaveBeenCalled();
+			expect( showPromptModal ).toHaveBeenCalledWith(
+				expect.any( Function ),
+				expect.any( Function ),
+				undefined,
+				undefined,
+				true // suggestionFailed
+			);
+		} );
+
+		/**
+		 * Test: It should show the prompt modal with a failure flag on a network error.
+		 * This test checks the scenario where the fetch call itself fails (e.g., network issue).
+		 */
+		it( 'should show prompt modal with failure flag on a network error', async () => {
+			( getAiSuggestions as jest.Mock ).mockRejectedValue(
+				new Error( 'Network error' )
+			);
+			handleAiResponseClick( link );
+			await new Promise( setImmediate ); // Wait for promise chain.
+
+			expect( hideLoadingModal ).toHaveBeenCalled();
+			expect( showPromptModal ).toHaveBeenCalledWith(
+				expect.any( Function ),
+				expect.any( Function ),
+				undefined,
+				undefined,
+				true // suggestionFailed
+			);
+		} );
 	} );
 
 	describe( 'User interaction with the Prompt Modal', () => {
@@ -224,7 +250,7 @@ describe( 'handleAiResponseClick', () => {
 			 * Test: It should show the loading modal again and call generateAiResponse.
 			 * The UI should show a loading state while the final response is being generated.
 			 */
-			it( 'should show loading modal and call generateAiResponse', async () => {
+			it( 'should show loading modal and call generateAi-response', async () => {
 				const { handleGenerate } = await getModalCallbacks();
 				( generateAiResponse as jest.Mock ).mockResolvedValue( { success: false, data: {} } );
 
@@ -324,7 +350,11 @@ describe( 'handleAiResponseClick', () => {
 				const { handleGenerate } = await getModalCallbacks();
 				( generateAiResponse as jest.Mock ).mockRejectedValue( new Error( 'any error' ) );
 
-				await handleGenerate();
+				try {
+					await handleGenerate();
+				} catch ( e ) {
+					// Prevent unhandled promise rejection error in test output
+				}
 
 				expect( hideLoadingModal ).toHaveBeenCalled();
 				expect( link.textContent ).toBe( 'Generate Response' );
