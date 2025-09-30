@@ -25,7 +25,7 @@ use WcAiReviewResponder\Admin\ReviewActions;
 use WcAiReviewResponder\CLI\AiReviewCli;
 use WcAiReviewResponder\Core\ContainerFactory;
 use WcAiReviewResponder\Endpoints\AjaxHandler;
-use WcAiReviewResponder\Localization\Translations;
+use WcAiReviewResponder\Localization\Localizations;
 
 // phpcs:disable WordPress.Files.FileName
 // phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed
@@ -38,7 +38,7 @@ use WcAiReviewResponder\Localization\Translations;
 function wc_ai_review_responder_missing_wc_notice() {
 	/* translators: %s WC download URL link. */
 	$container    = Wc_Ai_Review_Responder::instance()->build_container();
-	$translations = $container->get( Translations::class );
+	$translations = $container->get( Localizations::class );
 	$php_strings  = $translations->get_php_strings();
 	echo '<div class="error"><p><strong>' . sprintf( esc_html( $php_strings['wooCommerceRequired'] ), '<a href="https://woo.com/" target="_blank">WooCommerce</a>' ) . '</strong></p></div>';
 }
@@ -124,7 +124,7 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 		 */
 		public function __clone() {
 			$container    = $this->build_container();
-			$translations = $container->get( Translations::class );
+			$translations = $container->get( Localizations::class );
 			$php_strings  = $translations->get_php_strings();
 			wc_doing_it_wrong( __FUNCTION__, $php_strings['cloningForbidden'], $this->version );
 		}
@@ -134,7 +134,7 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 		 */
 		public function __wakeup() {
 			$container    = $this->build_container();
-			$translations = $container->get( Translations::class );
+			$translations = $container->get( Localizations::class );
 			$php_strings  = $translations->get_php_strings();
 			wc_doing_it_wrong( __FUNCTION__, $php_strings['unserializingForbidden'], $this->version );
 		}

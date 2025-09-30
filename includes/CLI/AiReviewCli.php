@@ -19,7 +19,7 @@ use WcAiReviewResponder\Clients\GeminiClientFactory;
 use WcAiReviewResponder\Validation\ValidateAiResponse;
 use WcAiReviewResponder\Validation\ReviewValidator;
 use WcAiReviewResponder\Validation\AiInputSanitizer;
-use WcAiReviewResponder\Localization\Translations;
+use WcAiReviewResponder\Localization\Localizations;
 
 /**
  * WP-CLI command class to exercise the integration flow for generating replies.
@@ -70,7 +70,7 @@ class AiReviewCli {
 	/**
 	 * Translations dependency.
 	 *
-	 * @var \WcAiReviewResponder\Localization\Translations
+	 * @var \WcAiReviewResponder\Localization\Localizations
 	 */
 	private $translations;
 
@@ -83,9 +83,9 @@ class AiReviewCli {
 	 * @param ValidateAiResponse  $response_validator Response validator.
 	 * @param ReviewValidator     $review_validator   Review validator.
 	 * @param AiInputSanitizer    $input_sanitizer    Input sanitizer.
-	 * @param Translations        $translations       Translations service.
+	 * @param Localizations       $translations       Translations service.
 	 */
-	public function __construct( ReviewModel $review_handler, PromptBuilder $prompt_builder, GeminiClientFactory $ai_client_factory, ValidateAiResponse $response_validator, ReviewValidator $review_validator, AiInputSanitizer $input_sanitizer, Translations $translations ) {
+	public function __construct( ReviewModel $review_handler, PromptBuilder $prompt_builder, GeminiClientFactory $ai_client_factory, ValidateAiResponse $response_validator, ReviewValidator $review_validator, AiInputSanitizer $input_sanitizer, Localizations $translations ) {
 		$this->review_handler     = $review_handler;
 		$this->prompt_builder     = $prompt_builder;
 		$this->ai_client_factory  = $ai_client_factory;

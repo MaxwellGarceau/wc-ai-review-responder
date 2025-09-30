@@ -9,7 +9,7 @@
 namespace WcAiReviewResponder\Validation;
 
 use WcAiReviewResponder\Exceptions\InvalidReviewException;
-use WcAiReviewResponder\Localization\Translations;
+use WcAiReviewResponder\Localization\Localizations;
 
 /**
  * Validates review data against business rules for AI processing.
@@ -22,16 +22,16 @@ class ReviewValidator {
 	/**
 	 * Translations dependency.
 	 *
-	 * @var \WcAiReviewResponder\Localization\Translations
+	 * @var \WcAiReviewResponder\Localization\Localizations
 	 */
 	private $translations;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Translations $translations Translations service.
+	 * @param Localizations $translations Translations service.
 	 */
-	public function __construct( Translations $translations ) {
+	public function __construct( Localizations $translations ) {
 		$this->translations = $translations;
 	}
 

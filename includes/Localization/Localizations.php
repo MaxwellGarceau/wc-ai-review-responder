@@ -11,7 +11,7 @@ namespace WcAiReviewResponder\Localization;
 /**
  * Class containing all translatable strings for the plugin.
  */
-class Translations {
+class Localizations {
 
 	/**
 	 * Get all JavaScript localization strings.

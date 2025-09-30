@@ -24,10 +24,12 @@ class ReviewActionsTest extends WP_UnitTestCase {
 	 */
 	public function setUp(): void {
 		parent::setUp();
-		$translations = $this->createMock( \WcAiReviewResponder\Localization\Translations::class );
-		$translations->method( 'get_js_strings' )->willReturn( array() );
-		$translations->method( 'get_php_strings' )->willReturn( array( 'generateAiResponse' => 'Generate AI Response' ) );
-		$this->review_actions = new ReviewActions( $translations );
+		$localizations = $this->createMock( \WcAiReviewResponder\Localization\Localizations::class );
+		$localizations->method( 'get_js_strings' )->willReturn( array() );
+		$localizations->method( 'get_php_strings' )->willReturn( array( 'generateAiResponse' => 'Generate AI Response' ) );
+
+		/** @var \WcAiReviewResponder\Localization\Localizations&PHPUnit\Framework\MockObject\MockObject $localizations */
+		$this->review_actions = new ReviewActions( $localizations );
 	}
 
 	/**

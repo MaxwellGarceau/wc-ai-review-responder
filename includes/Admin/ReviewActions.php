@@ -13,7 +13,7 @@ namespace WcAiReviewResponder\Admin;
 
 use WcAiReviewResponder\LLM\Prompts\TemplateType;
 use WcAiReviewResponder\LLM\Prompts\Moods\MoodsType;
-use WcAiReviewResponder\Localization\Translations;
+use WcAiReviewResponder\Localization\Localizations;
 
 /**
  * Admin review actions class for adding AI response generation links.
@@ -23,17 +23,17 @@ class ReviewActions {
 	/**
 	 * Translations dependency.
 	 *
-	 * @var \WcAiReviewResponder\Localization\Translations
+	 * @var \WcAiReviewResponder\Localization\Localizations
 	 */
 	private $translations;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Translations $translations Translations service.
+	 * @param Localizations $translations Translations service.
 	 * @since 1.0.0
 	 */
-	public function __construct( Translations $translations ) {
+	public function __construct( Localizations $translations ) {
 		$this->translations = $translations;
 		add_filter( 'comment_row_actions', array( $this, 'add_ai_response_action' ), 20, 2 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_review_scripts' ) );

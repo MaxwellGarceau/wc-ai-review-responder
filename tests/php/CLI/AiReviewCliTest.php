@@ -52,8 +52,9 @@ class AiReviewCliTest extends WP_UnitTestCase {
 		$this->review_validator   = $this->createMock( ReviewValidator::class );
 		$this->input_sanitizer    = $this->createMock( AiInputSanitizer::class );
 
-		$translations = $this->createMock( \WcAiReviewResponder\Localization\Translations::class );
-		$translations->method( 'get_cli_strings' )->willReturn( array(
+		/** @var \WcAiReviewResponder\Localization\Localizations&PHPUnit\Framework\MockObject\MockObject $localizations */
+		$localizations = $this->createMock( \WcAiReviewResponder\Localization\Localizations::class );
+		$localizations->method( 'get_cli_strings' )->willReturn( array(
 			'missingCommentId' => 'Missing or invalid comment_id.',
 			'step1PrepareData' => 'Step 1: Prepare Review Data',
 			'fetchingReviewContext' => '- Fetching review context...',
@@ -95,7 +96,7 @@ class AiReviewCliTest extends WP_UnitTestCase {
 			$this->response_validator,
 			$this->review_validator,
 			$this->input_sanitizer,
-			$translations
+			$localizations
 		);
 	}
 
