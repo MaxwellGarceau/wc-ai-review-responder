@@ -12,6 +12,8 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	overflow-y: auto;
+	padding: 20px 0;
 
 	&__overlay {
 		// Overlay positioning - fixed background that doesn't scroll
@@ -28,6 +30,9 @@
 		width: 90%;
 		position: relative;
 		z-index: 1;
+		margin: 20px;
+		flex-shrink: 0;
+		box-sizing: border-box;
 	}
 
 	&__actions {
