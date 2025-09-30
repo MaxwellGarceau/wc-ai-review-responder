@@ -13,17 +13,28 @@ namespace WcAiReviewResponder\Admin;
 
 use WcAiReviewResponder\LLM\Prompts\TemplateType;
 use WcAiReviewResponder\LLM\Prompts\Moods\MoodsType;
+use WcAiReviewResponder\Localization\Localizations;
 
 /**
  * Admin review actions class for adding AI response generation links.
  */
 class ReviewActions {
+
+	/**
+	 * Translations dependency.
+	 *
+	 * @var \WcAiReviewResponder\Localization\Localizations
+	 */
+	private $translations;
+
 	/**
 	 * Constructor.
 	 *
+	 * @param Localizations $translations Translations service.
 	 * @since 1.0.0
 	 */
-	public function __construct() {
+	public function __construct( Localizations $translations ) {
+		$this->translations = $translations;
 		add_filter( 'comment_row_actions', array( $this, 'add_ai_response_action' ), 20, 2 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_review_scripts' ) );
 	}
@@ -92,7 +103,7 @@ class ReviewActions {
 			);
 		}
 
-		// Localize script to provide ajaxurl.
+		// Localize script to provide ajaxurl, template/mood data, and localized strings.
 		wp_localize_script(
 			'wc-ai-review-responder',
 			'wcAiReviewResponder',
@@ -116,6 +127,7 @@ class ReviewActions {
 					},
 					MoodsType::cases()
 				),
+				'i18n'      => $this->translations->get_js_strings(),
 			)
 		);
 	}
@@ -154,12 +166,13 @@ class ReviewActions {
 	 * @since 1.0.0
 	 */
 	private function create_ai_response_action( $comment ): string {
+		$php_strings = $this->translations->get_php_strings();
 		return sprintf(
 			'<a href="#" class="ai-generate-response" data-comment-id="%d" data-suggest-nonce="%s" data-generate-nonce="%s">%s</a>',
 			esc_attr( $comment->comment_ID ),
 			esc_attr( wp_create_nonce( 'get_ai_suggestions' ) ),
 			esc_attr( wp_create_nonce( 'generate_ai_response' ) ),
-			esc_html__( 'Generate AI Response', 'wc_ai_review_responder' )
+			esc_html( $php_strings['generateAiResponse'] )
 		);
 	}
 

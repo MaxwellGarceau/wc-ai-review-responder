@@ -19,6 +19,7 @@ use WcAiReviewResponder\Clients\GeminiClientFactory;
 use WcAiReviewResponder\Validation\ValidateAiResponse;
 use WcAiReviewResponder\Validation\ReviewValidator;
 use WcAiReviewResponder\Validation\AiInputSanitizer;
+use WcAiReviewResponder\Localization\Localizations;
 
 /**
  * WP-CLI command class to exercise the integration flow for generating replies.
@@ -67,6 +68,13 @@ class AiReviewCli {
 	private $input_sanitizer;
 
 	/**
+	 * Translations dependency.
+	 *
+	 * @var \WcAiReviewResponder\Localization\Localizations
+	 */
+	private $translations;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param ReviewModel         $review_handler     Review handler.
@@ -75,14 +83,16 @@ class AiReviewCli {
 	 * @param ValidateAiResponse  $response_validator Response validator.
 	 * @param ReviewValidator     $review_validator   Review validator.
 	 * @param AiInputSanitizer    $input_sanitizer    Input sanitizer.
+	 * @param Localizations       $translations       Translations service.
 	 */
-	public function __construct( ReviewModel $review_handler, PromptBuilder $prompt_builder, GeminiClientFactory $ai_client_factory, ValidateAiResponse $response_validator, ReviewValidator $review_validator, AiInputSanitizer $input_sanitizer ) {
+	public function __construct( ReviewModel $review_handler, PromptBuilder $prompt_builder, GeminiClientFactory $ai_client_factory, ValidateAiResponse $response_validator, ReviewValidator $review_validator, AiInputSanitizer $input_sanitizer, Localizations $translations ) {
 		$this->review_handler     = $review_handler;
 		$this->prompt_builder     = $prompt_builder;
 		$this->ai_client_factory  = $ai_client_factory;
 		$this->response_validator = $response_validator;
 		$this->review_validator   = $review_validator;
 		$this->input_sanitizer    = $input_sanitizer;
+		$this->translations       = $translations;
 	}
 
 	/**
@@ -104,37 +114,38 @@ class AiReviewCli {
 	public function test( $args, $assoc_args ) {
 		list( $comment_id ) = $args;
 		$comment_id         = (int) $comment_id;
+		$cli_strings        = $this->translations->get_cli_strings();
 
 		// Parameter is part of the WP-CLI signature but unused here.
 		unset( $assoc_args );
 
 		if ( $comment_id <= 0 ) {
-			\WP_CLI::error( 'Missing or invalid comment_id.' );
+			\WP_CLI::error( $cli_strings['missingCommentId'] );
 		}
 
 		try {
-			\WP_CLI::log( 'Step 1: Prepare Review Data' );
-			\WP_CLI::log( '- Fetching review context...' );
+			\WP_CLI::log( $cli_strings['step1PrepareData'] );
+			\WP_CLI::log( $cli_strings['fetchingReviewContext'] );
 			$context = $this->review_handler->get_by_id( $comment_id );
-			\WP_CLI::log( '  Review context data: ' . wp_json_encode( $context, JSON_PRETTY_PRINT ) );
+			\WP_CLI::log( $cli_strings['reviewContextData'] . wp_json_encode( $context, JSON_PRETTY_PRINT ) );
 
-			\WP_CLI::log( '- Validating review for AI processing...' );
+			\WP_CLI::log( $cli_strings['validatingReview'] );
 			$this->review_validator->validate_for_ai_processing( $context );
 
-			\WP_CLI::log( '- Sanitizing input for AI processing...' );
+			\WP_CLI::log( $cli_strings['sanitizingInput'] );
 			$clean = $this->input_sanitizer->sanitize( $context );
-			\WP_CLI::log( '  Sanitized context data: ' . wp_json_encode( $clean, JSON_PRETTY_PRINT ) );
-			\WP_CLI::log( '✓ Review data prepared for all AI operations.' );
+			\WP_CLI::log( $cli_strings['sanitizedContextData'] . wp_json_encode( $clean, JSON_PRETTY_PRINT ) );
+			\WP_CLI::log( $cli_strings['reviewDataPrepared'] );
 
 			\WP_CLI::log( '' );
 
-			\WP_CLI::log( 'Step 2: Get AI Suggestions' );
-			\WP_CLI::log( '- Building suggestion prompt...' );
+			\WP_CLI::log( $cli_strings['step2GetSuggestions'] );
+			\WP_CLI::log( $cli_strings['buildingSuggestionPrompt'] );
 			$sentiment_prompt_builder = new \WcAiReviewResponder\LLM\Prompts\SentimentAnalysis();
 			$suggestion_prompt        = $sentiment_prompt_builder->build_prompt( $clean );
-			\WP_CLI::log( '  Generated suggestion prompt: ' . $suggestion_prompt );
+			\WP_CLI::log( $cli_strings['generatedSuggestionPrompt'] . $suggestion_prompt );
 
-			\WP_CLI::log( '- Sending suggestion request to AI...' );
+			\WP_CLI::log( $cli_strings['sendingSuggestionRequest'] );
 			$suggestion_client   = $this->ai_client_factory->create(
 				array(
 					'response_mime_type' => 'application/json',
@@ -143,11 +154,11 @@ class AiReviewCli {
 						'properties' => array(
 							'mood'     => array(
 								'type'        => 'string',
-								'description' => 'The suggested mood.',
+								'description' => $cli_strings['suggestedMood'],
 							),
 							'template' => array(
 								'type'        => 'string',
-								'description' => 'The suggested template.',
+								'description' => $cli_strings['suggestedTemplate'],
 							),
 						),
 						'required'   => array( 'mood', 'template' ),
@@ -156,23 +167,23 @@ class AiReviewCli {
 			);
 			$suggestion_response = $suggestion_client->get( $suggestion_prompt );
 
-			\WP_CLI::log( '- Validating suggestion response...' );
-			\WP_CLI::log( '  Raw AI response: ' . $suggestion_response );
+			\WP_CLI::log( $cli_strings['validatingSuggestionResponse'] );
+			\WP_CLI::log( $cli_strings['rawAiResponse'] . $suggestion_response );
 			$suggestions = json_decode( $suggestion_response, true );
 
 			if ( json_last_error() !== JSON_ERROR_NONE || ! isset( $suggestions['mood'] ) || ! isset( $suggestions['template'] ) ) {
-				\WP_CLI::log( '  JSON decode error: ' . json_last_error_msg() );
-				\WP_CLI::log( '  Decoded suggestions: ' . wp_json_encode( $suggestions, JSON_PRETTY_PRINT ) );
-				throw new AiResponseFailure( 'Invalid JSON response from AI for suggestions.' );
+				\WP_CLI::log( $cli_strings['jsonDecodeError'] . json_last_error_msg() );
+				\WP_CLI::log( $cli_strings['decodedSuggestions'] . wp_json_encode( $suggestions, JSON_PRETTY_PRINT ) );
+				throw new AiResponseFailure( $cli_strings['invalidJsonResponse'] );
 			}
-			\WP_CLI::log( '✓ AI suggestions received' );
-			\WP_CLI::log( '  - Suggested mood: ' . $suggestions['mood'] );
-			\WP_CLI::log( '  - Suggested template: ' . $suggestions['template'] );
+			\WP_CLI::log( $cli_strings['aiSuggestionsReceived'] );
+			\WP_CLI::log( $cli_strings['suggestedMoodValue'] . $suggestions['mood'] );
+			\WP_CLI::log( $cli_strings['suggestedTemplateValue'] . $suggestions['template'] );
 
 			\WP_CLI::log( '' );
 
-			\WP_CLI::log( 'Step 3: Generate Final AI Response' );
-			\WP_CLI::log( '- Building final prompt with suggestions...' );
+			\WP_CLI::log( $cli_strings['step3GenerateResponse'] );
+			\WP_CLI::log( $cli_strings['buildingFinalPrompt'] );
 			$template = TemplateType::tryFrom( $suggestions['template'] ) ?? TemplateType::DEFAULT;
 			$mood     = MoodsType::tryFrom( $suggestions['mood'] ) ?? MoodsType::EMPATHETIC_PROBLEM_SOLVER;
 
@@ -180,25 +191,25 @@ class AiReviewCli {
 			$clean = $this->input_sanitizer->sanitize( $clean );
 
 			$prompt = $this->prompt_builder->build_prompt( $clean, $template, $mood );
-			\WP_CLI::log( '  Generated final prompt: ' . $prompt );
+			\WP_CLI::log( $cli_strings['generatedFinalPrompt'] . $prompt );
 
-			\WP_CLI::log( '- Sending final response request to AI...' );
+			\WP_CLI::log( $cli_strings['sendingFinalRequest'] );
 			$response_client = $this->ai_client_factory->create();
 			$ai_response     = $response_client->get( $prompt );
-			\WP_CLI::log( '  AI response data: ' . wp_json_encode( $ai_response, JSON_PRETTY_PRINT ) );
+			\WP_CLI::log( $cli_strings['aiResponseData'] . wp_json_encode( $ai_response, JSON_PRETTY_PRINT ) );
 
-			\WP_CLI::log( '- Validating final AI response...' );
+			\WP_CLI::log( $cli_strings['validatingFinalResponse'] );
 			$reply = $this->response_validator->validate( $ai_response );
-			\WP_CLI::log( '✓ Final response validated.' );
-			\WP_CLI::log( '  Validated reply: ' . $reply );
+			\WP_CLI::log( $cli_strings['finalResponseValidated'] );
+			\WP_CLI::log( $cli_strings['validatedReply'] . $reply );
 
 			\WP_CLI::log( '' );
 
-			\WP_CLI::success( 'Generated AI reply: ' . $reply );
+			\WP_CLI::success( $cli_strings['generatedAiReply'] . $reply );
 		} catch ( InvalidReviewException $e ) {
 			\WP_CLI::error( $e->getMessage() );
 		} catch ( RateLimitExceededException $e ) {
-			\WP_CLI::error( 'Rate limit exceeded: ' . $e->getMessage() );
+			\WP_CLI::error( $cli_strings['rateLimitExceeded'] . $e->getMessage() );
 		} catch ( AiResponseFailure $e ) {
 			\WP_CLI::error( $e->getMessage() );
 		}

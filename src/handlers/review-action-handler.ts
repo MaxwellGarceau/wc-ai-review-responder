@@ -19,6 +19,7 @@ import {
 } from '../modals/prompt-modal';
 import { showGenericError } from '../modals/error-modal';
 import { generateAiResponse, getAiSuggestions } from '../api/ajax-handler';
+import { __ } from '../utils/i18n';
 
 /**
  * Handles the click event for AI response generation links.
@@ -36,8 +37,8 @@ export function handleAiResponseClick( link: HTMLAnchorElement ): void {
 	if ( ! commentId || ! suggestNonce || ! generateNonce ) {
 		// Missing required data attributes - show error
 		showGenericError(
-			'Missing required data attributes. Please refresh the page and try again.',
-			'Configuration Error'
+			__( 'missingDataAttributes' ),
+			__( 'configurationError' )
 		);
 		return;
 	}
@@ -51,7 +52,7 @@ export function handleAiResponseClick( link: HTMLAnchorElement ): void {
 		link.textContent = originalText;
 		link.style.pointerEvents = 'auto';
 	};
-	link.textContent = 'Getting suggestions...';
+	link.textContent = __( 'gettingSuggestions' );
 	link.style.pointerEvents = 'none';
 	showLoadingModal();
 
@@ -70,20 +71,20 @@ export function handleAiResponseClick( link: HTMLAnchorElement ): void {
 				const updateSuccess = updateReplyTextarea( data.data.reply );
 				if ( ! updateSuccess ) {
 					showGenericError(
-						'Could not find the reply textarea. Please make sure the reply box is open and try again.',
-						'Interface Error'
+						__( 'couldNotFindTextarea' ),
+						__( 'interfaceError' )
 					);
 				}
 			} else {
 				const errorMessage =
 					data.data?.message ||
-					'The server returned an error response.';
-				showGenericError( errorMessage, 'Server Error' );
+					__( 'serverReturnedError' );
+				showGenericError( errorMessage, __( 'serverError' ) );
 			}
 		} catch ( error: unknown ) {
 			showGenericError(
 				error as Error,
-				'Failed to generate AI response'
+				__( 'failedToGenerateResponse' )
 			);
 		} finally {
 			hideLoadingModal();

@@ -7,6 +7,17 @@
 /**
  * Internal dependencies
  */
+jest.mock( '../../../src/utils/i18n', () => ( {
+	__: jest.fn( ( key: string ) => {
+		const translations: Record<string, string> = {
+			error: 'Error',
+			unexpectedError: 'An unexpected error occurred.',
+			somethingWentWrong: 'Something went wrong',
+		};
+		return translations[ key ] || key;
+	} ),
+} ) );
+
 import {
 	showErrorModal,
 	hideErrorModal,

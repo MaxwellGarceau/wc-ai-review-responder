@@ -25,6 +25,7 @@ use WcAiReviewResponder\Admin\ReviewActions;
 use WcAiReviewResponder\CLI\AiReviewCli;
 use WcAiReviewResponder\Core\ContainerFactory;
 use WcAiReviewResponder\Endpoints\AjaxHandler;
+use WcAiReviewResponder\Localization\Localizations;
 
 // phpcs:disable WordPress.Files.FileName
 // phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed
@@ -36,7 +37,10 @@ use WcAiReviewResponder\Endpoints\AjaxHandler;
  */
 function wc_ai_review_responder_missing_wc_notice() {
 	/* translators: %s WC download URL link. */
-	echo '<div class="error"><p><strong>' . sprintf( esc_html__( 'Wc Ai Review Responder requires WooCommerce to be installed and active. You can download %s here.', 'wc_ai_review_responder' ), '<a href="https://woo.com/" target="_blank">WooCommerce</a>' ) . '</strong></p></div>';
+	$container    = Wc_Ai_Review_Responder::instance()->build_container();
+	$translations = $container->get( Localizations::class );
+	$php_strings  = $translations->get_php_strings();
+	echo '<div class="error"><p><strong>' . sprintf( esc_html( $php_strings['wooCommerceRequired'] ), '<a href="https://woo.com/" target="_blank">WooCommerce</a>' ) . '</strong></p></div>';
 }
 
 register_activation_hook( __FILE__, 'wc_ai_review_responder_activate' );
@@ -88,7 +92,7 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 			$container = $this->build_container();
 
 			// Initialize admin review actions.
-			new ReviewActions();
+			$review_actions = $container->get( ReviewActions::class );
 
 			// Register AJAX handler.
 			$ajax_handler = $container->get( AjaxHandler::class );
@@ -100,7 +104,7 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 		 *
 		 * @return \DI\Container The configured container.
 		 */
-		private function build_container() {
+		public function build_container() {
 			$factory = new ContainerFactory();
 			return $factory->build();
 		}
@@ -119,14 +123,20 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 		 * Cloning is forbidden.
 		 */
 		public function __clone() {
-			wc_doing_it_wrong( __FUNCTION__, __( 'Cloning is forbidden.', 'wc_ai_review_responder' ), $this->version );
+			$container    = $this->build_container();
+			$translations = $container->get( Localizations::class );
+			$php_strings  = $translations->get_php_strings();
+			wc_doing_it_wrong( __FUNCTION__, $php_strings['cloningForbidden'], $this->version );
 		}
 
 		/**
 		 * Unserializing instances of this class is forbidden.
 		 */
 		public function __wakeup() {
-			wc_doing_it_wrong( __FUNCTION__, __( 'Unserializing instances of this class is forbidden.', 'wc_ai_review_responder' ), $this->version );
+			$container    = $this->build_container();
+			$translations = $container->get( Localizations::class );
+			$php_strings  = $translations->get_php_strings();
+			wc_doing_it_wrong( __FUNCTION__, $php_strings['unserializingForbidden'], $this->version );
 		}
 
 		/**
@@ -155,7 +165,7 @@ add_action( 'plugins_loaded', 'wc_ai_review_responder_init', 10 );
  * @since 0.1.0
  */
 function wc_ai_review_responder_init() {
-	load_plugin_textdomain( 'wc_ai_review_responder', false, plugin_basename( __DIR__ ) . '/languages' );
+	load_plugin_textdomain( 'wc-ai-review-responder', false, plugin_basename( __DIR__ ) . '/languages' );
 
 	// Load environment variables from .env if available.
 	if ( class_exists( '\\Dotenv\\Dotenv' ) ) {

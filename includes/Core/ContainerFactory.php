@@ -9,6 +9,18 @@
 namespace WcAiReviewResponder\Core;
 
 use DI\ContainerBuilder;
+use WcAiReviewResponder\Admin\ReviewActions;
+use WcAiReviewResponder\CLI\AiReviewCli;
+use WcAiReviewResponder\Clients\GeminiClientFactory;
+use WcAiReviewResponder\Clients\Request;
+use WcAiReviewResponder\Endpoints\AjaxHandler;
+use WcAiReviewResponder\LLM\PromptBuilder;
+use WcAiReviewResponder\Localization\Localizations;
+use WcAiReviewResponder\Models\ReviewModel;
+use WcAiReviewResponder\RateLimiting\RateLimiter;
+use WcAiReviewResponder\Validation\AiInputSanitizer;
+use WcAiReviewResponder\Validation\ReviewValidator;
+use WcAiReviewResponder\Validation\ValidateAiResponse;
 
 /**
  * Factory class for creating and configuring the dependency injection container.
@@ -25,26 +37,34 @@ class ContainerFactory {
 		$builder->addDefinitions(
 			array(
 				// Load environment variables.
-				\WcAiReviewResponder\Clients\GeminiClientFactory::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY', 'test-key' ), \DI\get( \WcAiReviewResponder\Clients\Request::class ), \DI\get( \WcAiReviewResponder\RateLimiting\RateLimiter::class ) ),
+				GeminiClientFactory::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY', 'test-key' ), \DI\get( Request::class ), \DI\get( RateLimiter::class ) ),
+
+				// Localization service.
+				Localizations::class       => \DI\autowire(),
 
 				// Resolve interfaces to concrete implementations.
-				\WcAiReviewResponder\CLI\AiReviewCli::class => \DI\create()
+				AiReviewCli::class         => \DI\create()
 					->constructor(
-						\DI\get( \WcAiReviewResponder\Models\ReviewModel::class ),
-						\DI\get( \WcAiReviewResponder\LLM\PromptBuilder::class ),
-						\DI\get( \WcAiReviewResponder\Clients\GeminiClientFactory::class ),
-						\DI\get( \WcAiReviewResponder\Validation\ValidateAiResponse::class ),
-						\DI\get( \WcAiReviewResponder\Validation\ReviewValidator::class ),
-						\DI\get( \WcAiReviewResponder\Validation\AiInputSanitizer::class )
+						\DI\get( ReviewModel::class ),
+						\DI\get( PromptBuilder::class ),
+						\DI\get( GeminiClientFactory::class ),
+						\DI\get( ValidateAiResponse::class ),
+						\DI\get( ReviewValidator::class ),
+						\DI\get( AiInputSanitizer::class ),
+						\DI\get( Localizations::class )
 					),
-				\WcAiReviewResponder\Endpoints\AjaxHandler::class => \DI\create()
+				ReviewValidator::class     => \DI\create()
+					->constructor( \DI\get( Localizations::class ) ),
+				ReviewActions::class       => \DI\create()
+					->constructor( \DI\get( Localizations::class ) ),
+				AjaxHandler::class         => \DI\create()
 					->constructor(
-						\DI\get( \WcAiReviewResponder\Models\ReviewModel::class ),
-						\DI\get( \WcAiReviewResponder\LLM\PromptBuilder::class ),
-						\DI\get( \WcAiReviewResponder\Clients\GeminiClientFactory::class ),
-						\DI\get( \WcAiReviewResponder\Validation\ValidateAiResponse::class ),
-						\DI\get( \WcAiReviewResponder\Validation\AiInputSanitizer::class ),
-						\DI\get( \WcAiReviewResponder\Validation\ReviewValidator::class )
+						\DI\get( ReviewModel::class ),
+						\DI\get( PromptBuilder::class ),
+						\DI\get( GeminiClientFactory::class ),
+						\DI\get( ValidateAiResponse::class ),
+						\DI\get( AiInputSanitizer::class ),
+						\DI\get( ReviewValidator::class )
 					),
 			)
 		);

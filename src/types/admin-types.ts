@@ -18,6 +18,7 @@ export interface WcAiReviewResponder {
 	ajaxurl: string;
 	templates: Template[];
 	moods: Mood[];
+	i18n: Record<string, string>;
 }
 
 export interface AiResponseData {

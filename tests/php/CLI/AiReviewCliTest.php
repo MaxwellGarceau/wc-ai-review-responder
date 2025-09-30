@@ -52,13 +52,51 @@ class AiReviewCliTest extends WP_UnitTestCase {
 		$this->review_validator   = $this->createMock( ReviewValidator::class );
 		$this->input_sanitizer    = $this->createMock( AiInputSanitizer::class );
 
+		/** @var \WcAiReviewResponder\Localization\Localizations&PHPUnit\Framework\MockObject\MockObject $localizations */
+		$localizations = $this->createMock( \WcAiReviewResponder\Localization\Localizations::class );
+		$localizations->method( 'get_cli_strings' )->willReturn( array(
+			'missingCommentId' => 'Missing or invalid comment_id.',
+			'step1PrepareData' => 'Step 1: Prepare Review Data',
+			'fetchingReviewContext' => '- Fetching review context...',
+			'reviewContextData' => '  Review context data: ',
+			'validatingReview' => '- Validating review for AI processing...',
+			'sanitizingInput' => '- Sanitizing input for AI processing...',
+			'sanitizedContextData' => '  Sanitized context data: ',
+			'reviewDataPrepared' => '✓ Review data prepared for all AI operations.',
+			'step2GetSuggestions' => 'Step 2: Get AI Suggestions',
+			'buildingSuggestionPrompt' => '- Building suggestion prompt...',
+			'generatedSuggestionPrompt' => '  Generated suggestion prompt: ',
+			'sendingSuggestionRequest' => '- Sending suggestion request to AI...',
+			'suggestedMood' => 'The suggested mood.',
+			'suggestedTemplate' => 'The suggested template.',
+			'validatingSuggestionResponse' => '- Validating suggestion response...',
+			'rawAiResponse' => '  Raw AI response: ',
+			'jsonDecodeError' => '  JSON decode error: ',
+			'decodedSuggestions' => '  Decoded suggestions: ',
+			'invalidJsonResponse' => 'Invalid JSON response from AI for suggestions.',
+			'aiSuggestionsReceived' => '✓ AI suggestions received',
+			'suggestedMoodValue' => '  - Suggested mood: ',
+			'suggestedTemplateValue' => '  - Suggested template: ',
+			'step3GenerateResponse' => 'Step 3: Generate Final AI Response',
+			'buildingFinalPrompt' => '- Building final prompt with suggestions...',
+			'generatedFinalPrompt' => '  Generated final prompt: ',
+			'sendingFinalRequest' => '- Sending final response request to AI...',
+			'aiResponseData' => '  AI response data: ',
+			'validatingFinalResponse' => '- Validating final AI response...',
+			'finalResponseValidated' => '✓ Final response validated.',
+			'validatedReply' => '  Validated reply: ',
+			'generatedAiReply' => 'Generated AI reply: ',
+			'rateLimitExceeded' => 'Rate limit exceeded: '
+		) );
+		
 		$this->cli = new AiReviewCli(
 			$this->review_handler,
 			$this->prompt_builder,
 			$this->ai_client_factory,
 			$this->response_validator,
 			$this->review_validator,
-			$this->input_sanitizer
+			$this->input_sanitizer,
+			$localizations
 		);
 	}
 
