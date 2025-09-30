@@ -73,18 +73,6 @@ class MoodFactory {
 		return $this->get_mood_by_type( MoodsType::EMPATHETIC_PROBLEM_SOLVER );
 	}
 
-	/**
-	 * Get mood names and descriptions.
-	 *
-	 * @return array<string, string> Array of mood names and descriptions.
-	 */
-	public function get_mood_descriptions(): array {
-		$descriptions = array();
-		foreach ( $this->get_all_moods() as $name => $mood ) {
-			$descriptions[ $name ] = $mood->get_description();
-		}
-		return $descriptions;
-	}
 
 	/**
 	 * Get available mood types.
