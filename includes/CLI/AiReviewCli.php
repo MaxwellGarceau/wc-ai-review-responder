@@ -8,15 +8,17 @@
 
 namespace WcAiReviewResponder\CLI;
 
+use WcAiReviewResponder\Exceptions\AiResponseFailure;
+use WcAiReviewResponder\Exceptions\InvalidReviewException;
+use WcAiReviewResponder\Exceptions\RateLimitExceededException;
+use WcAiReviewResponder\LLM\Prompts\Moods\MoodsType;
+use WcAiReviewResponder\LLM\Prompts\TemplateType;
 use WcAiReviewResponder\Models\ReviewModel;
 use WcAiReviewResponder\LLM\PromptBuilder;
 use WcAiReviewResponder\Clients\GeminiClient;
 use WcAiReviewResponder\Validation\ValidateAiResponse;
 use WcAiReviewResponder\Validation\ReviewValidator;
 use WcAiReviewResponder\Validation\AiInputSanitizer;
-use WcAiReviewResponder\Exceptions\InvalidReviewException;
-use WcAiReviewResponder\Exceptions\AiResponseFailure;
-use WcAiReviewResponder\Exceptions\RateLimitExceededException;
 
 /**
  * WP-CLI command class to exercise the integration flow for generating replies.
@@ -110,44 +112,61 @@ class AiReviewCli {
 		}
 
 		try {
-			\WP_CLI::log( 'Step 1: Fetching review context...' );
+			\WP_CLI::log( 'Step 1: Prepare Review Data' );
+			\WP_CLI::log( '- Fetching review context...' );
 			$context = $this->review_handler->get_by_id( $comment_id );
-			\WP_CLI::log( '✓ This is the output from Fetching review context' );
-			\WP_CLI::log( 'Review context data: ' . wp_json_encode( $context, JSON_PRETTY_PRINT ) );
+			\WP_CLI::log( '  Review context data: ' . wp_json_encode( $context, JSON_PRETTY_PRINT ) );
 
-			\WP_CLI::log( '' );
-
-			\WP_CLI::log( 'Step 1.5: Validating review for AI processing...' );
+			\WP_CLI::log( '- Validating review for AI processing...' );
 			$this->review_validator->validate_for_ai_processing( $context );
-			\WP_CLI::log( '✓ Review validation passed' );
 
-			\WP_CLI::log( '' );
-
-			\WP_CLI::log( 'Step 2: Sanitizing input for AI processing...' );
+			\WP_CLI::log( '- Sanitizing input for AI processing...' );
 			$clean = $this->input_sanitizer->sanitize( $context );
-			\WP_CLI::log( '✓ Input sanitization completed' );
-			\WP_CLI::log( 'Sanitized context data: ' . wp_json_encode( $clean, JSON_PRETTY_PRINT ) );
+			\WP_CLI::log( '  Sanitized context data: ' . wp_json_encode( $clean, JSON_PRETTY_PRINT ) );
+			\WP_CLI::log( '✓ Review data prepared for all AI operations.' );
 
 			\WP_CLI::log( '' );
 
-			\WP_CLI::log( 'Step 3: Building AI prompt...' );
-			$prompt = $this->prompt_builder->build_prompt( $clean );
-			\WP_CLI::log( '✓ This is the output from Building AI prompt' );
-			\WP_CLI::log( 'Generated prompt: ' . $prompt );
+			\WP_CLI::log( 'Step 2: Get AI Suggestions' );
+			\WP_CLI::log( '- Building suggestion prompt...' );
+			$sentiment_prompt_builder = new \WcAiReviewResponder\LLM\Prompts\SentimentAnalysis();
+			$suggestion_prompt        = $sentiment_prompt_builder->build_prompt( $clean );
+			\WP_CLI::log( '  Generated suggestion prompt: ' . $suggestion_prompt );
+
+			\WP_CLI::log( '- Sending suggestion request to AI...' );
+			$suggestion_response = $this->ai_client->get( $suggestion_prompt );
+
+			\WP_CLI::log( '- Validating suggestion response...' );
+			$suggestions = json_decode( $suggestion_response, true );
+
+			if ( json_last_error() !== JSON_ERROR_NONE || ! isset( $suggestions['mood'] ) || ! isset( $suggestions['template'] ) ) {
+				throw new AiResponseFailure( 'Invalid JSON response from AI for suggestions.' );
+			}
+			\WP_CLI::log( '✓ AI suggestions received' );
+			\WP_CLI::log( '  - Suggested mood: ' . $suggestions['mood'] );
+			\WP_CLI::log( '  - Suggested template: ' . $suggestions['template'] );
 
 			\WP_CLI::log( '' );
 
-			\WP_CLI::log( 'Step 4: Sending request to AI client...' );
+			\WP_CLI::log( 'Step 3: Generate Final AI Response' );
+			\WP_CLI::log( '- Building final prompt with suggestions...' );
+			$template = TemplateType::tryFrom( $suggestions['template'] ) ?? TemplateType::DEFAULT;
+			$mood     = MoodsType::tryFrom( $suggestions['mood'] ) ?? MoodsType::EMPATHETIC_PROBLEM_SOLVER;
+
+			$this->review_validator->validate_for_ai_processing( $clean );
+			$clean = $this->input_sanitizer->sanitize( $clean );
+
+			$prompt   = $this->prompt_builder->build_prompt( $clean, $template, $mood );
+			\WP_CLI::log( '  Generated final prompt: ' . $prompt );
+
+			\WP_CLI::log( '- Sending final response request to AI...' );
 			$ai_response = $this->ai_client->get( $prompt );
-			\WP_CLI::log( '✓ This is the output from Sending request to AI client' );
-			\WP_CLI::log( 'AI response data: ' . wp_json_encode( $ai_response, JSON_PRETTY_PRINT ) );
+			\WP_CLI::log( '  AI response data: ' . wp_json_encode( $ai_response, JSON_PRETTY_PRINT ) );
 
-			\WP_CLI::log( '' );
-
-			\WP_CLI::log( 'Step 5: Validating AI response...' );
+			\WP_CLI::log( '- Validating final AI response...' );
 			$reply = $this->response_validator->validate( $ai_response );
-			\WP_CLI::log( '✓ This is the output from Validating AI response' );
-			\WP_CLI::log( 'Validated reply: ' . $reply );
+			\WP_CLI::log( '✓ Final response validated.' );
+			\WP_CLI::log( '  Validated reply: ' . $reply );
 
 			\WP_CLI::log( '' );
 
