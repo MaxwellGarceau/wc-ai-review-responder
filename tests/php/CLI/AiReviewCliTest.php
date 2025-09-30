@@ -75,15 +75,22 @@ class AiReviewCliTest extends WP_UnitTestCase {
 	 * Test that the `test` command runs without errors.
 	 */
 	public function test_test_command_runs_successfully() {
-		// Mock the AI client returned by the factory.
-		/** @var \WcAiReviewResponder\Clients\GeminiClient&PHPUnit\Framework\MockObject\MockObject $ai_client */
-		$ai_client = $this->createMock( GeminiClient::class );
+		// Mock the AI clients returned by the factory in sequence:
+		// 1) suggestion client, 2) generation client.
+		/** @var \WcAiReviewResponder\Clients\GeminiClient&PHPUnit\Framework\MockObject\MockObject $suggestion_client */
+		$suggestion_client = $this->createMock( GeminiClient::class );
+		/** @var \WcAiReviewResponder\Clients\GeminiClient&PHPUnit\Framework\MockObject\MockObject $generate_client */
+		$generate_client   = $this->createMock( GeminiClient::class );
 
 		// Configure mocks.
 		$this->review_handler->method( 'get_by_id' )->willReturn( array( 'comment' => 'test', 'rating' => 5 ) );
 		$this->input_sanitizer->method( 'sanitize' )->willReturn( array( 'comment' => 'test', 'rating' => 5 ) );
-		$this->ai_client_factory->method( 'create' )->willReturn( $ai_client );
-		$ai_client->method( 'get' )->willReturn( '{"mood": "enthusiastic_appreciator", "template": "default"}' );
+		$this->ai_client_factory->method( 'create' )
+			->willReturnOnConsecutiveCalls( $suggestion_client, $generate_client );
+		$suggestion_client->method( 'get' )
+			->willReturn( '{"mood": "enthusiastic_appreciator", "template": "default"}' );
+		$generate_client->method( 'get' )
+			->willReturn( 'RAW_FINAL_REPLY' );
 		$this->response_validator->method( 'validate' )->willReturn( 'A valid response' );
 
 		// Use a dummy comment ID.
