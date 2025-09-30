@@ -47,6 +47,15 @@ class AiReviewCliTest extends WP_UnitTestCase {
 		);
 	}
 
+	/**
+	 * Minimal constructor smoke test to avoid warnings and ensure DI wiring works.
+	 *
+	 * Added by assistant.
+	 */
+	public function test_constructor_initializes_cli() {
+		$this->assertInstanceOf( AiReviewCli::class, $this->cli );
+	}
+
 	// /**
 	//  * Test that the `test` command runs without errors.
 	//  */
