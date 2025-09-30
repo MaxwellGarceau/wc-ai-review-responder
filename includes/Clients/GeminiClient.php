@@ -122,7 +122,7 @@ class GeminiClient implements AiClientInterface {
 	 */
 	private function build_request_body( string $prompt ): array {
 		return array(
-			'contents' => array(
+			'contents'         => array(
 				array(
 					'parts' => array(
 						array(

@@ -56,7 +56,7 @@ class GeminiClientFactory {
 	 * @param array $config Optional configuration for the Gemini API.
 	 * @return GeminiClient A new instance of the Gemini client.
 	 */
-	public function create( array $config = [] ): GeminiClient {
+	public function create( array $config = array() ): GeminiClient {
 		return new GeminiClient( $this->api_key, $this->request, $this->rate_limiter, $config );
 	}
 }
