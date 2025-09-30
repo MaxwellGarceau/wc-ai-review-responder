@@ -16,6 +16,7 @@ use WcAiReviewResponder\Enums\ErrorType;
 use WcAiReviewResponder\Enums\HttpStatus;
 use WcAiReviewResponder\LLM\Prompts\TemplateType;
 use WcAiReviewResponder\LLM\Prompts\Moods\MoodsType;
+use WcAiReviewResponder\Clients\GeminiClientFactory;
 
 /**
  * AJAX handler class for generating AI responses to product reviews.
@@ -47,11 +48,11 @@ class AjaxHandler {
 	private $prompt_builder;
 
 	/**
-	 * AI client dependency.
+	 * AI client factory dependency.
 	 *
-	 * @var \WcAiReviewResponder\Clients\AiClientInterface
+	 * @var \WcAiReviewResponder\Clients\GeminiClientFactory
 	 */
-	private $ai_client;
+	private $ai_client_factory;
 
 	/**
 	 * Response validator dependency.
@@ -81,15 +82,15 @@ class AjaxHandler {
 	 *
 	 * @param \WcAiReviewResponder\Models\ModelInterface                  $review_handler     Review handler.
 	 * @param \WcAiReviewResponder\LLM\BuildPromptInterface               $prompt_builder     Prompt builder.
-	 * @param \WcAiReviewResponder\Clients\AiClientInterface              $ai_client          AI client.
+	 * @param \WcAiReviewResponder\Clients\GeminiClientFactory            $ai_client_factory  AI client factory.
 	 * @param \WcAiReviewResponder\Validation\ValidateAiResponseInterface $response_validator Response validator.
 	 * @param \WcAiReviewResponder\Validation\AiInputSanitizer            $input_sanitizer    Input sanitizer.
 	 * @param \WcAiReviewResponder\Validation\ReviewValidator             $review_validator   Review validator.
 	 */
-	public function __construct( \WcAiReviewResponder\Models\ModelInterface $review_handler, \WcAiReviewResponder\LLM\BuildPromptInterface $prompt_builder, \WcAiReviewResponder\Clients\AiClientInterface $ai_client, \WcAiReviewResponder\Validation\ValidateAiResponseInterface $response_validator, \WcAiReviewResponder\Validation\AiInputSanitizer $input_sanitizer, \WcAiReviewResponder\Validation\ReviewValidator $review_validator ) {
+	public function __construct( \WcAiReviewResponder\Models\ModelInterface $review_handler, \WcAiReviewResponder\LLM\BuildPromptInterface $prompt_builder, \WcAiReviewResponder\Clients\GeminiClientFactory $ai_client_factory, \WcAiReviewResponder\Validation\ValidateAiResponseInterface $response_validator, \WcAiReviewResponder\Validation\AiInputSanitizer $input_sanitizer, \WcAiReviewResponder\Validation\ReviewValidator $review_validator ) {
 		$this->review_handler     = $review_handler;
 		$this->prompt_builder     = $prompt_builder;
-		$this->ai_client          = $ai_client;
+		$this->ai_client_factory  = $ai_client_factory;
 		$this->response_validator = $response_validator;
 		$this->input_sanitizer    = $input_sanitizer;
 		$this->review_validator   = $review_validator;
@@ -154,7 +155,8 @@ class AjaxHandler {
 			$clean = $this->input_sanitizer->sanitize( $context );
 
 			$prompt      = $this->prompt_builder->build_prompt( $clean, $template, $mood );
-			$ai_response = $this->ai_client->get( $prompt );
+			$ai_client   = $this->ai_client_factory->create();
+			$ai_response = $ai_client->get( $prompt );
 			$reply       = $this->response_validator->validate( $ai_response );
 
 			wp_send_json_success( array( 'reply' => $reply ) );
@@ -197,7 +199,26 @@ class AjaxHandler {
 
 			$sentiment_prompt = new \WcAiReviewResponder\LLM\Prompts\SentimentAnalysis();
 			$prompt           = $sentiment_prompt->build_prompt( $clean );
-			$ai_response      = $this->ai_client->get( $prompt );
+			$ai_client        = $this->ai_client_factory->create(
+				array(
+					'response_mime_type' => 'application/json',
+					'response_schema' => array(
+						'type' => 'object',
+						'properties' => array(
+							'mood' => array(
+								'type' => 'string',
+								'description' => 'The suggested mood.',
+							),
+							'template' => array(
+								'type' => 'string',
+								'description' => 'The suggested template.',
+							),
+						),
+						'required' => array('mood', 'template'),
+					),
+				)
+			);
+			$ai_response      = $ai_client->get( $prompt );
 			$suggestions      = json_decode( $ai_response, true );
 
 			if ( json_last_error() !== JSON_ERROR_NONE || ! isset( $suggestions['mood'] ) || ! isset( $suggestions['template'] ) ) {

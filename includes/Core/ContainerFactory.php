@@ -25,14 +25,14 @@ class ContainerFactory {
 		$builder->addDefinitions(
 			array(
 				// Load environment variables.
-				\WcAiReviewResponder\Clients\GeminiClient::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY', 'test-key' ), \DI\get( \WcAiReviewResponder\Clients\Request::class ), \DI\get( \WcAiReviewResponder\RateLimiting\RateLimiter::class ) ),
+				\WcAiReviewResponder\Clients\GeminiClientFactory::class => \DI\autowire()->constructor( \DI\env( 'GEMINI_API_KEY', 'test-key' ), \DI\get( \WcAiReviewResponder\Clients\Request::class ), \DI\get( \WcAiReviewResponder\RateLimiting\RateLimiter::class ) ),
 
 				// Resolve interfaces to concrete implementations.
 				\WcAiReviewResponder\CLI\AiReviewCli::class => \DI\create()
 					->constructor(
 						\DI\get( \WcAiReviewResponder\Models\ReviewModel::class ),
 						\DI\get( \WcAiReviewResponder\LLM\PromptBuilder::class ),
-						\DI\get( \WcAiReviewResponder\Clients\GeminiClient::class ),
+						\DI\get( \WcAiReviewResponder\Clients\GeminiClientFactory::class ),
 						\DI\get( \WcAiReviewResponder\Validation\ValidateAiResponse::class ),
 						\DI\get( \WcAiReviewResponder\Validation\ReviewValidator::class ),
 						\DI\get( \WcAiReviewResponder\Validation\AiInputSanitizer::class )
@@ -41,7 +41,7 @@ class ContainerFactory {
 					->constructor(
 						\DI\get( \WcAiReviewResponder\Models\ReviewModel::class ),
 						\DI\get( \WcAiReviewResponder\LLM\PromptBuilder::class ),
-						\DI\get( \WcAiReviewResponder\Clients\GeminiClient::class ),
+						\DI\get( \WcAiReviewResponder\Clients\GeminiClientFactory::class ),
 						\DI\get( \WcAiReviewResponder\Validation\ValidateAiResponse::class ),
 						\DI\get( \WcAiReviewResponder\Validation\AiInputSanitizer::class ),
 						\DI\get( \WcAiReviewResponder\Validation\ReviewValidator::class )
