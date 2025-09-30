@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "moduleResolution": "node",
+    "types": ["jest", "node"]
+  },
+  "include": [
+    "src/**/*.ts",
+    "tests/js/**/*.ts"
+  ]
+}
