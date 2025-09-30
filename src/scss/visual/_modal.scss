@@ -2,7 +2,7 @@
 @use "sass:map";
 @use "../variables" as tokens;
 
-.wc-ai-rr-modal {
+%wc-ai-rr-modal {
 	// Typography
 	font-family: map.get(tokens.$typography, "font-family");
 

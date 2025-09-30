@@ -37,6 +37,17 @@ export interface AiSuggestionsResponseData {
 	};
 }
 
+export interface TinyMceEditor {
+	get( id: string ): TinyMceInstance | null;
+}
+
+export interface TinyMceInstance {
+	setContent( content: string ): void;
+}
+
 declare global {
-	const wcAiReviewResponder: WcAiReviewResponder;
+	interface Window {
+		wcAiReviewResponder: WcAiReviewResponder;
+		tinymce: TinyMceEditor;
+	}
 }

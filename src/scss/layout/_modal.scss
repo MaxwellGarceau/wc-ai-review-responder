@@ -2,7 +2,7 @@
 @use "sass:map";
 @use "../variables" as tokens;
 
-.wc-ai-rr-modal {
+%wc-ai-rr-modal {
 	// Positioning and display
 	position: fixed;
 	top: 0;

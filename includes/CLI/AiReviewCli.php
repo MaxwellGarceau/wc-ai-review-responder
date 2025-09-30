@@ -99,6 +99,7 @@ class AiReviewCli {
 	 *
 	 * @param array $args       Positional args.
 	 * @param array $assoc_args Associative args.
+	 * @throws AiResponseFailure When invalid comment ID is provided.
 	 */
 	public function test( $args, $assoc_args ) {
 		list( $comment_id ) = $args;
@@ -134,22 +135,22 @@ class AiReviewCli {
 			\WP_CLI::log( '  Generated suggestion prompt: ' . $suggestion_prompt );
 
 			\WP_CLI::log( '- Sending suggestion request to AI...' );
-			$suggestion_client = $this->ai_client_factory->create(
+			$suggestion_client   = $this->ai_client_factory->create(
 				array(
 					'response_mime_type' => 'application/json',
-					'response_schema' => array(
-						'type' => 'object',
+					'response_schema'    => array(
+						'type'       => 'object',
 						'properties' => array(
-							'mood' => array(
-								'type' => 'string',
+							'mood'     => array(
+								'type'        => 'string',
 								'description' => 'The suggested mood.',
 							),
 							'template' => array(
-								'type' => 'string',
+								'type'        => 'string',
 								'description' => 'The suggested template.',
 							),
 						),
-						'required' => array('mood', 'template'),
+						'required'   => array( 'mood', 'template' ),
 					),
 				)
 			);
@@ -178,7 +179,7 @@ class AiReviewCli {
 			$this->review_validator->validate_for_ai_processing( $clean );
 			$clean = $this->input_sanitizer->sanitize( $clean );
 
-			$prompt   = $this->prompt_builder->build_prompt( $clean, $template, $mood );
+			$prompt = $this->prompt_builder->build_prompt( $clean, $template, $mood );
 			\WP_CLI::log( '  Generated final prompt: ' . $prompt );
 
 			\WP_CLI::log( '- Sending final response request to AI...' );

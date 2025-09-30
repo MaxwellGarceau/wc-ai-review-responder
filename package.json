@@ -13,20 +13,18 @@
 		"fix:php": "composer phpcbf",
 		"packages-update": "wp-scripts packages-update",
 		"plugin-zip": "wp-scripts plugin-zip",
-		"start": "wp-scripts start --blocks-manifest",
+		"wp-scripts:start": "wp-scripts start",
 		"postinstall": "composer install",
-		"dev": "wp-env start",
-		"dev:stop": "wp-env stop",
-		"dev:reset": "wp-env clean all && wp-env start",
-		"logs:docker": "wp-env logs",
+		"wp-env:start": "wp-env start",
+		"wp-env:stop": "wp-env stop",
+		"wp-env:reset": "wp-env clean all && wp-env start",
+		"logs:wp-env": "wp-env logs",
 		"logs:wp": "wp-env run cli cat /var/www/html/wp-content/debug.log",
 		"logs:wp:clear": "wp-env run cli sh -c \"echo '' > /var/www/html/wp-content/debug.log\"",
 		"cli": "wp-env run cli wp --",
-		"test": "wp-env run tests-cli --env-cwd=wp-content/plugins/wc-ai-review-responder ./vendor/bin/phpunit",
-		"test:watch": "wp-env run tests-cli --env-cwd=wp-content/plugins/wc-ai-review-responder ./vendor/bin/phpunit --watch",
-		"test:coverage": "wp-env run tests-cli --env-cwd=wp-content/plugins/wc-ai-review-responder ./vendor/bin/phpunit --coverage-html coverage",
-		"test-ai": "wp-env run cli wp ai-review test",
-		"test-ai-review": "wp-env run cli wp ai-review test"
+		"test:php": "wp-env run tests-cli --env-cwd=wp-content/plugins/wc-ai-review-responder ./vendor/bin/phpunit",
+		"test:js": "wp-scripts test-unit-js",
+		"test:ai-cli": "wp-env run cli wp ai-review test"
 	},
 	"dependencies": {
 		"@woocommerce/components": "latest",
@@ -34,11 +32,14 @@
 		"@wordpress/i18n": "latest"
 	},
 	"devDependencies": {
+		"@types/jest": "^30.0.0",
 		"@woocommerce/dependency-extraction-webpack-plugin": "latest",
 		"@woocommerce/eslint-plugin": "latest",
 		"@wordpress/prettier-config": "latest",
 		"@wordpress/scripts": "latest",
+		"jest-raw-loader": "^1.0.1",
 		"raw-loader": "^4.0.2",
-		"typescript": "^5.9.2"
+		"ts-jest": "^29.4.4",
+		"typescript": "^5.4.5"
 	}
 }

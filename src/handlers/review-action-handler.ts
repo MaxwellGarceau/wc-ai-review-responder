@@ -12,7 +12,11 @@ import {
 	updateReplyTextarea,
 } from '../utils/wordpress-utils';
 import { showLoadingModal, hideLoadingModal } from '../modals/loading-modal';
-import { showPromptModal, getSelectedTemplate, getSelectedMood } from '../modals/prompt-modal';
+import {
+	showPromptModal,
+	getSelectedTemplate,
+	getSelectedMood,
+} from '../modals/prompt-modal';
 import { showGenericError } from '../modals/error-modal';
 import { generateAiResponse, getAiSuggestions } from '../api/ajax-handler';
 
@@ -23,8 +27,11 @@ import { generateAiResponse, getAiSuggestions } from '../api/ajax-handler';
  */
 export function handleAiResponseClick( link: HTMLAnchorElement ): void {
 	const commentId: string | null = link.getAttribute( 'data-comment-id' );
-	const suggestNonce: string | null = link.getAttribute( 'data-suggest-nonce' );
-	const generateNonce: string | null = link.getAttribute( 'data-generate-nonce' );
+	const suggestNonce: string | null =
+		link.getAttribute( 'data-suggest-nonce' );
+	const generateNonce: string | null = link.getAttribute(
+		'data-generate-nonce'
+	);
 
 	if ( ! commentId || ! suggestNonce || ! generateNonce ) {
 		// Missing required data attributes - show error
@@ -113,7 +120,13 @@ export function handleAiResponseClick( link: HTMLAnchorElement ): void {
 		} )
 		.catch( () => {
 			hideLoadingModal();
-			showPromptModal( handleGenerate, handleCancel, undefined, undefined, true );
+			showPromptModal(
+				handleGenerate,
+				handleCancel,
+				undefined,
+				undefined,
+				true
+			);
 		} )
 		.finally( () => {
 			link.textContent = originalText; // Reset link text after suggestions are loaded

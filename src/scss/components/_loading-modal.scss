@@ -5,34 +5,34 @@
 
 .wc-ai-rr-loading-modal {
 
-	@extend .wc-ai-rr-modal;
+	@extend %wc-ai-rr-modal;
 	z-index: map.get(tokens.$z-index, "modal");
 
 	&__overlay {
 
-		@extend .wc-ai-rr-modal__overlay;
+		@extend %wc-ai-rr-modal__overlay;
 	}
 
 	&__content {
 
-		@extend .wc-ai-rr-modal__content;
+		@extend %wc-ai-rr-modal__content;
 		max-width: 400px;
 	}
 
 	&__spinner {
 
-		@extend .wc-ai-rr-modal__spinner;
+		@extend %wc-ai-rr-modal__spinner;
 		// Spinner-specific styles are already defined in visual layer
 	}
 
 	&__label {
 
-		@extend .wc-ai-rr-modal__label;
+		@extend %wc-ai-rr-modal__label;
 	}
 
 	&__title {
 
-		@extend .wc-ai-rr-modal__title;
+		@extend %wc-ai-rr-modal__title;
 		font-size: map.get(tokens.$typography, "font-size-lg");
 	}
 }

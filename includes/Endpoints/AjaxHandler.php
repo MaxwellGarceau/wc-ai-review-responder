@@ -176,6 +176,7 @@ class AjaxHandler {
 	 *
 	 * @return void
 	 * @throws InvalidArgumentsException When the request contains an invalid comment ID.
+	 * @throws AiResponseFailure When the AI response is invalid or fails.
 	 */
 	public function handle_get_ai_suggestions(): void {
 		if ( ! current_user_can( 'moderate_comments' ) ) {
@@ -202,19 +203,19 @@ class AjaxHandler {
 			$ai_client        = $this->ai_client_factory->create(
 				array(
 					'response_mime_type' => 'application/json',
-					'response_schema' => array(
-						'type' => 'object',
+					'response_schema'    => array(
+						'type'       => 'object',
 						'properties' => array(
-							'mood' => array(
-								'type' => 'string',
+							'mood'     => array(
+								'type'        => 'string',
 								'description' => 'The suggested mood.',
 							),
 							'template' => array(
-								'type' => 'string',
+								'type'        => 'string',
 								'description' => 'The suggested template.',
 							),
 						),
-						'required' => array('mood', 'template'),
+						'required'   => array( 'mood', 'template' ),
 					),
 				)
 			);

@@ -13,11 +13,11 @@ import { Template, Mood } from '../types/admin-types';
 /**
  * Shows the prompt selection modal.
  *
- * @param {() => void} onGenerate - Callback function to execute when the generate button is clicked.
- * @param {() => void} onCancel - Callback function to execute when the cancel button is clicked.
- * @param {string} [suggestedTemplate] - Optional suggested template to pre-select.
- * @param {string} [suggestedMood] - Optional suggested mood to pre-select.
- * @param {boolean} [suggestionFailed] - Optional flag to indicate if suggestions failed.
+ * @param {() => void} onGenerate          - Callback function to execute when the generate button is clicked.
+ * @param {() => void} onCancel            - Callback function to execute when the cancel button is clicked.
+ * @param {string}     [suggestedTemplate] - Optional suggested template to pre-select.
+ * @param {string}     [suggestedMood]     - Optional suggested mood to pre-select.
+ * @param {boolean}    [suggestionFailed]  - Optional flag to indicate if suggestions failed.
  */
 export function showPromptModal(
 	onGenerate: () => void,
@@ -58,7 +58,7 @@ export function showPromptModal(
 
 	// Populate template select options
 	templateSelect.innerHTML = ''; // Clear existing options
-	wcAiReviewResponder.templates.forEach( ( template: Template ) => {
+	window.wcAiReviewResponder.templates.forEach( ( template: Template ) => {
 		const option = document.createElement( 'option' );
 		option.value = template.value;
 		option.textContent = template.label;
@@ -67,7 +67,7 @@ export function showPromptModal(
 
 	// Populate mood select options
 	moodSelect.innerHTML = ''; // Clear existing options
-	wcAiReviewResponder.moods.forEach( ( mood: Mood ) => {
+	window.wcAiReviewResponder.moods.forEach( ( mood: Mood ) => {
 		const option = document.createElement( 'option' );
 		option.value = mood.value;
 		option.textContent = mood.label;
