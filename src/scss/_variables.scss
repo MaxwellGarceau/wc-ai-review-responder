@@ -2,26 +2,20 @@
 
 // Color Palette
 $colors: (
-	
-  primary: #2271b1,	 
-  
-  text-primary: 	d2327,
-  text-sec	dary: #646970,
-  
-  
-  	ckground: #fff,
-  
-  
-  over	y: rgba(0, 0, 0, 0.5),
+	primary: #2271b1,
+	text-primary: #23282d,
+	text-secondary: #646970,
+	background: #fff,
+	overlay: rgba(0, 0, 0, 0.5),
 	border: #ddd,
-  
-  
- 	ray-100: #f3f3f3,
-  
-  
- 	rror: #d63638, 
-  error-backg	und: rgba(214, 54	56, 0.1)
-)				;
+	
+	// Neutral colors
+	gray-100: #f3f3f3,
+	
+	// Error colors
+	error: #d63638, // WordPress error color
+	error-background: rgba(214, 54, 56, 0.1)
+);
 
 // Spacing Scale
 $spacing: (
@@ -31,7 +25,7 @@ $spacing: (
 );
 
 // Font Family
-$font-family-base: -apple-system, blinkmacsystemfont, "Segoe UI", roboto, sans-serif;
+$font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
 // Typography Scale
 $typography: (
