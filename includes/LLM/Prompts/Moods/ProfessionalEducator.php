@@ -23,14 +23,6 @@ class ProfessionalEducator implements MoodInterface {
 		return 'professional_educator';
 	}
 
-	/**
-	 * Get the mood description.
-	 *
-	 * @return string The mood description.
-	 */
-	public function get_description(): string {
-		return 'Professional and educational approach for confused or misinformed reviews';
-	}
 
 	/**
 	 * Apply mood to a prompt.

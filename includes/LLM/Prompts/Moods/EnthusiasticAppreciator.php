@@ -23,14 +23,6 @@ class EnthusiasticAppreciator implements MoodInterface {
 		return 'enthusiastic_appreciator';
 	}
 
-	/**
-	 * Get the mood description.
-	 *
-	 * @return string The mood description.
-	 */
-	public function get_description(): string {
-		return 'Enthusiastic and appreciative approach for positive reviews';
-	}
 
 	/**
 	 * Apply mood to a prompt.

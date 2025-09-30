@@ -21,12 +21,6 @@ interface MoodInterface {
 	 */
 	public function get_name(): string;
 
-	/**
-	 * Get the mood description.
-	 *
-	 * @return string The mood description.
-	 */
-	public function get_description(): string;
 
 	/**
 	 * Apply mood to a prompt.

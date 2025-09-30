@@ -23,14 +23,6 @@ class EmpatheticProblemSolver implements MoodInterface {
 		return 'empathetic_problem_solver';
 	}
 
-	/**
-	 * Get the mood description.
-	 *
-	 * @return string The mood description.
-	 */
-	public function get_description(): string {
-		return 'Empathetic and solution-focused approach for negative reviews';
-	}
 
 	/**
 	 * Apply mood to a prompt.
