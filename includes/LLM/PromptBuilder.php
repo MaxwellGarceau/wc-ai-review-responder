@@ -14,6 +14,7 @@ use WcAiReviewResponder\LLM\Prompts\Templates\PositiveWithCritiqueTemplate;
 use WcAiReviewResponder\LLM\Prompts\Templates\ProductMisunderstandingTemplate;
 use WcAiReviewResponder\LLM\Prompts\Templates\DefectiveProductTemplate;
 use WcAiReviewResponder\LLM\Prompts\Templates\ShippingIssueTemplate;
+use WcAiReviewResponder\LLM\Prompts\Templates\ValuePriceConcernTemplate;
 use WcAiReviewResponder\LLM\Prompts\Templates\PromptTemplateInterface;
 use WcAiReviewResponder\LLM\Prompts\ReviewContext;
 use WcAiReviewResponder\LLM\Prompts\TemplateType;
@@ -38,6 +39,7 @@ class PromptBuilder implements BuildPromptInterface {
 		'product_misunderstanding' => ProductMisunderstandingTemplate::class,
 		'defective_product'        => DefectiveProductTemplate::class,
 		'shipping_issue'           => ShippingIssueTemplate::class,
+		'value_price_concern'      => ValuePriceConcernTemplate::class,
 	);
 
 	/**

@@ -22,4 +22,5 @@ enum TemplateType: string {
 	case PRODUCT_MISUNDERSTANDING = 'product_misunderstanding';
 	case DEFECTIVE_PRODUCT        = 'defective_product';
 	case SHIPPING_ISSUE           = 'shipping_issue';
+	case VALUE_PRICE_CONCERN      = 'value_price_concern';
 }
