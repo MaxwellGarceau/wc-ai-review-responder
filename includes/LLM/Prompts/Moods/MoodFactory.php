@@ -64,14 +64,6 @@ class MoodFactory {
 		return new $class();
 	}
 
-	/**
-	 * Get the default mood.
-	 *
-	 * @return MoodInterface The default mood.
-	 */
-	public function get_default_mood(): MoodInterface {
-		return $this->get_mood_by_type( MoodsType::EMPATHETIC_PROBLEM_SOLVER );
-	}
 
 
 	/**
