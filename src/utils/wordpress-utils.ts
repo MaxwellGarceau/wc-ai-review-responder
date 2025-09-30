@@ -26,14 +26,15 @@ export function triggerWordPressReply( commentId: string ): void {
  * Updates the WordPress reply textarea with the generated content
  *
  * @param {string} content - The content to insert into the textarea
+ * @return {boolean} True if successful, false if textarea not found
  */
-export function updateReplyTextarea( content: string ): void {
+export function updateReplyTextarea( content: string ): boolean {
 	const replyTextarea: HTMLTextAreaElement | null = document.querySelector(
 		'textarea[name="replycontent"]'
 	);
 
 	if ( ! replyTextarea ) {
-		return;
+		return false;
 	}
 
 	replyTextarea.value = content;
@@ -60,4 +61,6 @@ export function updateReplyTextarea( content: string ): void {
 
 	replyTextarea.dispatchEvent( new Event( 'change' ) );
 	replyTextarea.focus();
+
+	return true;
 }

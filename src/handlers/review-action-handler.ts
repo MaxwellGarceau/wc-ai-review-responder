@@ -7,9 +7,13 @@
 /**
  * Internal dependencies
  */
-import { triggerWordPressReply, updateReplyTextarea } from '../utils/wordpress-utils';
+import {
+	triggerWordPressReply,
+	updateReplyTextarea,
+} from '../utils/wordpress-utils';
 import { showLoadingModal, hideLoadingModal } from '../modals/loading-modal';
 import { showPromptModal, getSelectedTemplate } from '../modals/prompt-modal';
+import { showGenericError } from '../modals/error-modal';
 import { generateAiResponse } from '../api/ajax-handler';
 
 /**
@@ -22,7 +26,11 @@ export function handleAiResponseClick( link: HTMLAnchorElement ): void {
 	const nonce: string | null = link.getAttribute( 'data-nonce' );
 
 	if ( ! commentId || ! nonce ) {
-		// Missing required data attributes - cannot proceed
+		// Missing required data attributes - show error
+		showGenericError(
+			'Missing required data attributes. Please refresh the page and try again.',
+			'Configuration Error'
+		);
 		return;
 	}
 
@@ -50,10 +58,32 @@ export function handleAiResponseClick( link: HTMLAnchorElement ): void {
 			);
 
 			if ( data.success && data.data.reply ) {
-				updateReplyTextarea( data.data.reply );
+				const updateSuccess = updateReplyTextarea( data.data.reply );
+				if ( ! updateSuccess ) {
+					showGenericError(
+						'Could not find the reply textarea. Please make sure the reply box is open and try again.',
+						'Interface Error'
+					);
+				}
+			} else if ( data.success && ! data.data.reply ) {
+				// Server returned success but no reply content
+				showGenericError(
+					'The AI service returned an empty response. Please try again.',
+					'Empty Response'
+				);
+			} else {
+				// Server returned an error response
+				const errorMessage =
+					data.data?.message ||
+					'The server returned an error response.';
+				showGenericError( errorMessage, 'Server Error' );
 			}
 		} catch ( error: unknown ) {
-			// TODO: mgarceau 2025-09-29: Handle error from BE here
+			// Display user-friendly error message
+			showGenericError(
+				error as Error,
+				'Failed to generate AI response'
+			);
 		} finally {
 			hideLoadingModal();
 			restoreLinkState();

@@ -1,0 +1,30 @@
+/* Visual Layer - Appearance, colors, typography, and effects for error modal */
+@use "../variables" as tokens;
+
+.wc-ai-rr-error-modal {
+
+	&__icon {
+		// Error icon appearance
+		color: map-get(tokens.$colors, error);
+		background-color: map-get(tokens.$colors, error-background);
+		border-radius: map-get(tokens.$border-radius, full);
+
+		svg {
+			width: 24px;
+			height: 24px;
+		}
+	}
+
+	&__title {
+		// Error title appearance
+		color: map-get(tokens.$colors, error);
+		font-size: map-get(tokens.$typography, font-size-lg);
+		margin-bottom: map-get(tokens.$spacing, sm);
+	}
+
+	&__message {
+		// Error message appearance
+		margin-bottom: map-get(tokens.$spacing, xl);
+		line-height: map-get(tokens.$typography, line-height-relaxed);
+	}
+}
