@@ -17,12 +17,14 @@ import { Template, Mood } from '../types/admin-types';
  * @param {() => void} onCancel - Callback function to execute when the cancel button is clicked.
  * @param {string} [suggestedTemplate] - Optional suggested template to pre-select.
  * @param {string} [suggestedMood] - Optional suggested mood to pre-select.
+ * @param {boolean} [suggestionFailed] - Optional flag to indicate if suggestions failed.
  */
 export function showPromptModal(
 	onGenerate: () => void,
 	onCancel: () => void,
 	suggestedTemplate?: string,
-	suggestedMood?: string
+	suggestedMood?: string,
+	suggestionFailed?: boolean
 ): void {
 	// Insert the modal HTML if it doesn't exist
 	if ( ! document.querySelector( '.wc-ai-rr-prompt-modal' ) ) {
@@ -46,6 +48,9 @@ export function showPromptModal(
 	) as HTMLButtonElement;
 	const suggestionText = modal.querySelector(
 		'.wc-ai-rr-prompt-modal__suggestion'
+	) as HTMLElement;
+	const suggestionFailureText = modal.querySelector(
+		'.wc-ai-rr-prompt-modal__suggestion-failure'
 	) as HTMLElement;
 	const overlay = modal.querySelector(
 		'.wc-ai-rr-prompt-modal__overlay'
@@ -78,6 +83,12 @@ export function showPromptModal(
 		suggestionText.style.display = 'none';
 	}
 
+	if ( suggestionFailed ) {
+		suggestionFailureText.style.display = 'block';
+	} else {
+		suggestionFailureText.style.display = 'none';
+	}
+
 	// Event listeners for buttons
 	let generateClickHandler: ( () => void ) | null = null;
 	let cancelClickHandler: ( () => void ) | null = null;
@@ -92,6 +103,7 @@ export function showPromptModal(
 		}
 		// Also hide suggestion text on cleanup
 		suggestionText.style.display = 'none';
+		suggestionFailureText.style.display = 'none';
 		modal.style.display = 'none';
 	};
 

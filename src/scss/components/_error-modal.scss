@@ -1,4 +1,5 @@
 /* Error Modal Component - Layered Architecture */
+@use "sass:map";
 @use "../variables" as tokens;
 @use "modal-base";
 @use "../visual/error-modal" as visual;
@@ -6,7 +7,7 @@
 .wc-ai-rr-error-modal {
 
 	@extend .wc-ai-rr-modal;
-	z-index: map-get(tokens.$z-index, modal);
+	z-index: map.get(tokens.$z-index, "modal");
 
 	&__overlay {
 
@@ -22,7 +23,7 @@
 	&__icon {
 		width: 48px;
 		height: 48px;
-		margin: 0 auto map-get(tokens.$spacing, lg);
+		margin: 0 auto map.get(tokens.$spacing, "lg");
 		display: flex;
 		align-items: center;
 		justify-content: center;

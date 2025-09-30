@@ -1,4 +1,5 @@
 /* Layout Layer - Pure structural positioning and sizing */
+@use "sass:map";
 @use "../variables" as tokens;
 
 .wc-ai-rr-modal {
@@ -32,7 +33,7 @@
 		// Action buttons layout
 		display: flex;
 		justify-content: flex-end;
-		gap: map-get(tokens.$spacing, sm);
+		gap: map.get(tokens.$spacing, "sm");
 	}
 
 	&__label {
@@ -43,6 +44,6 @@
 		// Spinner sizing
 		width: 40px;
 		height: 40px;
-		margin: 0 auto map-get(tokens.$spacing, lg);
+		margin: 0 auto map.get(tokens.$spacing, "lg");
 	}
 }
