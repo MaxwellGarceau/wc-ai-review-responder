@@ -9,6 +9,7 @@
 namespace WcAiReviewResponder\Validation;
 
 use WcAiReviewResponder\Exceptions\InvalidReviewException;
+use WcAiReviewResponder\Localization\Translations;
 
 /**
  * Validates review data against business rules for AI processing.
@@ -28,20 +29,21 @@ class ReviewValidator {
 	public function validate_for_ai_processing( array $review_data ): void {
 		$comment_content = $review_data['comment'] ?? '';
 		$rating          = $review_data['rating'] ?? 0;
+		$php_strings     = Translations::get_php_strings();
 
 		// TODO: mgarceau 2025-09-27: In the future, we will support reviews without ratings and comments
 		// by passing more context regarding the user, the product, the order, and any possible difficulties
 		// that the user might have encountered.
 		if ( '' === trim( $comment_content ) ) {
-			throw new InvalidReviewException( esc_html__( 'Review is missing a comment.', 'wc-ai-review-responder' ) );
+			throw new InvalidReviewException( esc_html( $php_strings['reviewMissingComment'] ) );
 		}
 
 		if ( '' === (string) $rating ) {
-			throw new InvalidReviewException( esc_html__( 'Review is missing a rating.', 'wc-ai-review-responder' ) );
+			throw new InvalidReviewException( esc_html( $php_strings['reviewMissingRating'] ) );
 		}
 
 		if ( $rating < 1 || $rating > 5 ) {
-			throw new InvalidReviewException( esc_html__( 'Rating must be between 1 and 5.', 'wc-ai-review-responder' ) );
+			throw new InvalidReviewException( esc_html( $php_strings['ratingInvalidRange'] ) );
 		}
 	}
 }

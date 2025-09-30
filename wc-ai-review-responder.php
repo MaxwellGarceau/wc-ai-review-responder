@@ -25,6 +25,7 @@ use WcAiReviewResponder\Admin\ReviewActions;
 use WcAiReviewResponder\CLI\AiReviewCli;
 use WcAiReviewResponder\Core\ContainerFactory;
 use WcAiReviewResponder\Endpoints\AjaxHandler;
+use WcAiReviewResponder\Localization\Translations;
 
 // phpcs:disable WordPress.Files.FileName
 // phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed
@@ -36,7 +37,8 @@ use WcAiReviewResponder\Endpoints\AjaxHandler;
  */
 function wc_ai_review_responder_missing_wc_notice() {
 	/* translators: %s WC download URL link. */
-	echo '<div class="error"><p><strong>' . sprintf( esc_html__( 'Wc Ai Review Responder requires WooCommerce to be installed and active. You can download %s here.', 'wc-ai-review-responder' ), '<a href="https://woo.com/" target="_blank">WooCommerce</a>' ) . '</strong></p></div>';
+	$php_strings = Translations::get_php_strings();
+	echo '<div class="error"><p><strong>' . sprintf( esc_html( $php_strings['wooCommerceRequired'] ), '<a href="https://woo.com/" target="_blank">WooCommerce</a>' ) . '</strong></p></div>';
 }
 
 register_activation_hook( __FILE__, 'wc_ai_review_responder_activate' );
@@ -119,14 +121,16 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 		 * Cloning is forbidden.
 		 */
 		public function __clone() {
-			wc_doing_it_wrong( __FUNCTION__, __( 'Cloning is forbidden.', 'wc-ai-review-responder' ), $this->version );
+			$php_strings = Translations::get_php_strings();
+			wc_doing_it_wrong( __FUNCTION__, $php_strings['cloningForbidden'], $this->version );
 		}
 
 		/**
 		 * Unserializing instances of this class is forbidden.
 		 */
 		public function __wakeup() {
-			wc_doing_it_wrong( __FUNCTION__, __( 'Unserializing instances of this class is forbidden.', 'wc-ai-review-responder' ), $this->version );
+			$php_strings = Translations::get_php_strings();
+			wc_doing_it_wrong( __FUNCTION__, $php_strings['unserializingForbidden'], $this->version );
 		}
 
 		/**

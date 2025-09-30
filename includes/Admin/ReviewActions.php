@@ -13,6 +13,7 @@ namespace WcAiReviewResponder\Admin;
 
 use WcAiReviewResponder\LLM\Prompts\TemplateType;
 use WcAiReviewResponder\LLM\Prompts\Moods\MoodsType;
+use WcAiReviewResponder\Localization\Translations;
 
 /**
  * Admin review actions class for adding AI response generation links.
@@ -116,30 +117,7 @@ class ReviewActions {
 					},
 					MoodsType::cases()
 				),
-				'i18n'      => array(
-					'selectPromptOptions'      => __( 'Select Prompt Options', 'wc-ai-review-responder' ),
-					'chooseTemplateAndMood'    => __( 'Choose a template and mood to guide the AI\'s response.', 'wc-ai-review-responder' ),
-					'aiSuggestsOptions'        => __( 'Based on the review, the AI suggests these options for the best response.', 'wc-ai-review-responder' ),
-					'aiSuggestionsFailed'      => __( 'AI suggestions failed to load. Please make a manual selection.', 'wc-ai-review-responder' ),
-					'template'                 => __( 'Template:', 'wc-ai-review-responder' ),
-					'mood'                     => __( 'Mood:', 'wc-ai-review-responder' ),
-					'cancel'                   => __( 'Cancel', 'wc-ai-review-responder' ),
-					'generate'                 => __( 'Generate', 'wc-ai-review-responder' ),
-					'error'                    => __( 'Error', 'wc-ai-review-responder' ),
-					'ok'                       => __( 'OK', 'wc-ai-review-responder' ),
-					'generatingAiResponse'     => __( 'Generating AI Response', 'wc-ai-review-responder' ),
-					'pleaseWaitGenerating'     => __( 'Please wait while we generate a personalized response to this review...', 'wc-ai-review-responder' ),
-					'gettingSuggestions'       => __( 'Getting suggestions...', 'wc-ai-review-responder' ),
-					'missingDataAttributes'    => __( 'Missing required data attributes. Please refresh the page and try again.', 'wc-ai-review-responder' ),
-					'configurationError'       => __( 'Configuration Error', 'wc-ai-review-responder' ),
-					'couldNotFindTextarea'     => __( 'Could not find the reply textarea. Please make sure the reply box is open and try again.', 'wc-ai-review-responder' ),
-					'interfaceError'           => __( 'Interface Error', 'wc-ai-review-responder' ),
-					'serverReturnedError'      => __( 'The server returned an error response.', 'wc-ai-review-responder' ),
-					'serverError'              => __( 'Server Error', 'wc-ai-review-responder' ),
-					'failedToGenerateResponse' => __( 'Failed to generate AI response', 'wc-ai-review-responder' ),
-					'somethingWentWrong'       => __( 'Something went wrong', 'wc-ai-review-responder' ),
-					'unexpectedError'          => __( 'An unexpected error occurred.', 'wc-ai-review-responder' ),
-				),
+				'i18n'      => Translations::get_js_strings(),
 			)
 		);
 	}
@@ -178,12 +156,13 @@ class ReviewActions {
 	 * @since 1.0.0
 	 */
 	private function create_ai_response_action( $comment ): string {
+		$php_strings = Translations::get_php_strings();
 		return sprintf(
 			'<a href="#" class="ai-generate-response" data-comment-id="%d" data-suggest-nonce="%s" data-generate-nonce="%s">%s</a>',
 			esc_attr( $comment->comment_ID ),
 			esc_attr( wp_create_nonce( 'get_ai_suggestions' ) ),
 			esc_attr( wp_create_nonce( 'generate_ai_response' ) ),
-			esc_html__( 'Generate AI Response', 'wc-ai-review-responder' )
+			esc_html( $php_strings['generateAiResponse'] )
 		);
 	}
 
