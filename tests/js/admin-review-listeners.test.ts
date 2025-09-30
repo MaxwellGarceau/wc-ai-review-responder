@@ -103,4 +103,3 @@ describe( 'Admin Review Listeners', () => {
 		expect( handleAiResponseClick ).not.toHaveBeenCalled();
 	} );
 } );
-

@@ -50,7 +50,9 @@ describe( 'Prompt Modal', () => {
 			// Assumes the global mock in setup.ts has 2 templates and 2 moods.
 			expect( templateSelect.options.length ).toBe( 2 );
 			expect( moodSelect.options.length ).toBe( 2 );
-			expect( templateSelect.options[ 0 ].textContent ).toBe( 'Template 1' );
+			expect( templateSelect.options[ 0 ].textContent ).toBe(
+				'Template 1'
+			);
 			expect( moodSelect.options[ 0 ].textContent ).toBe( 'Mood 1' );
 		} );
 
@@ -87,7 +89,12 @@ describe( 'Prompt Modal', () => {
 		 * pre-selected options are AI suggestions, is made visible.
 		 */
 		it( 'should show suggestion text when suggestions are provided', () => {
-			showPromptModal( onGenerateMock, onCancelMock, 'template1', 'mood1' );
+			showPromptModal(
+				onGenerateMock,
+				onCancelMock,
+				'template1',
+				'mood1'
+			);
 			const suggestionText = document.querySelector(
 				'.wc-ai-rr-prompt-modal__suggestion'
 			) as HTMLElement;
@@ -100,7 +107,13 @@ describe( 'Prompt Modal', () => {
 		 * message is shown to the user so they know to make a manual selection.
 		 */
 		it( 'should show suggestion failure text when suggestionFailed is true', () => {
-			showPromptModal( onGenerateMock, onCancelMock, undefined, undefined, true );
+			showPromptModal(
+				onGenerateMock,
+				onCancelMock,
+				undefined,
+				undefined,
+				true
+			);
 			const failureText = document.querySelector(
 				'.wc-ai-rr-prompt-modal__suggestion-failure'
 			) as HTMLElement;
@@ -217,4 +230,3 @@ describe( 'Prompt Modal', () => {
 		} );
 	} );
 } );
-

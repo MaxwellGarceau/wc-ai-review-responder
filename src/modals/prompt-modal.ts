@@ -13,11 +13,11 @@ import { Template, Mood } from '../types/admin-types';
 /**
  * Shows the prompt selection modal.
  *
- * @param {() => void} onGenerate - Callback function to execute when the generate button is clicked.
- * @param {() => void} onCancel - Callback function to execute when the cancel button is clicked.
- * @param {string} [suggestedTemplate] - Optional suggested template to pre-select.
- * @param {string} [suggestedMood] - Optional suggested mood to pre-select.
- * @param {boolean} [suggestionFailed] - Optional flag to indicate if suggestions failed.
+ * @param {() => void} onGenerate          - Callback function to execute when the generate button is clicked.
+ * @param {() => void} onCancel            - Callback function to execute when the cancel button is clicked.
+ * @param {string}     [suggestedTemplate] - Optional suggested template to pre-select.
+ * @param {string}     [suggestedMood]     - Optional suggested mood to pre-select.
+ * @param {boolean}    [suggestionFailed]  - Optional flag to indicate if suggestions failed.
  */
 export function showPromptModal(
 	onGenerate: () => void,

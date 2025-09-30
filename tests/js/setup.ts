@@ -25,4 +25,3 @@ window.wcAiReviewResponder = {
 window.tinymce = {
 	get: jest.fn(),
 };
-

@@ -62,7 +62,9 @@ describe( 'AJAX Handler', () => {
 			const fetchCall = ( global.fetch as jest.Mock ).mock.calls[ 0 ];
 			const requestBody = fetchCall[ 1 ].body as FormData;
 			expect( fetchCall[ 1 ].method ).toBe( 'POST' );
-			expect( requestBody.get( 'action' ) ).toBe( 'generate_ai_response' );
+			expect( requestBody.get( 'action' ) ).toBe(
+				'generate_ai_response'
+			);
 			expect( requestBody.get( 'comment_id' ) ).toBe( commentId );
 			expect( requestBody.get( 'template' ) ).toBe( template );
 			expect( requestBody.get( 'mood' ) ).toBe( mood );
@@ -86,7 +88,12 @@ describe( 'AJAX Handler', () => {
 			} );
 
 			// Act
-			const result = await generateAiResponse( commentId, 't', 'm', nonce );
+			const result = await generateAiResponse(
+				commentId,
+				't',
+				'm',
+				nonce
+			);
 
 			// Assert
 			expect( result ).toEqual( mockResponse );
@@ -104,7 +111,10 @@ describe( 'AJAX Handler', () => {
 			// Arrange
 			const mockResponse: AiSuggestionsResponseData = {
 				success: true,
-				data: { template: 'suggested-template', mood: 'suggested-mood' },
+				data: {
+					template: 'suggested-template',
+					mood: 'suggested-mood',
+				},
 			};
 			( global.fetch as jest.Mock ).mockResolvedValue( {
 				json: () => Promise.resolve( mockResponse ),
@@ -152,4 +162,3 @@ describe( 'AJAX Handler', () => {
 		} );
 	} );
 } );
-

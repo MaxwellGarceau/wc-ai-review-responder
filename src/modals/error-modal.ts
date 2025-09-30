@@ -101,7 +101,7 @@ export function hideErrorModal(): void {
  * Shows an error modal for a generic error with a user-friendly message.
  *
  * @param {Error | string} error   - The error object or error message
- * @param {string} context         - Optional context about where the error occurred
+ * @param {string}         context - Optional context about where the error occurred
  */
 export function showGenericError(
 	error: Error | string,

@@ -136,7 +136,10 @@ describe( 'handleAiResponseClick', () => {
 	 */
 	it( 'should call getAiSuggestions with correct commentId and nonce', () => {
 		handleAiResponseClick( link );
-		expect( getAiSuggestions ).toHaveBeenCalledWith( '123', 'suggest-nonce-123' );
+		expect( getAiSuggestions ).toHaveBeenCalledWith(
+			'123',
+			'suggest-nonce-123'
+		);
 	} );
 
 	describe( 'When AI suggestions are fetched successfully', () => {
@@ -144,9 +147,14 @@ describe( 'handleAiResponseClick', () => {
 		const setupSuccessfulSuggestion = () => {
 			const suggestionResponse: AiSuggestionsResponseData = {
 				success: true,
-				data: { template: 'suggested-template', mood: 'suggested-mood' },
+				data: {
+					template: 'suggested-template',
+					mood: 'suggested-mood',
+				},
 			};
-			( getAiSuggestions as jest.Mock ).mockResolvedValue( suggestionResponse );
+			( getAiSuggestions as jest.Mock ).mockResolvedValue(
+				suggestionResponse
+			);
 		};
 
 		/**
@@ -232,7 +240,10 @@ describe( 'handleAiResponseClick', () => {
 	describe( 'User interaction with the Prompt Modal', () => {
 		// Helper to get the callbacks passed to `showPromptModal`
 		const getModalCallbacks = async () => {
-			( getAiSuggestions as jest.Mock ).mockResolvedValue( { success: true, data: {} } );
+			( getAiSuggestions as jest.Mock ).mockResolvedValue( {
+				success: true,
+				data: {},
+			} );
 			handleAiResponseClick( link );
 			await Promise.resolve();
 			const mockCalls = ( showPromptModal as jest.Mock ).mock.calls;
@@ -252,7 +263,10 @@ describe( 'handleAiResponseClick', () => {
 			 */
 			it( 'should show loading modal and call generateAi-response', async () => {
 				const { handleGenerate } = await getModalCallbacks();
-				( generateAiResponse as jest.Mock ).mockResolvedValue( { success: false, data: {} } );
+				( generateAiResponse as jest.Mock ).mockResolvedValue( {
+					success: false,
+					data: {},
+				} );
 
 				await handleGenerate();
 
@@ -260,7 +274,7 @@ describe( 'handleAiResponseClick', () => {
 				expect( generateAiResponse ).toHaveBeenCalledWith(
 					'123',
 					'selected-template', // From mock
-					'selected-mood',     // From mock
+					'selected-mood', // From mock
 					'generate-nonce-123'
 				);
 				expect( getSelectedTemplate ).toHaveBeenCalled();
@@ -281,7 +295,9 @@ describe( 'handleAiResponseClick', () => {
 
 				await handleGenerate();
 
-				expect( updateReplyTextarea ).toHaveBeenCalledWith( 'AI generated text' );
+				expect( updateReplyTextarea ).toHaveBeenCalledWith(
+					'AI generated text'
+				);
 			} );
 
 			/**
@@ -348,7 +364,9 @@ describe( 'handleAiResponseClick', () => {
 			 */
 			it( 'should hide loading modal and restore link state in all generate scenarios', async () => {
 				const { handleGenerate } = await getModalCallbacks();
-				( generateAiResponse as jest.Mock ).mockRejectedValue( new Error( 'any error' ) );
+				( generateAiResponse as jest.Mock ).mockRejectedValue(
+					new Error( 'any error' )
+				);
 
 				try {
 					await handleGenerate();

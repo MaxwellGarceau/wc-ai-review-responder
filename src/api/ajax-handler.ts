@@ -7,7 +7,10 @@
 /**
  * Internal dependencies
  */
-import { AiResponseData, AiSuggestionsResponseData } from '../types/admin-types';
+import {
+	AiResponseData,
+	AiSuggestionsResponseData,
+} from '../types/admin-types';
 
 /**
  * Makes an AJAX request to generate an AI response
@@ -31,10 +34,13 @@ export async function generateAiResponse(
 	formData.append( 'mood', mood );
 	formData.append( '_wpnonce', nonce );
 
-	const response: Response = await fetch( window.wcAiReviewResponder.ajaxurl, {
-		method: 'POST',
-		body: formData,
-	} );
+	const response: Response = await fetch(
+		window.wcAiReviewResponder.ajaxurl,
+		{
+			method: 'POST',
+			body: formData,
+		}
+	);
 
 	return await response.json();
 }
@@ -57,10 +63,13 @@ export async function getAiSuggestions(
 	formData.append( 'comment_id', commentId );
 	formData.append( '_wpnonce', nonce );
 
-	const response: Response = await fetch( window.wcAiReviewResponder.ajaxurl, {
-		method: 'POST',
-		body: formData,
-	} );
+	const response: Response = await fetch(
+		window.wcAiReviewResponder.ajaxurl,
+		{
+			method: 'POST',
+			body: formData,
+		}
+	);
 
 	return await response.json();
 }

@@ -118,7 +118,9 @@ describe( 'WordPress Utilities', () => {
 			updateReplyTextarea( content );
 
 			// Assert: Verify the TinyMCE API was called correctly.
-			expect( global.tinymce.get ).toHaveBeenCalledWith( mockTextarea.id );
+			expect( global.tinymce.get ).toHaveBeenCalledWith(
+				mockTextarea.id
+			);
 			expect( mockEditor.setContent ).toHaveBeenCalledWith( content );
 		} );
 
@@ -146,4 +148,3 @@ describe( 'WordPress Utilities', () => {
 		} );
 	} );
 } );
-
