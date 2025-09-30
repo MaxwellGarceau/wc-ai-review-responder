@@ -110,12 +110,4 @@ class PromptBuilder implements BuildPromptInterface {
 		return TemplateType::cases();
 	}
 
-	/**
-	 * Get available moods.
-	 *
-	 * @return array<string, string> Array of mood names and descriptions.
-	 */
-	public function get_available_moods(): array {
-		return $this->mood_factory->get_mood_descriptions();
-	}
 }
