@@ -24,6 +24,11 @@
 		// Spinner-specific styles are already defined in visual layer
 	}
 
+	&__label {
+
+		@extend .wc-ai-rr-modal__label;
+	}
+
 	&__title {
 
 		@extend .wc-ai-rr-modal__title;
