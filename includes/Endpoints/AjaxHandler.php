@@ -25,6 +25,13 @@ class AjaxHandler {
 	 * AJAX action and nonce action for generating AI response.
 	 */
 	private const ACTION_GENERATE_AI_RESPONSE = 'generate_ai_response';
+
+	/**
+	 * AJAX action and nonce action for getting AI suggestions.
+	 *
+	 * @since 1.1.0
+	 */
+	private const ACTION_GET_AI_SUGGESTIONS = 'get_ai_suggestions';
 	/**
 	 * Review handler dependency.
 	 *
@@ -92,6 +99,7 @@ class AjaxHandler {
 	 */
 	public function register() {
 		add_action( 'wp_ajax_' . self::ACTION_GENERATE_AI_RESPONSE, array( $this, 'handle_generate' ) );
+		add_action( 'wp_ajax_' . self::ACTION_GET_AI_SUGGESTIONS, array( $this, 'handle_get_ai_suggestions' ) );
 	}
 
 	/**
@@ -150,6 +158,53 @@ class AjaxHandler {
 			$reply       = $this->response_validator->validate( $ai_response );
 
 			wp_send_json_success( array( 'reply' => $reply ) );
+		} catch ( InvalidReviewException $e ) {
+			$this->send_error( ErrorType::INVALID_REVIEW, $e->getMessage(), HttpStatus::BAD_REQUEST );
+		} catch ( RateLimitExceededException $e ) {
+			$this->send_error( ErrorType::RATE_LIMIT_EXCEEDED, $e->getMessage(), HttpStatus::TOO_MANY_REQUESTS );
+		} catch ( AiResponseFailure $e ) {
+			$this->send_error( ErrorType::AI_FAILURE, $e->getMessage(), HttpStatus::INTERNAL_SERVER_ERROR );
+		}
+	}
+
+	/**
+	 * Handle AJAX request for getting AI suggestions for mood and template.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return void
+	 * @throws InvalidArgumentsException When the request contains an invalid comment ID.
+	 */
+	public function handle_get_ai_suggestions(): void {
+		if ( ! current_user_can( 'moderate_comments' ) ) {
+			$this->send_error( ErrorType::UNAUTHORIZED, 'Insufficient permissions.', HttpStatus::UNAUTHORIZED );
+		}
+
+		$nonce = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
+		if ( ! wp_verify_nonce( $nonce, self::ACTION_GET_AI_SUGGESTIONS ) ) {
+			$this->send_error( ErrorType::INVALID_NONCE, 'Security check failed.', HttpStatus::FORBIDDEN );
+		}
+
+		$comment_id = isset( $_POST['comment_id'] ) ? (int) $_POST['comment_id'] : 0;
+		if ( $comment_id <= 0 ) {
+			throw new InvalidArgumentsException( 'Missing or invalid comment_id.' );
+		}
+
+		try {
+			$context = $this->review_handler->get_by_id( $comment_id );
+			$this->review_validator->validate_for_ai_processing( $context );
+			$clean = $this->input_sanitizer->sanitize( $context );
+
+			$sentiment_prompt = new \WcAiReviewResponder\LLM\Prompts\SentimentAnalysis();
+			$prompt           = $sentiment_prompt->build_prompt( $clean );
+			$ai_response      = $this->ai_client->get( $prompt );
+			$suggestions      = json_decode( $ai_response, true );
+
+			if ( json_last_error() !== JSON_ERROR_NONE || ! isset( $suggestions['mood'] ) || ! isset( $suggestions['template'] ) ) {
+				throw new AiResponseFailure( 'Invalid JSON response from AI.' );
+			}
+
+			wp_send_json_success( $suggestions );
 		} catch ( InvalidReviewException $e ) {
 			$this->send_error( ErrorType::INVALID_REVIEW, $e->getMessage(), HttpStatus::BAD_REQUEST );
 		} catch ( RateLimitExceededException $e ) {

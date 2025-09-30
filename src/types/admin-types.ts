@@ -28,6 +28,15 @@ export interface AiResponseData {
 	};
 }
 
+export interface AiSuggestionsResponseData {
+	success: boolean;
+	data: {
+		mood?: string;
+		template?: string;
+		message?: string;
+	};
+}
+
 declare global {
 	const wcAiReviewResponder: WcAiReviewResponder;
 }

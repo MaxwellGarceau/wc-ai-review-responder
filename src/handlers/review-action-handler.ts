@@ -14,7 +14,7 @@ import {
 import { showLoadingModal, hideLoadingModal } from '../modals/loading-modal';
 import { showPromptModal, getSelectedTemplate, getSelectedMood } from '../modals/prompt-modal';
 import { showGenericError } from '../modals/error-modal';
-import { generateAiResponse } from '../api/ajax-handler';
+import { generateAiResponse, getAiSuggestions } from '../api/ajax-handler';
 
 /**
  * Handles the click event for AI response generation links.
@@ -43,59 +43,82 @@ export function handleAiResponseClick( link: HTMLAnchorElement ): void {
 		link.textContent = originalText;
 		link.style.pointerEvents = 'auto';
 	};
-	link.textContent = 'Generating...';
+	link.textContent = 'Getting suggestions...';
 	link.style.pointerEvents = 'none';
 
-	// Define what happens when the user clicks "Generate" in the modal
-	const handleGenerate = async () => {
-		showLoadingModal();
+	getAiSuggestions( commentId, nonce )
+		.then( ( suggestions ) => {
+			let suggestedTemplate: string | undefined;
+			let suggestedMood: string | undefined;
 
-		try {
-			const data = await generateAiResponse(
-				commentId,
-				getSelectedTemplate(),
-				getSelectedMood(),
-				nonce
-			);
-
-			if ( data.success && data.data.reply ) {
-				const updateSuccess = updateReplyTextarea( data.data.reply );
-				if ( ! updateSuccess ) {
-					showGenericError(
-						'Could not find the reply textarea. Please make sure the reply box is open and try again.',
-						'Interface Error'
-					);
-				}
-			} else if ( data.success && ! data.data.reply ) {
-				// Server returned success but no reply content
-				showGenericError(
-					'The AI service returned an empty response. Please try again.',
-					'Empty Response'
-				);
-			} else {
-				// Server returned an error response
-				const errorMessage =
-					data.data?.message ||
-					'The server returned an error response.';
-				showGenericError( errorMessage, 'Server Error' );
+			if ( suggestions.success ) {
+				suggestedTemplate = suggestions.data.template;
+				suggestedMood = suggestions.data.mood;
 			}
-		} catch ( error: unknown ) {
-			// Display user-friendly error message
-			showGenericError(
-				error as Error,
-				'Failed to generate AI response'
+
+			// Define what happens when the user clicks "Generate" in the modal
+			const handleGenerate = async () => {
+				showLoadingModal();
+
+				try {
+					const data = await generateAiResponse(
+						commentId,
+						getSelectedTemplate(),
+						getSelectedMood(),
+						nonce
+					);
+
+					if ( data.success && data.data.reply ) {
+						const updateSuccess = updateReplyTextarea(
+							data.data.reply
+						);
+						if ( ! updateSuccess ) {
+							showGenericError(
+								'Could not find the reply textarea. Please make sure the reply box is open and try again.',
+								'Interface Error'
+							);
+						}
+					} else if ( data.success && ! data.data.reply ) {
+						// Server returned success but no reply content
+						showGenericError(
+							'The AI service returned an empty response. Please try again.',
+							'Empty Response'
+						);
+					} else {
+						// Server returned an error response
+						const errorMessage =
+							data.data?.message ||
+							'The server returned an error response.';
+						showGenericError( errorMessage, 'Server Error' );
+					}
+				} catch ( error: unknown ) {
+					// Display user-friendly error message
+					showGenericError(
+						error as Error,
+						'Failed to generate AI response'
+					);
+				} finally {
+					hideLoadingModal();
+					restoreLinkState();
+				}
+			};
+
+			// Define what happens when the user clicks "Cancel" in the modal
+			const handleCancel = () => {
+				restoreLinkState();
+			};
+
+			// Show the prompt selection modal
+			showPromptModal(
+				handleGenerate,
+				handleCancel,
+				suggestedTemplate,
+				suggestedMood
 			);
-		} finally {
-			hideLoadingModal();
+			link.textContent = originalText; // Reset link text after suggestions are loaded
+		} )
+		.catch( ( error ) => {
+			showGenericError( error as Error, 'Failed to get AI suggestions' );
 			restoreLinkState();
-		}
-	};
-
-	// Define what happens when the user clicks "Cancel" in the modal
-	const handleCancel = () => {
-		restoreLinkState();
-	};
-
-	// Show the prompt selection modal
-	showPromptModal( handleGenerate, handleCancel );
+		} );
 }

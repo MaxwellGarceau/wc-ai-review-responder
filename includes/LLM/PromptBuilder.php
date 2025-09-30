@@ -109,5 +109,4 @@ class PromptBuilder implements BuildPromptInterface {
 	public function get_available_templates(): array {
 		return TemplateType::cases();
 	}
-
 }

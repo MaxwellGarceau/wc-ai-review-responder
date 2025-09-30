@@ -15,10 +15,14 @@ import { Template, Mood } from '../types/admin-types';
  *
  * @param {() => void} onGenerate - Callback function to execute when the generate button is clicked.
  * @param {() => void} onCancel - Callback function to execute when the cancel button is clicked.
+ * @param {string} [suggestedTemplate] - Optional suggested template to pre-select.
+ * @param {string} [suggestedMood] - Optional suggested mood to pre-select.
  */
 export function showPromptModal(
 	onGenerate: () => void,
-	onCancel: () => void
+	onCancel: () => void,
+	suggestedTemplate?: string,
+	suggestedMood?: string
 ): void {
 	// Insert the modal HTML if it doesn't exist
 	if ( ! document.querySelector( '.wc-ai-rr-prompt-modal' ) ) {
@@ -40,6 +44,9 @@ export function showPromptModal(
 	const cancelButton = modal.querySelector(
 		'#wc-ai-rr-prompt-modal-cancel'
 	) as HTMLButtonElement;
+	const suggestionText = modal.querySelector(
+		'.wc-ai-rr-prompt-modal__suggestion'
+	) as HTMLElement;
 	const overlay = modal.querySelector(
 		'.wc-ai-rr-prompt-modal__overlay'
 	) as HTMLElement;
@@ -62,6 +69,15 @@ export function showPromptModal(
 		moodSelect.appendChild( option );
 	} );
 
+	// Pre-select suggested options and show suggestion text if provided
+	if ( suggestedTemplate && suggestedMood ) {
+		templateSelect.value = suggestedTemplate;
+		moodSelect.value = suggestedMood;
+		suggestionText.style.display = 'block';
+	} else {
+		suggestionText.style.display = 'none';
+	}
+
 	// Event listeners for buttons
 	let generateClickHandler: ( () => void ) | null = null;
 	let cancelClickHandler: ( () => void ) | null = null;
@@ -74,6 +90,8 @@ export function showPromptModal(
 			cancelButton.removeEventListener( 'click', cancelClickHandler );
 			overlay.removeEventListener( 'click', cancelClickHandler );
 		}
+		// Also hide suggestion text on cleanup
+		suggestionText.style.display = 'none';
 		modal.style.display = 'none';
 	};
 
