@@ -103,7 +103,7 @@ class ReviewActions {
 			);
 		}
 
-		// Localize script to provide ajaxurl and localized strings.
+		// Localize script to provide ajaxurl, template/mood data, and localized strings.
 		wp_localize_script(
 			'wc-ai-review-responder',
 			'wcAiReviewResponder',
