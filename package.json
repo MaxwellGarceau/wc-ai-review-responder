@@ -35,11 +35,14 @@
 		"@wordpress/i18n": "latest"
 	},
 	"devDependencies": {
+		"@types/jest": "^30.0.0",
 		"@woocommerce/dependency-extraction-webpack-plugin": "latest",
 		"@woocommerce/eslint-plugin": "latest",
 		"@wordpress/prettier-config": "latest",
 		"@wordpress/scripts": "latest",
+		"jest-raw-loader": "^1.0.1",
 		"raw-loader": "^4.0.2",
+		"ts-jest": "^29.4.4",
 		"typescript": "^5.4.5"
 	}
 }

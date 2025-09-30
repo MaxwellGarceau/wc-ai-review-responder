@@ -195,7 +195,7 @@ describe( 'handleAiResponseClick', () => {
 				data: {},
 			} );
 			handleAiResponseClick( link );
-			await new Promise( setImmediate ); // Wait for promise chain.
+			await new Promise( ( resolve ) => setTimeout( resolve, 0 ) ); // Wait for promise chain.
 
 			expect( hideLoadingModal ).toHaveBeenCalled();
 			expect( showPromptModal ).toHaveBeenCalledWith(
@@ -216,7 +216,7 @@ describe( 'handleAiResponseClick', () => {
 				new Error( 'Network error' )
 			);
 			handleAiResponseClick( link );
-			await new Promise( setImmediate ); // Wait for promise chain.
+			await new Promise( ( resolve ) => setTimeout( resolve, 0 ) ); // Wait for promise chain.
 
 			expect( hideLoadingModal ).toHaveBeenCalled();
 			expect( showPromptModal ).toHaveBeenCalledWith(

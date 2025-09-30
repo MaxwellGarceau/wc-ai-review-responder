@@ -31,7 +31,7 @@ export async function generateAiResponse(
 	formData.append( 'mood', mood );
 	formData.append( '_wpnonce', nonce );
 
-	const response: Response = await fetch( wcAiReviewResponder.ajaxurl, {
+	const response: Response = await fetch( window.wcAiReviewResponder.ajaxurl, {
 		method: 'POST',
 		body: formData,
 	} );
@@ -57,7 +57,7 @@ export async function getAiSuggestions(
 	formData.append( 'comment_id', commentId );
 	formData.append( '_wpnonce', nonce );
 
-	const response: Response = await fetch( wcAiReviewResponder.ajaxurl, {
+	const response: Response = await fetch( window.wcAiReviewResponder.ajaxurl, {
 		method: 'POST',
 		body: formData,
 	} );

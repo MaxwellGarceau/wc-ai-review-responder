@@ -38,5 +38,8 @@ export interface AiSuggestionsResponseData {
 }
 
 declare global {
-	const wcAiReviewResponder: WcAiReviewResponder;
+	interface Window {
+		wcAiReviewResponder: WcAiReviewResponder;
+		tinymce: any;
+	}
 }
