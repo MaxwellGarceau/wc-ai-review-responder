@@ -33,15 +33,15 @@ class ReviewValidator {
 		// by passing more context regarding the user, the product, the order, and any possible difficulties
 		// that the user might have encountered.
 		if ( '' === trim( $comment_content ) ) {
-			throw new InvalidReviewException( 'Review is missing a comment.' );
+			throw new InvalidReviewException( esc_html__( 'Review is missing a comment.', 'wc-ai-review-responder' ) );
 		}
 
 		if ( '' === (string) $rating ) {
-			throw new InvalidReviewException( 'Review is missing a rating.' );
+			throw new InvalidReviewException( esc_html__( 'Review is missing a rating.', 'wc-ai-review-responder' ) );
 		}
 
 		if ( $rating < 1 || $rating > 5 ) {
-			throw new InvalidReviewException( 'Rating must be between 1 and 5.' );
+			throw new InvalidReviewException( esc_html__( 'Rating must be between 1 and 5.', 'wc-ai-review-responder' ) );
 		}
 	}
 }

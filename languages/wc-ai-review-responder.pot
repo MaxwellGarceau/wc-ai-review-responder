@@ -1,0 +1,279 @@
+# Copyright (C) 2024 WooCommerce
+# This file is distributed under the GNU General Public License v3.0.
+msgid ""
+msgstr ""
+"Project-Id-Version: WC AI Review Responder 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-ai-review-responder\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2024-12-19T00:00:00+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.7.1\n"
+"X-Domain: wc-ai-review-responder\n"
+
+#. Plugin Name of the plugin
+msgid "WC AI Review Responder"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://github.com/woocommerce/wc-ai-review-responder"
+msgstr ""
+
+#. Description of the plugin
+msgid "AI-powered response generation for WooCommerce product reviews"
+msgstr ""
+
+#. Author of the plugin
+msgid "WooCommerce"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://woo.com"
+msgstr ""
+
+#: wc-ai-review-responder.php:39
+msgid "Wc Ai Review Responder requires WooCommerce to be installed and active. You can download %s here."
+msgstr ""
+
+#: wc-ai-review-responder.php:122
+msgid "Cloning is forbidden."
+msgstr ""
+
+#: wc-ai-review-responder.php:129
+msgid "Unserializing instances of this class is forbidden."
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:162
+msgid "Generate AI Response"
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:120
+msgid "Select Prompt Options"
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:121
+msgid "Choose a template and mood to guide the AI's response."
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:122
+msgid "Based on the review, the AI suggests these options for the best response."
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:123
+msgid "AI suggestions failed to load. Please make a manual selection."
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:124
+msgid "Template:"
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:125
+msgid "Mood:"
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:126
+msgid "Cancel"
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:127
+msgid "Generate"
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:128
+msgid "Error"
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:129
+msgid "OK"
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:130
+msgid "Generating AI Response"
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:131
+msgid "Please wait while we generate a personalized response to this review..."
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:132
+msgid "Getting suggestions..."
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:133
+msgid "Missing required data attributes. Please refresh the page and try again."
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:134
+msgid "Configuration Error"
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:135
+msgid "Could not find the reply textarea. Please make sure the reply box is open and try again."
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:136
+msgid "Interface Error"
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:137
+msgid "The server returned an error response."
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:138
+msgid "Server Error"
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:139
+msgid "Failed to generate AI response"
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:140
+msgid "Something went wrong"
+msgstr ""
+
+#: includes/Admin/ReviewActions.php:141
+msgid "An unexpected error occurred."
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:112
+msgid "Missing or invalid comment_id."
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:116
+msgid "Step 1: Prepare Review Data"
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:117
+msgid "- Fetching review context..."
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:119
+msgid "  Review context data: "
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:121
+msgid "- Validating review for AI processing..."
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:124
+msgid "- Sanitizing input for AI processing..."
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:126
+msgid "  Sanitized context data: "
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:127
+msgid "✓ Review data prepared for all AI operations."
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:131
+msgid "Step 2: Get AI Suggestions"
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:132
+msgid "- Building suggestion prompt..."
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:134
+msgid "  Generated suggestion prompt: "
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:137
+msgid "- Sending suggestion request to AI..."
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:145
+msgid "The suggested mood."
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:149
+msgid "The suggested template."
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:159
+msgid "- Validating suggestion response..."
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:160
+msgid "  Raw AI response: "
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:164
+msgid "  JSON decode error: "
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:165
+msgid "  Decoded suggestions: "
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:166
+msgid "Invalid JSON response from AI for suggestions."
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:168
+msgid "✓ AI suggestions received"
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:169
+msgid "  - Suggested mood: "
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:170
+msgid "  - Suggested template: "
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:174
+msgid "Step 3: Generate Final AI Response"
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:175
+msgid "- Building final prompt with suggestions..."
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:183
+msgid "  Generated final prompt: "
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:185
+msgid "- Sending final response request to AI..."
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:188
+msgid "  AI response data: "
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:190
+msgid "- Validating final AI response..."
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:192
+msgid "✓ Final response validated."
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:193
+msgid "  Validated reply: "
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:197
+msgid "Generated AI reply: "
+msgstr ""
+
+#: includes/CLI/AiReviewCli.php:201
+msgid "Rate limit exceeded: "
+msgstr ""
+
+#: includes/Validation/ReviewValidator.php:36
+msgid "Review is missing a comment."
+msgstr ""
+
+#: includes/Validation/ReviewValidator.php:40
+msgid "Review is missing a rating."
+msgstr ""
+
+#: includes/Validation/ReviewValidator.php:44
+msgid "Rating must be between 1 and 5."
+msgstr ""

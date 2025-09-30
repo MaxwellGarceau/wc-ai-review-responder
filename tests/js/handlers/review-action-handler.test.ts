@@ -31,6 +31,21 @@ jest.mock( '../../../src/api/ajax-handler', () => ( {
 	generateAiResponse: jest.fn(),
 	getAiSuggestions: jest.fn(),
 } ) );
+jest.mock( '../../../src/utils/i18n', () => ( {
+	__: jest.fn( ( key: string ) => {
+		const translations: Record<string, string> = {
+			missingDataAttributes: 'Missing required data attributes. Please refresh the page and try again.',
+			configurationError: 'Configuration Error',
+			gettingSuggestions: 'Getting suggestions...',
+			couldNotFindTextarea: 'Could not find the reply textarea. Please make sure the reply box is open and try again.',
+			interfaceError: 'Interface Error',
+			serverReturnedError: 'The server returned an error response.',
+			serverError: 'Server Error',
+			failedToGenerateResponse: 'Failed to generate AI response',
+		};
+		return translations[ key ] || key;
+	} ),
+} ) );
 
 import { handleAiResponseClick } from '../../../src/handlers/review-action-handler';
 import {

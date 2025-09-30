@@ -8,6 +8,7 @@
  * Internal dependencies
  */
 import errorModalTemplate from '../templates/error-modal.html';
+import { __ } from '../utils/i18n';
 
 /**
  * Interface for error modal options
@@ -24,7 +25,7 @@ interface ErrorModalOptions {
  * @param {ErrorModalOptions} options - The error modal configuration options
  */
 export function showErrorModal( options: ErrorModalOptions ): void {
-	const { title = 'Error', message, onClose } = options;
+	const { title = __( 'error' ), message, onClose } = options;
 
 	// Insert the modal HTML if it doesn't exist
 	if ( ! document.querySelector( '.wc-ai-rr-error-modal' ) ) {
@@ -110,7 +111,7 @@ export function showGenericError(
 	let message: string;
 
 	if ( error instanceof Error ) {
-		message = error.message || 'An unexpected error occurred.';
+		message = error.message || __( 'unexpectedError' );
 	} else {
 		message = error;
 	}
@@ -121,7 +122,7 @@ export function showGenericError(
 	}
 
 	showErrorModal( {
-		title: 'Something went wrong',
+		title: __( 'somethingWentWrong' ),
 		message,
 	} );
 }
