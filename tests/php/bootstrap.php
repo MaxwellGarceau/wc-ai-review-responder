@@ -4,7 +4,7 @@
  */
 
 // Load PHPUnit Polyfills before WordPress test bootstrap
-require_once dirname( __DIR__ ) . '/vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php';
+require_once dirname( dirname( __DIR__ ) ) . '/vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php';
 
 // Resolve WordPress test environment directory
 // Prefer wp-env provided test suite inside the container
@@ -14,7 +14,7 @@ if ( ! $_tests_dir ) {
 }
 if ( ! $_tests_dir ) {
     // Fallback to Composer-installed wp-phpunit
-    $_tests_dir = dirname( __DIR__ ) . '/vendor/wp-phpunit/wp-phpunit';
+    $_tests_dir = dirname( dirname( __DIR__ ) ) . '/vendor/wp-phpunit/wp-phpunit';
 }
 
 if ( ! file_exists( $_tests_dir . '/includes/functions.php' ) ) {
@@ -31,7 +31,7 @@ require_once $_tests_dir . '/includes/functions.php';
  */
 function _manually_load_plugin() {
     // Load the main plugin file (which includes the autoloader)
-    require dirname( dirname( __FILE__ ) ) . '/wc-ai-review-responder.php';
+    require dirname( dirname( dirname( __FILE__ ) ) ) . '/wc-ai-review-responder.php';
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
