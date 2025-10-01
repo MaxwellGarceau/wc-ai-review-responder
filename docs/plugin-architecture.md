@@ -22,6 +22,35 @@ Enforces consistent code formatting and review processes, which is like followin
 
 ## Data Flow
 
+### Visual Flow Diagram
+
+```mermaid
+flowchart TD
+    A[User clicks 'Generate AI Response'] --> B[Frontend: AJAX request for suggestion]
+    B --> C[AjaxHandler: nonce/capability validation]
+    C --> D[ReviewHandler: data extraction + validation]
+    D --> E[AIClient: suggestion prompt + API call]
+    E --> F[Template/Mood suggestion validation]
+    F --> G[JSON response with suggested template and mood]
+    G --> H[Display suggestion modal to user]
+    
+    H --> I{User Decision}
+    I -->|Confirm suggestion| J[Frontend: AJAX request for generation]
+    I -->|Select custom template/mood| J
+    
+    J --> K[AjaxHandler: nonce/capability validation]
+    K --> L[ReviewHandler: data extraction + validation]
+    L --> M[AIClient: selected template/mood + API call]
+    M --> N[Response validation + sanitization]
+    N --> O[JSON response to frontend]
+    O --> P[Insert into reply textarea]
+    
+    style A fill:#e1f5fe
+    style H fill:#fff3e0
+    style I fill:#f3e5f5
+    style P fill:#e8f5e8
+```
+
 ### Step 1: Template and Mood Suggestion
 ```
 Frontend (admin.js)
