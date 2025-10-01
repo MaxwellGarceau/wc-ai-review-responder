@@ -1,14 +1,55 @@
 # Plugin Architecture
 
+## Core Architectural Components
+
+### AI Response Templates
+These are like fill-in-the-blank forms that the AI uses to generate consistent, mood-appropriate replies. The template system allows for structured, context-aware responses that maintain brand voice and handle different review scenarios appropriately.
+
+### Localization
+Ensures that all user-facing text can be translated, making the plugin accessible to a global audience. This system supports multiple languages and cultural contexts for international merchants.
+
+### Configuration
+Centralizes environment variables and settings, similar to a control panel for the plugin. This includes API keys, model preferences, and behavioral settings that merchants can customize.
+
+### Error Handling
+Standardizes how problems are reported and managed, making debugging and support easier. The system provides user-friendly error messages while maintaining detailed logging for developers.
+
+### Security
+Outlines best practices to keep user data and the plugin itself safe from threats. This includes input validation, output escaping, and secure API key management.
+
+### Code Style & Quality
+Enforces consistent code formatting and review processes, which is like following a recipe to ensure every dish (feature) is made the same way. This maintains code readability and reduces bugs.
+
 ## Data Flow
+
+### Step 1: Template and Mood Suggestion
 ```
 Frontend (admin.js)
-    ↓ AJAX request
+    ↓ AJAX request for suggestion
 AjaxHandler (nonce/capability validation)
     ↓
 ReviewHandler (data extraction + validation)
     ↓
-AIClient (prompt building + API call)
+AIClient (suggestion prompt + API call)
+    ↓
+Template/Mood suggestion validation
+    ↓
+JSON response with suggested template and mood
+    ↓
+Display suggestion modal to user
+```
+
+### Step 2: AI Response Generation
+```
+User confirms suggestion OR selects custom template/mood
+    ↓
+Frontend (admin.js)
+    ↓ AJAX request for generation
+AjaxHandler (nonce/capability validation)
+    ↓
+ReviewHandler (data extraction + validation)
+    ↓
+AIClient (selected template/mood + API call)
     ↓
 Response validation + sanitization
     ↓

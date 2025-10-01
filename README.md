@@ -4,6 +4,17 @@ AI generate a mood and template specific response to various types customer revi
 
 https://github.com/user-attachments/assets/97460b5a-d792-4265-b28c-4cf677bd6e78
 
+- [Roadmap](https://github.com/MaxwellGarceau/wc-ai-review-responder/issues)
+
+## Documentation
+
+For detailed information about the project's architecture and patterns, see the `/docs` folder:
+
+- [SCSS Architecture](docs/scss-architecture.md) - Layered SCSS architecture and patterns
+- [Plugin Architecture](docs/plugin-architecture.md) - Overview of the plugin's structure and main components
+- [AI Response Templates](docs/ai-response-templates.md) - Details on how AI-generated responses are structured and customized
+- [CLI Commands Documentation](docs/cli-commands.md) - CLI commands used for seeding and testing
+
 ## Getting Started
 
 ### Prerequisites
@@ -61,9 +72,3 @@ GEMINI_API_KEY=your_api_key_here
 ```
 
 The plugin loads environment variables using `vlucas/phpdotenv`. Ensure `.env` is not committed (already ignored in `.gitignore`).
-
-## Documentation
-
-For detailed information about the project's architecture and patterns, see the `/docs` folder:
-
-- [SCSS Architecture](docs/scss-architecture.md) - Layered SCSS architecture and patterns
