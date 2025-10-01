@@ -2,6 +2,8 @@
 
 AI generate a mood and template specific response to various types customer reviews.
 
+https://github.com/user-attachments/assets/97460b5a-d792-4265-b28c-4cf677bd6e78
+
 ## Getting Started
 
 ### Prerequisites
