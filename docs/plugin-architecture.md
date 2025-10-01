@@ -1,5 +1,22 @@
 # Plugin Architecture
 
+## Table of Contents
+
+- [AI Response Templates](#ai-response-templates)
+- [Data Flow](#data-flow)
+- [Testing Strategy](#testing-strategy)
+- [Technical Specifications](#technical-specifications)
+  - [Localization](#localization)
+  - [Configuration](#configuration)
+  - [Code Style & Quality](#code-style--quality)
+  - [Dependency Injection (DI) in PHP](#dependency-injection-di-in-php)
+  - [Error Handling](#error-handling)
+  - [Security](#security)
+  - [Database Schema Integration](#database-schema-integration)
+  - [API Integration](#api-integration)
+  - [WordPress Hooks](#wordpress-hooks)
+  - [Frontend Components](#frontend-components)
+
 ## AI Response Templates
 These are like fill-in-the-blank forms that the AI uses to generate consistent, mood-appropriate replies. The template system allows for structured, context-aware responses that maintain brand voice and handle different review scenarios appropriately.
 
