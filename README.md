@@ -1,8 +1,32 @@
 # Wc Ai Review Responder
 
 AI generate a mood and template specific response to various types customer reviews.
+- [Roadmap Ideas](https://github.com/MaxwellGarceau/wc-ai-review-responder/issues)
 
 https://github.com/user-attachments/assets/97460b5a-d792-4265-b28c-4cf677bd6e78
+
+
+## Documentation
+
+For detailed information about the project's architecture and patterns, see the `/docs` folder:
+
+- [Plugin Architecture](docs/plugin-architecture.md) - Overview of the plugin's structure and main components
+- [AI Response Templates](docs/ai-response-templates.md) - Details on how AI-generated responses are structured and customized
+- [Data Flow](docs/data-flow.md) - Complete data flow for AI response generation
+- [Testing Strategy](#testing-strategy)
+- [Technical Specifications](#technical-specifications)
+  - [Localization](#localization)
+  - [Configuration](#configuration)
+  - [Code Style & Quality](#code-style--quality)
+  - [Dependency Injection (DI) in PHP](#dependency-injection-di-in-php)
+  - [Error Handling](#error-handling)
+  - [Security](#security)
+  - [Database Schema Integration](#database-schema-integration)
+  - [CLI Commands Documentation](docs/cli-commands.md) - CLI commands used for seeding and testing
+  - [API Integration](#api-integration)
+  - [WordPress Hooks](#wordpress-hooks)
+  - [Frontend Components](#frontend-components)
+  - [SCSS Architecture](docs/scss-architecture.md) - Layered SCSS architecture and patterns
 
 ## Getting Started
 
@@ -61,9 +85,3 @@ GEMINI_API_KEY=your_api_key_here
 ```
 
 The plugin loads environment variables using `vlucas/phpdotenv`. Ensure `.env` is not committed (already ignored in `.gitignore`).
-
-## Documentation
-
-For detailed information about the project's architecture and patterns, see the `/docs` folder:
-
-- [SCSS Architecture](docs/scss-architecture.md) - Layered SCSS architecture and patterns

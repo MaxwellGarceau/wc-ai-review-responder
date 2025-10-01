@@ -21,6 +21,8 @@ use WcAiReviewResponder\RateLimiting\RateLimiter;
 use WcAiReviewResponder\Validation\AiInputSanitizer;
 use WcAiReviewResponder\Validation\ReviewValidator;
 use WcAiReviewResponder\Validation\ValidateAiResponse;
+use WcAiReviewResponder\CLI\SampleReviewSeeder;
+use WcAiReviewResponder\CLI\SeedReviewCli;
 
 /**
  * Factory class for creating and configuring the dependency injection container.
@@ -66,6 +68,9 @@ class ContainerFactory {
 						\DI\get( AiInputSanitizer::class ),
 						\DI\get( ReviewValidator::class )
 					),
+				SampleReviewSeeder::class  => \DI\autowire(),
+				SeedReviewCli::class       => \DI\create()
+					->constructor( \DI\get( SampleReviewSeeder::class ) ),
 			)
 		);
 		return $builder->build();

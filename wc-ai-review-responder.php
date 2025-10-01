@@ -23,6 +23,7 @@ require_once plugin_dir_path( __FILE__ ) . '/vendor/autoload.php';
 
 use WcAiReviewResponder\Admin\ReviewActions;
 use WcAiReviewResponder\CLI\AiReviewCli;
+use WcAiReviewResponder\CLI\SeedReviewCli;
 use WcAiReviewResponder\Core\ContainerFactory;
 use WcAiReviewResponder\Endpoints\AjaxHandler;
 use WcAiReviewResponder\Localization\Localizations;
@@ -117,6 +118,9 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 		private function register_cli( $container ) {
 			$cli = $container->get( AiReviewCli::class );
 			\WP_CLI::add_command( 'ai-review', $cli );
+
+			$seed_cli = $container->get( SeedReviewCli::class );
+			\WP_CLI::add_command( 'ai-review-seed', $seed_cli );
 		}
 
 		/**
