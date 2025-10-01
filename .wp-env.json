@@ -1,7 +1,7 @@
 {
 	"core": null,
 	"plugins": [
-		"https://github.com/woocommerce/woocommerce/releases/download/8.9.2/woocommerce.zip",
+		"https://github.com/woocommerce/woocommerce/releases/download/10.2.2/woocommerce.zip",
 		"https://github.com/woocommerce/woocommerce-gateway-dummy/releases/download/1.10.0/woocommerce-gateway-dummy.zip",
 		"."
 	],
