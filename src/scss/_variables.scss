@@ -55,6 +55,12 @@ $z-index: (
 	modal: 1050
 );
 
+// WordPress Admin Bar Heights
+$admin-bar-heights: (
+	desktop: 32px,
+	mobile: 46px
+);
+
 // Animation Durations
 $durations: (
 	slow: 0.5s
