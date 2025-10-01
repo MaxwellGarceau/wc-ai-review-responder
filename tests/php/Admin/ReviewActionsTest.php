@@ -64,6 +64,131 @@ class ReviewActionsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test WooCommerce adapter adds action when given a WP_Comment instance.
+	 *
+	 * @author Assistant
+	 */
+	public function test_add_ai_response_action_wc_with_wp_comment() {
+		$product_id = $this->create_wc_simple_product();
+		$user_id    = $this->factory->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $user_id );
+
+		$comment = $this->factory->comment->create_and_get(
+			array(
+				'comment_post_ID' => $product_id,
+				'comment_type'    => 'review',
+			)
+		);
+
+		$actions = array( 'reply' => 'Reply' );
+		$result  = $this->review_actions->add_ai_response_action_wc( $actions, $comment );
+
+		$this->assertArrayHasKey( 'ai_response', $result );
+		$this->assertStringContainsString( 'Generate AI Response', $result['ai_response'] );
+	}
+
+	/**
+	 * Test WooCommerce adapter accepts object with comment_ID.
+	 *
+	 * @author Assistant
+	 */
+	public function test_add_ai_response_action_wc_with_object_payload() {
+		$product_id = $this->create_wc_simple_product();
+		$user_id    = $this->factory->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $user_id );
+
+		$comment = $this->factory->comment->create_and_get(
+			array(
+				'comment_post_ID' => $product_id,
+				'comment_type'    => 'review',
+			)
+		);
+
+		$review_payload        = new \stdClass();
+		$review_payload->comment_ID = $comment->comment_ID;
+
+		$actions = array( 'reply' => 'Reply' );
+		$result  = $this->review_actions->add_ai_response_action_wc( $actions, $review_payload );
+
+		$this->assertArrayHasKey( 'ai_response', $result );
+		$this->assertStringContainsString( 'Generate AI Response', $result['ai_response'] );
+	}
+
+	/**
+	 * Test WooCommerce adapter accepts array with comment_ID.
+	 *
+	 * @author Assistant
+	 */
+	public function test_add_ai_response_action_wc_with_array_payload() {
+		$product_id = $this->create_wc_simple_product();
+		$user_id    = $this->factory->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $user_id );
+
+		$comment = $this->factory->comment->create_and_get(
+			array(
+				'comment_post_ID' => $product_id,
+				'comment_type'    => 'review',
+			)
+		);
+
+		$review_payload = array( 'comment_ID' => $comment->comment_ID );
+
+		$actions = array( 'reply' => 'Reply' );
+		$result  = $this->review_actions->add_ai_response_action_wc( $actions, $review_payload );
+
+		$this->assertArrayHasKey( 'ai_response', $result );
+		$this->assertStringContainsString( 'Generate AI Response', $result['ai_response'] );
+	}
+
+	/**
+	 * Test WooCommerce adapter accepts numeric comment ID.
+	 *
+	 * @author Assistant
+	 */
+	public function test_add_ai_response_action_wc_with_numeric_payload() {
+		$product_id = $this->create_wc_simple_product();
+		$user_id    = $this->factory->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $user_id );
+
+		$comment_id = $this->factory->comment->create(
+			array(
+				'comment_post_ID' => $product_id,
+				'comment_type'    => 'review',
+			)
+		);
+
+		$actions = array( 'reply' => 'Reply' );
+		$result  = $this->review_actions->add_ai_response_action_wc( $actions, (int) $comment_id );
+
+		$this->assertArrayHasKey( 'ai_response', $result );
+		$this->assertStringContainsString( 'Generate AI Response', $result['ai_response'] );
+	}
+
+	/**
+	 * Test WooCommerce adapter does NOT add action for non-review comments.
+	 *
+	 * @author Assistant
+	 */
+	public function test_add_ai_response_action_wc_skips_non_review() {
+		// Create a normal post and a comment (not a review).
+		$post_id = $this->factory->post->create();
+		$user_id = $this->factory->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $user_id );
+
+		$comment = $this->factory->comment->create_and_get(
+			array(
+				'comment_post_ID' => $post_id,
+				// No comment_type => not a 'review'.
+			)
+		);
+
+		$actions = array( 'reply' => 'Reply' );
+		$result  = $this->review_actions->add_ai_response_action_wc( $actions, $comment );
+
+		$this->assertArrayNotHasKey( 'ai_response', $result );
+	}
+
+	/**
 	 * Test that the `add_ai_response_action` method adds the action link for valid product reviews.
 	 */
 	public function test_add_ai_response_action_adds_action_for_valid_review() {
