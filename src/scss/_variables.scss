@@ -55,6 +55,17 @@ $z-index: (
 	modal: 1050
 );
 
+// WordPress Admin Bar Heights
+$admin-bar-heights: (
+	desktop: 32px,
+	mobile: 46px
+);
+
+// Modal Spacing
+$modal-spacing: (
+	viewport-offset: 40px // Standard offset from viewport height for modal padding
+);
+
 // Animation Durations
 $durations: (
 	slow: 0.5s

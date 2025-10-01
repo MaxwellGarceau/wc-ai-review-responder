@@ -12,14 +12,17 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	overflow-y: auto;
+	padding: 20px 0;
 
 	&__overlay {
-		// Overlay positioning
-		position: absolute;
+		// Overlay positioning - fixed background that doesn't scroll
+		position: fixed;
 		top: 0;
 		left: 0;
 		width: 100%;
 		height: 100%;
+		z-index: 0;
 	}
 
 	&__content {
@@ -27,6 +30,12 @@
 		width: 90%;
 		position: relative;
 		z-index: 1;
+		margin: 20px;
+		flex-shrink: 0;
+		box-sizing: border-box;
+		// Ensure modal content doesn't exceed viewport height
+		max-height: calc(100vh - #{map.get(tokens.$modal-spacing, "viewport-offset")}); // Account for modal padding
+		overflow-y: auto;
 	}
 
 	&__actions {
@@ -45,5 +54,53 @@
 		width: 40px;
 		height: 40px;
 		margin: 0 auto map.get(tokens.$spacing, "lg");
+	}
+}
+
+// Responsive adjustments for smaller viewport heights
+@media (max-height: 600px) {
+	%wc-ai-rr-modal {
+		padding: 0;
+
+		&__content {
+			margin: 0;
+		}
+	}
+}
+
+// WordPress admin bar adjustments
+.admin-bar %wc-ai-rr-modal {
+	// Adjust modal positioning when WordPress admin bar is present
+	top: map.get(tokens.$admin-bar-heights, "desktop");
+	height: calc(100vh - #{map.get(tokens.$admin-bar-heights, "desktop")});
+
+	&__overlay {
+		// Adjust overlay positioning for admin bar
+		top: map.get(tokens.$admin-bar-heights, "desktop");
+		height: calc(100vh - #{map.get(tokens.$admin-bar-heights, "desktop")});
+	}
+
+	&__content {
+		// Adjust max-height calculation to account for admin bar
+		max-height: calc(100vh - #{map.get(tokens.$admin-bar-heights, "desktop")} - #{map.get(tokens.$modal-spacing, "viewport-offset")}); // Account for admin bar + modal padding
+	}
+}
+
+// Mobile admin bar adjustments (admin bar is taller on mobile)
+@media screen and (max-width: 782px) {
+	.admin-bar %wc-ai-rr-modal {
+		// Adjust for mobile admin bar height
+		top: map.get(tokens.$admin-bar-heights, "mobile");
+		height: calc(100vh - #{map.get(tokens.$admin-bar-heights, "mobile")});
+
+		&__overlay {
+			top: map.get(tokens.$admin-bar-heights, "mobile");
+			height: calc(100vh - #{map.get(tokens.$admin-bar-heights, "mobile")});
+		}
+
+		&__content {
+			// Adjust max-height for mobile admin bar
+			max-height: calc(100vh - #{map.get(tokens.$admin-bar-heights, "mobile")} - #{map.get(tokens.$modal-spacing, "viewport-offset")}); // Account for mobile admin bar + modal padding
+		}
 	}
 }
