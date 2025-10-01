@@ -34,7 +34,7 @@
 		flex-shrink: 0;
 		box-sizing: border-box;
 		// Ensure modal content doesn't exceed viewport height
-		max-height: calc(100vh - 40px); // Account for modal padding (20px top + 20px bottom)
+		max-height: calc(100vh - #{map.get(tokens.$modal-spacing, "viewport-offset")}); // Account for modal padding
 		overflow-y: auto;
 	}
 
@@ -82,7 +82,7 @@
 
 	&__content {
 		// Adjust max-height calculation to account for admin bar
-		max-height: calc(100vh - #{map.get(tokens.$admin-bar-heights, "desktop")} - 40px); // Account for admin bar + modal padding
+		max-height: calc(100vh - #{map.get(tokens.$admin-bar-heights, "desktop")} - #{map.get(tokens.$modal-spacing, "viewport-offset")}); // Account for admin bar + modal padding
 	}
 }
 
@@ -100,7 +100,7 @@
 
 		&__content {
 			// Adjust max-height for mobile admin bar
-			max-height: calc(100vh - #{map.get(tokens.$admin-bar-heights, "mobile")} - 40px); // Account for mobile admin bar + modal padding
+			max-height: calc(100vh - #{map.get(tokens.$admin-bar-heights, "mobile")} - #{map.get(tokens.$modal-spacing, "viewport-offset")}); // Account for mobile admin bar + modal padding
 		}
 	}
 }

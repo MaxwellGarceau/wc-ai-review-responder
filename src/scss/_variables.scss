@@ -61,6 +61,11 @@ $admin-bar-heights: (
 	mobile: 46px
 );
 
+// Modal Spacing
+$modal-spacing: (
+	viewport-offset: 40px // Standard offset from viewport height for modal padding
+);
+
 // Animation Durations
 $durations: (
 	slow: 0.5s
