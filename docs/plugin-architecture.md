@@ -58,3 +58,40 @@ add_action('wp_ajax_generate_ai_response', $callback);
 - **Loading State:** Disabled button + spinner
 - **Error Modal:** Dismissible notice with debug info
 - **Success:** Response inserted into reply textarea
+
+## Testing Strategy
+
+### Frontend Testing (JavaScript/TypeScript)
+- **Framework:** Jest unit tests
+- **Mocking:** API clients and external dependencies
+- **Coverage:** Component behavior, user interactions, and error handling
+- **Location:** `tests/js/` directory
+
+### Backend Testing (PHP)
+- **Framework:** PHPUnit with wp-env testing environment
+- **Environment:** Full WordPress and WooCommerce functionality available
+- **Approach:** Integration tests rather than pure unit tests
+- **Coverage:** All classes, CLI commands, and WordPress integrations
+- **Location:** `tests/php/` directory
+
+### End-to-End Testing
+- **Approach:** Manual testing using CLI commands
+- **Seeding:** `wp ai-review-seed seed` to create sample reviews
+- **Testing:** `wp ai-review test <review_id>` to exercise full backend logic
+- **Coverage:** Complete AI response generation pipeline from review data to final response
+
+### Test Execution
+```bash
+# Frontend tests
+npm run test:js
+
+# Backend tests  
+npm run test:php
+
+# All tests
+npm run test
+
+# E2E testing workflow
+wp ai-review-seed seed          # Create sample data
+wp ai-review test <review_id>   # Test AI response generation
+```
