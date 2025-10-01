@@ -1,76 +1,13 @@
 # Plugin Architecture
 
-## Core Architectural Components
-
-### AI Response Templates
+## AI Response Templates
 These are like fill-in-the-blank forms that the AI uses to generate consistent, mood-appropriate replies. The template system allows for structured, context-aware responses that maintain brand voice and handle different review scenarios appropriately.
 
-### Localization
-Ensures that all user-facing text can be translated, making the plugin accessible to a global audience. This system supports multiple languages and cultural contexts for international merchants.
-
-### Configuration
-Centralizes environment variables and settings, similar to a control panel for the plugin. This includes API keys, model preferences, and behavioral settings that merchants can customize.
-
-### Error Handling
-Standardizes how problems are reported and managed, making debugging and support easier. The system provides user-friendly error messages while maintaining detailed logging for developers.
-
-### Dependency Injection (DI) in PHP
-
-The plugin uses Dependency Injection (DI) to manage and provide dependencies between classes, improving modularity, testability, and maintainability. Instead of classes creating their own dependencies, required objects are passed in (injected) via constructors or method parameters. This approach decouples components and makes it easier to swap implementations or mock dependencies for testing.
-
-Classes using interfaces or dependencies with constructor params are created in the `ContainerFactory.php` file and inserted deliberately.
-
-### Security
-Outlines best practices to keep user data and the plugin itself safe from threats. This includes input validation, output escaping, and secure API key management.
-
-### Code Style & Quality
-Enforces consistent code formatting and review processes, which is like following a recipe to ensure every dish (feature) is made the same way. This maintains code readability and reduces bugs.
+For a comprehensive explanation of how AI response templates and the mood system work—including how templates are structured, how moods are applied, and how to extend or validate them—see [AI Response Templates and Mood System](ai-response-templates.md).
 
 ## Data Flow
 
 For detailed information about the plugin's data flow, see [Data Flow Documentation](data-flow.md).
-
-## Error Handling Strategy
-- **Invalid reviews:** Specific messages about missing data
-- **API failures:** User-friendly messages + debug info for admins
-- **Security issues:** Generic error messages
-- **All errors:** Modal display with auto-dismiss
-
-## Security Implementation
-- WordPress nonces for all AJAX requests
-- `current_user_can('moderate_comments')` check
-- Input sanitization + output escaping
-- API key secured via .env (not in codebase)
-
-## Technical Specifications
-
-### Database Schema Integration
-- **Reviews:** `wp_comments` (comment_type = 'review')
-- **Ratings:** `wp_commentmeta` (meta_key = 'rating')
-- **Products:** `wp_posts` (post_type = 'product')
-
-### API Integration
-- **Primary:** Google Gemini via SDK
-- **Fallback:** Template-based responses (if API fails)
-- **Caching:** Transient API for 24 hours to reduce costs
-
-### WordPress Hooks
-```php
-// Admin UI
-add_filter('comment_row_actions', $callback, 10, 2);
-add_action('admin_enqueue_scripts', $callback);
-
-// AJAX handlers
-// Prefer using the class constant to avoid string duplication:
-// add_action('wp_ajax_' . AjaxHandler::ACTION_GENERATE_AI_RESPONSE, $callback);
-add_action('wp_ajax_generate_ai_response', $callback);
-```
-
-### Frontend Components
-- **Button:** "Generate AI Response" in comment actions
-- **Loading State:** Disabled button + spinner
-- **Error Modal:** Dismissible notice with debug info
-- **Success:** Response inserted into reply textarea
 
 ## Testing Strategy
 
@@ -108,3 +45,62 @@ npm run test
 wp ai-review-seed seed          # Create sample data
 wp ai-review test <review_id>   # Test AI response generation
 ```
+
+## Technical Specifications
+
+### Localization
+Using WP's native localization system we ensures that all user-facing text can be translated, making the plugin accessible to a global audience. This system supports multiple languages and cultural contexts for international merchants.
+
+### Configuration
+Centralizes environment variables and settings, similar to a control panel for the plugin. This includes API keys, model preferences, and behavioral settings that merchants can customize.
+
+### Code Style & Quality
+Enforces consistent code formatting and review processes, which is like following a recipe to ensure every dish (feature) is made the same way. This maintains code readability and reduces bugs.
+
+### Dependency Injection (DI) in PHP
+
+The plugin uses Dependency Injection (DI) to manage and provide dependencies between classes, improving modularity, testability, and maintainability. Instead of classes creating their own dependencies, required objects are passed in (injected) via constructors or method parameters. This approach decouples components and makes it easier to swap implementations or mock dependencies for testing.
+
+Classes using interfaces or dependencies with constructor params are created in the `ContainerFactory.php` file and inserted deliberately.
+
+### Error Handling
+Standardizes how problems are reported and managed, making debugging and support easier. The system provides user-friendly error messages while maintaining detailed logging for developers.
+- **Invalid reviews:** Specific messages about missing data
+- **API failures:** User-friendly messages + debug info for admins
+- **Security issues:** Generic error messages
+- **All errors:** Modal display with auto-dismiss
+
+### Security
+Outlines best practices to keep user data and the plugin itself safe from threats. This includes input validation, output escaping, and secure API key management.
+- WordPress nonces for all AJAX requests
+- `current_user_can('moderate_comments')` check
+- Input sanitization + output escaping
+- API key secured via .env (not in codebase)
+
+### Database Schema Integration
+- **Reviews:** `wp_comments` (comment_type = 'review')
+- **Ratings:** `wp_commentmeta` (meta_key = 'rating')
+- **Products:** `wp_posts` (post_type = 'product')
+
+### API Integration
+- **Primary:** Google Gemini via SDK
+- **Fallback:** Template-based responses (if API fails)
+- **Caching:** Transient API for 24 hours to reduce costs
+
+### WordPress Hooks
+```php
+// Admin UI
+add_filter('comment_row_actions', $callback, 10, 2);
+add_action('admin_enqueue_scripts', $callback);
+
+// AJAX handlers
+// Prefer using the class constant to avoid string duplication:
+// add_action('wp_ajax_' . AjaxHandler::ACTION_GENERATE_AI_RESPONSE, $callback);
+add_action('wp_ajax_generate_ai_response', $callback);
+```
+
+### Frontend Components
+- **Button:** "Generate AI Response" in comment actions
+- **Loading State:** Disabled button + spinner
+- **Error Modal:** Dismissible notice with debug info
+- **Success:** Response inserted into reply textarea
