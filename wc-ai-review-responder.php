@@ -110,18 +110,18 @@ if ( ! class_exists( 'Wc_Ai_Review_Responder' ) ) :
 			return $factory->build();
 		}
 
-	/**
-	 * Register WP-CLI commands.
-	 *
-	 * @param \DI\Container $container Dependency injection container.
-	 */
-	private function register_cli( $container ) {
-		$cli = $container->get( AiReviewCli::class );
-		\WP_CLI::add_command( 'ai-review', $cli );
+		/**
+		 * Register WP-CLI commands.
+		 *
+		 * @param \DI\Container $container Dependency injection container.
+		 */
+		private function register_cli( $container ) {
+			$cli = $container->get( AiReviewCli::class );
+			\WP_CLI::add_command( 'ai-review', $cli );
 
-		$seed_cli = $container->get( SeedReviewCli::class );
-		\WP_CLI::add_command( 'ai-review-seed', $seed_cli );
-	}
+			$seed_cli = $container->get( SeedReviewCli::class );
+			\WP_CLI::add_command( 'ai-review-seed', $seed_cli );
+		}
 
 		/**
 		 * Cloning is forbidden.
