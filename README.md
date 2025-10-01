@@ -1,6 +1,6 @@
 # Wc Ai Review Responder
 
-A WooCommmerce Extension inspired by [Create Woo Extension](https://github.com/woocommerce/woocommerce/blob/trunk/packages/js/create-woo-extension/README.md).
+AI generate a mood and template specific response to various types customer reviews.
 
 ## Getting Started
 
@@ -14,8 +14,10 @@ A WooCommmerce Extension inspired by [Create Woo Extension](https://github.com/w
 
 ```
 npm install
-npm run build
-wp-env start
+composer install
+
+npm run wp-env:start // Start wp-env/docker/DB
+npm run wp-scripts:start // Start Webpack FE compile
 ```
 
 Visit the added page at http://localhost:8888/wp-admin/admin.php?page=wc-admin&path=%2Fexample.
@@ -24,24 +26,20 @@ Visit the added page at http://localhost:8888/wp-admin/admin.php?page=wc-admin&p
 
 This project uses PHPCS with the WordPress and WooCommerce standards.
 
-### Install dependencies
+### Linters
 
-```
-composer install
-```
-
-### Run linters
-
--   PHP:
-
+#### Lint
 ```
 npm run lint:php
+npm run lint:js
+npm run lint:css
 ```
 
--   Auto-fix PHP issues where possible:
-
+#### Fix
 ```
 npm run fix:php
+npm run lint:js -- --fix
+npm run lint:css -- --fix
 ```
 
 PHPCS configuration lives in `phpcs.xml.dist` and includes:
@@ -52,6 +50,7 @@ PHPCS configuration lives in `phpcs.xml.dist` and includes:
 Excluded directories: `vendor/`, `node_modules/`, `build/`, `tests/`.
 
 ## Environment Variables
+Environment variables are for local dev only and will be phased out for production use eventually.
 
 Create a `.env` file in the project root based on `.env.example`:
 
