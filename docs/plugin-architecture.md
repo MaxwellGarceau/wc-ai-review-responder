@@ -14,6 +14,12 @@ Centralizes environment variables and settings, similar to a control panel for t
 ### Error Handling
 Standardizes how problems are reported and managed, making debugging and support easier. The system provides user-friendly error messages while maintaining detailed logging for developers.
 
+### Dependency Injection (DI) in PHP
+
+The plugin uses Dependency Injection (DI) to manage and provide dependencies between classes, improving modularity, testability, and maintainability. Instead of classes creating their own dependencies, required objects are passed in (injected) via constructors or method parameters. This approach decouples components and makes it easier to swap implementations or mock dependencies for testing.
+
+Classes using interfaces or dependencies with constructor params are created in the `ContainerFactory.php` file and inserted deliberately.
+
 ### Security
 Outlines best practices to keep user data and the plugin itself safe from threats. This includes input validation, output escaping, and secure API key management.
 
