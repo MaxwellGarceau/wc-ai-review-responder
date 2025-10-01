@@ -35,7 +35,12 @@ class ReviewActions {
 	 */
 	public function __construct( Localizations $translations ) {
 		$this->translations = $translations;
+		// Core comments screen (legacy): ensure action appears when WP core table is used.
 		add_filter( 'comment_row_actions', array( $this, 'add_ai_response_action' ), 20, 2 );
+
+		// WooCommerce Reviews screen uses a custom list table; hook into its row actions as well.
+		// @see Automattic WooCommerce Reviews list table implementation.
+		add_filter( 'woocommerce_product_review_row_actions', array( $this, 'add_ai_response_action_wc' ), 20, 2 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_review_scripts' ) );
 	}
 
@@ -58,6 +63,36 @@ class ReviewActions {
 
 		// Insert the AI response action after the "reply" action.
 		return $this->insert_action_after( $actions, 'reply', 'ai_response', $ai_response_action );
+	}
+
+	/**
+	 * WooCommerce Reviews screen row actions adapter.
+	 *
+	 * Reuses the core implementation by normalizing the second parameter to a WP_Comment.
+	 *
+	 * @param array $actions Array of action links.
+	 * @param mixed $review  Review row data (typically WP_Comment or object with comment_ID).
+	 * @return array Modified actions array.
+	 * @since 1.0.0
+	 */
+	public function add_ai_response_action_wc( array $actions, $review ): array {
+		$comment = null;
+
+		if ( $review instanceof \WP_Comment ) {
+			$comment = $review;
+		} elseif ( is_object( $review ) && isset( $review->comment_ID ) ) {
+			$comment = get_comment( (int) $review->comment_ID );
+		} elseif ( is_array( $review ) && isset( $review['comment_ID'] ) ) {
+			$comment = get_comment( (int) $review['comment_ID'] );
+		} elseif ( is_numeric( $review ) ) {
+			$comment = get_comment( (int) $review );
+		}
+
+		if ( ! $comment ) {
+			return $actions;
+		}
+
+		return $this->add_ai_response_action( $actions, $comment );
 	}
 
 	/**
