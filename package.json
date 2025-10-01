@@ -24,7 +24,9 @@
 		"cli": "wp-env run cli wp --",
 		"test:php": "wp-env run tests-cli --env-cwd=wp-content/plugins/wc-ai-review-responder ./vendor/bin/phpunit",
 		"test:js": "wp-scripts test-unit-js",
-		"test:ai-cli": "wp-env run cli wp ai-review test"
+		"test:ai-cli": "wp-env run cli wp ai-review test",
+		"db:seed": "wp-env run cli wp ai-review-seed seed",
+		"db:seed:force": "wp-env run cli wp ai-review-seed seed --force"
 	},
 	"dependencies": {
 		"@woocommerce/components": "latest",
