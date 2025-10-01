@@ -1,7 +1,7 @@
 # Wc Ai Review Responder
 
 AI generate a mood and template specific response to various types customer reviews.
-- [Roadmap](https://github.com/MaxwellGarceau/wc-ai-review-responder/issues)
+- [Roadmap Ideas](https://github.com/MaxwellGarceau/wc-ai-review-responder/issues)
 
 https://github.com/user-attachments/assets/97460b5a-d792-4265-b28c-4cf677bd6e78
 
@@ -11,6 +11,7 @@ https://github.com/user-attachments/assets/97460b5a-d792-4265-b28c-4cf677bd6e78
 For detailed information about the project's architecture and patterns, see the `/docs` folder:
 
 - [Plugin Architecture](docs/plugin-architecture.md) - Overview of the plugin's structure and main components
+- [Data Flow](docs/data-flow.md) - Complete data flow for AI response generation
 - [AI Response Templates](docs/ai-response-templates.md) - Details on how AI-generated responses are structured and customized
 - [SCSS Architecture](docs/scss-architecture.md) - Layered SCSS architecture and patterns
 - [CLI Commands Documentation](docs/cli-commands.md) - CLI commands used for seeding and testing
